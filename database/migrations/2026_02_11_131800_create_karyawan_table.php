@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('karyawan', function (Blueprint $table) {
             $table->id('id_karyawan');
             $table->string('nama_karyawan');
-            $table->date('join_date');
+            $table->datetime('join_date');
             $table->integer('masa_kerja')->default(0);
             $table->string('jabatan');
             $table->string('lokasi_kerja');

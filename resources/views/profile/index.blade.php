@@ -1,146 +1,210 @@
 @extends('layouts.app')
 
 @section('title', 'My Profile')
-@section('breadcrumb', 'Profile')
 
 @section('content')
 <div class="max-w-4xl mx-auto">
-    <div class="space-y-6">
-        <!-- Profile Header -->
-        <div class="card p-6">
-            <div class="flex flex-col md:flex-row md:items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <div class="h-20 w-20 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                    </div>
-                    <div>
-                        <h1 class="text-2xl font-bold text-gray-900">{{ auth()->user()->name }}</h1>
-                        <p class="text-gray-600">{{ auth()->user()->email }}</p>
-                        <div class="mt-2 flex items-center space-x-2">
-                            <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                {{ auth()->user()->role->name }}
-                            </span>
-                            @if(auth()->user()->is_active)
-                            <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                <i class="fas fa-circle mr-1" style="font-size: 6px;"></i> Active
-                            </span>
-                            @endif
-                        </div>
+    
+
+    <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+        <!-- Header -->
+        <div class="px-6 py-5 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-gray-200">
+            <div class="flex items-center">
+                <div class="h-16 w-16 rounded-full overflow-hidden bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center">
+                    @if(auth()->user()->profile_photo)
+                        <img src="{{ asset('storage/profile-photos/' . auth()->user()->profile_photo) }}" 
+                             alt="{{ auth()->user()->name }}" 
+                             class="h-full w-full object-cover">
+                    @else
+                        <span class="text-white text-2xl font-bold">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        </span>
+                    @endif
+                </div>
+                <div class="ml-4">
+                    <h1 class="text-2xl font-bold text-gray-900">{{ auth()->user()->name }}</h1>
+                    <p class="text-gray-600">{{ auth()->user()->email }}</p>
+                    <div class="mt-1 flex items-center space-x-2">
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {{ auth()->user()->role->name }}
+                        </span>
+                        @if(auth()->user()->is_active)
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Active
+                        </span>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Profile Form -->
-        <div class="card p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-6">Profile Information</h2>
-            
+        <!-- Form -->
+        <div class="p-6">
             <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Name -->
+                <div class="space-y-6">
+                    <!-- Basic Information -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
-                        <input type="text" name="name" value="{{ old('name', auth()->user()->name) }}" required
-                               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-                        @error('name')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Name -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Full Name <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" 
+                                       name="name" 
+                                       value="{{ old('name', auth()->user()->name) }}" 
+                                       required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 @error('name') border-red-500 @enderror">
+                                @error('name')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Email (Readonly) -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                                <input type="email" 
+                                       value="{{ auth()->user()->email }}" 
+                                       readonly
+                                       class="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-600 cursor-not-allowed">
+                                <p class="mt-1 text-xs text-gray-500">Email cannot be changed</p>
+                            </div>
+
+                            <!-- Phone -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                                <input type="text" 
+                                       name="phone" 
+                                       value="{{ old('phone', auth()->user()->phone) }}"
+                                       placeholder="08xxxxxxxxxx"
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 @error('phone') border-red-500 @enderror">
+                                @error('phone')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Position -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Position</label>
+                                <input type="text" 
+                                       name="position" 
+                                       value="{{ old('position', auth()->user()->position) }}"
+                                       placeholder="e.g., Manager, Staff"
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 @error('position') border-red-500 @enderror">
+                                @error('position')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
-                    
-                    <!-- Email (disabled) -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                        <input type="email" value="{{ auth()->user()->email }}" disabled
-                               class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-500">
-                        <p class="mt-1 text-xs text-gray-500">Email cannot be changed</p>
-                    </div>
-                    
-                    <!-- Phone -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                        <input type="text" name="phone" value="{{ old('phone', auth()->user()->phone) }}"
-                               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-                        @error('phone')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    
-                    <!-- Position -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Position</label>
-                        <input type="text" name="position" value="{{ old('position', auth()->user()->position) }}"
-                               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-                        @error('position')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    
+
                     <!-- Profile Photo -->
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Profile Photo</label>
-                        <div class="flex items-center space-x-4">
-                            <div class="h-16 w-16 rounded-full overflow-hidden bg-gray-200">
+                    <div class="border-t border-gray-200 pt-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Profile Photo</h3>
+                        <div class="flex items-center space-x-6">
+                            <div class="h-24 w-24 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
                                 @if(auth()->user()->profile_photo)
                                 <img src="{{ asset('storage/profile-photos/' . auth()->user()->profile_photo) }}" 
-                                     alt="Profile" class="h-full w-full object-cover">
+                                     alt="Profile" 
+                                     class="h-full w-full object-cover"
+                                     id="preview">
                                 @else
                                 <div class="h-full w-full flex items-center justify-center text-gray-400">
-                                    <i class="fas fa-user text-2xl"></i>
+                                    <i class="fas fa-user text-3xl"></i>
                                 </div>
                                 @endif
                             </div>
-                            <input type="file" name="profile_photo" 
-                                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                            <div class="flex-1">
+                                <input type="file" 
+                                       name="profile_photo" 
+                                       id="photo"
+                                       accept="image/*"
+                                       class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                <p class="mt-2 text-xs text-gray-500">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Supported: JPG, PNG, GIF. No size limit.
+                                </p>
+                                @error('profile_photo')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
-                        <p class="mt-1 text-xs text-gray-500">Max 2MB. Supported formats: JPG, PNG</p>
-                        @error('profile_photo')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
                     </div>
-                </div>
-                
-                <!-- Password Change Section -->
-                <div class="mt-8 pt-8 border-t border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Change Password</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
-                            <input type="password" name="current_password"
-                                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-                            @error('current_password')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- Change Password -->
+                    <div class="border-t border-gray-200 pt-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Change Password</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+                                <input type="password" 
+                                       name="current_password"
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 @error('current_password') border-red-500 @enderror">
+                                @error('current_password')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
-                                <input type="password" name="new_password"
-                                       class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                                <input type="password" 
+                                       name="new_password"
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 @error('new_password') border-red-500 @enderror">
                                 @error('new_password')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
-                                <input type="password" name="new_password_confirmation"
-                                       class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                                <input type="password" 
+                                       name="new_password_confirmation"
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div class="flex items-end">
+                                <p class="text-xs text-gray-500">Leave blank to keep current password</p>
                             </div>
                         </div>
                     </div>
-                    <p class="mt-2 text-xs text-gray-500">Leave blank if you don't want to change password</p>
                 </div>
-                
-                <!-- Submit Button -->
-                <div class="mt-8 flex justify-end">
+
+                <!-- Actions -->
+                <div class="mt-8 flex justify-end space-x-3">
+                    <a href="{{ route('dashboard') }}" 
+                       class="px-6 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
+                        Cancel
+                    </a>
                     <button type="submit"
                             class="px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
-                        Update Profile
+                        <i class="fas fa-save mr-2"></i>Update Profile
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+document.getElementById('photo')?.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('preview');
+            if (preview) {
+                preview.src = e.target.result;
+            } else {
+                const container = document.querySelector('.h-24.w-24');
+                if (container) {
+                    container.innerHTML = `<img src="${e.target.result}" alt="Preview" class="h-full w-full object-cover" id="preview">`;
+                }
+            }
+        }
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+@endpush
 @endsection

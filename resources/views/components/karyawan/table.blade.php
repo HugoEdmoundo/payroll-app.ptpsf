@@ -30,11 +30,14 @@
                     {{ $k->jabatan }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ $k->join_date->format('d/m/Y') }}
+                    <div class="flex flex-col">
+                        <span class="font-medium">{{ $k->join_date->format('d/m/Y') }}</span>
+                    </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {{ $k->masa_kerja_tahun }} tahun
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 font-mono">
+                        <i class="far fa-hourglass-half mr-1"></i>
+                        {{ $k->masa_kerja }}
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">

@@ -33,30 +33,58 @@ class Karyawan extends Model
     ];
 
     protected $casts = [
-        'join_date' => 'date',
+        'join_date' => 'datetime',
         'jumlah_anak' => 'integer'
     ];
-
+    
+    // Boot method untuk set join_date dengan waktu SEKARANG
     protected static function boot()
     {
         parent::boot();
-
-        static::saving(function ($karyawan) {
-            if ($karyawan->join_date) {
-                $now = Carbon::now();
-                $joinDate = Carbon::parse($karyawan->join_date);
-                $karyawan->masa_kerja = $joinDate->diffInDays($now);
+        
+        static::creating(function ($karyawan) {
+            if (request()->has('join_date')) {
+                $tanggal = Carbon::parse(request()->join_date)->format('Y-m-d');
+                $waktuSekarang = Carbon::now()->format('H:i:s');
+                $karyawan->join_date = Carbon::parse($tanggal . ' ' . $waktuSekarang);
+            }
+        });
+        
+        static::updating(function ($karyawan) {
+            if (request()->has('join_date') && request()->join_date != $karyawan->getOriginal('join_date')->format('Y-m-d')) {
+                $tanggal = Carbon::parse(request()->join_date)->format('Y-m-d');
+                $waktuSekarang = Carbon::now()->format('H:i:s');
+                $karyawan->join_date = Carbon::parse($tanggal . ' ' . $waktuSekarang);
             }
         });
     }
 
-    public function getMasaKerjaTahunAttribute()
+    // Masa Kerja dalam format DD:HH:MM:SS
+    public function getMasaKerjaAttribute()
     {
-        if ($this->join_date) {
-            $now = Carbon::now();
-            $joinDate = Carbon::parse($this->join_date);
-            return $joinDate->diffInYears($now);
+        if (!$this->join_date) {
+            return '00:00:00:00';
         }
-        return 0;
+
+        $now = Carbon::now();
+        $join = Carbon::parse($this->join_date);
+        
+        $diff = $join->diff($now);
+        
+        return sprintf(
+            '%02d:%02d:%02d:%02d',
+            $diff->days,
+            $diff->h,
+            $diff->i,
+            $diff->s
+        );
+    }
+    // Format tanggal untuk display
+    public function getFormattedJoinDateAttribute()
+    {
+        if (!$this->join_date) {
+            return '-';
+        }
+        return $this->join_date->format('d/m/Y H:i:s') . ' WIB';
     }
 }

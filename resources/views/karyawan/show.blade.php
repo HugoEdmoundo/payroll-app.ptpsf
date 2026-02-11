@@ -25,12 +25,6 @@
                class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150">
                 <i class="fas fa-arrow-left mr-2"></i>Back
             </a>
-            @if(auth()->user()->hasPermission('karyawan.edit'))
-            <a href="{{ route('karyawan.edit', $karyawan) }}" 
-               class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
-                <i class="fas fa-edit mr-2"></i>Edit
-            </a>
-            @endif
         </div>
     </div>
 
@@ -57,7 +51,7 @@
                     <div>
                         <label class="text-xs font-medium text-gray-500 uppercase tracking-wider">Masa Kerja</label>
                         <p class="mt-1 text-sm font-medium text-gray-900">
-                            {{ $karyawan->masa_kerja_tahun }} years
+                            {{ $karyawan->masa_kerja }}
                         </p>
                     </div>
                     <div>

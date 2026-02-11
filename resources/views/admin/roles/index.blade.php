@@ -63,24 +63,47 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex space-x-2">
                                 @if(!$role->is_superadmin)
-                                <a href="{{ route('admin.roles.edit', $role) }}" 
-                                   class="text-indigo-600 hover:text-indigo-900 p-1 hover:bg-indigo-50 rounded transition duration-150"
-                                   title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                @if($role->users_count == 0)
-                                <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" 
-                                      onsubmit="return confirm('Are you sure you want to delete this role?')"
-                                      class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" 
-                                            class="text-red-600 hover:text-red-900 p-1 hover:bg-red-50 rounded transition duration-150"
-                                            title="Delete">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                                @endif
+                                    <!-- Edit Button - SEMUA ROLE BISA DIEDIT KECUALI SUPERADMIN -->
+                                    <a href="{{ route('admin.roles.edit', $role) }}" 
+                                    class="text-indigo-600 hover:text-indigo-900 p-1 hover:bg-indigo-50 rounded transition duration-150"
+                                    title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    
+                                    <!-- DELETE BUTTON - HANYA UNTUK ROLE HASIL CREATE -->
+                                    @if(!$role->is_superadmin && !$role->is_default)
+                                        @if($role->users_count == 0)
+                                            <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" 
+                                                onsubmit="return confirm('Are you sure you want to delete role \"{{ $role->name }}\"? This action cannot be undone.')"
+                                                class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" 
+                                                        class="text-red-600 hover:text-red-900 p-1 hover:bg-red-50 rounded transition duration-150"
+                                                        title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        @else
+                                            <span class="text-gray-400 p-1 cursor-not-allowed" 
+                                                title="Cannot delete: {{ $role->users_count }} user(s) assigned">
+                                                <i class="fas fa-trash"></i>
+                                            </span>
+                                        @endif
+                                    @endif
+                                    
+                                    <!-- DEFAULT ROLE (User) - TIDAK BISA DI DELETE -->
+                                    @if($role->is_default && $role->name === 'User')
+                                        <span class="text-gray-400 p-1 cursor-not-allowed" 
+                                            title="Default role cannot be deleted">
+                                            <i class="fas fa-ban"></i>
+                                        </span>
+                                    @endif
+                                @else
+                                    <!-- SUPER ADMIN - TIDAK BISA DI DELETE -->
+                                    <span class="text-purple-600 p-1" title="Super Admin Role">
+                                        <i class="fas fa-crown"></i>
+                                    </span>
                                 @endif
                             </div>
                         </td>

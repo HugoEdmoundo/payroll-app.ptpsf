@@ -44,7 +44,7 @@ class RoleController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'is_superadmin' => false,
-            'is_default' => false,
+            'is_default' => false, // ROLE BARU = BUKAN DEFAULT
         ]);
 
         if ($request->has('permissions')) {
@@ -101,15 +101,37 @@ class RoleController extends Controller
             abort(403, 'Unauthorized access.');
         }
         
+        // SUPER ADMIN - TIDAK BISA DI DELETE
         if ($role->is_superadmin) {
-            abort(403, 'Cannot delete superadmin role.');
+            return redirect()->route('admin.roles.index')
+                ->with('error', 'Cannot delete Super Admin role.');
         }
-
+        
+        // ROLE DEFAULT (User) - TIDAK BISA DI DELETE
+        if ($role->is_default && $role->name === 'User') {
+            return redirect()->route('admin.roles.index')
+                ->with('error', 'Cannot delete default User role.');
+        }
+        
+        // CEK ROLE SEDANG DIPAKAI USER
         if ($role->users()->count() > 0) {
-            return redirect()->route('admin.roles.index')->with('error', 'Cannot delete role that has users assigned.');
+            return redirect()->route('admin.roles.index')
+                ->with('error', 'Cannot delete role that has users assigned. Please reassign users first.');
         }
 
-        $role->delete();
-        return redirect()->route('admin.roles.index')->with('success', 'Role deleted successfully.');
+        try {
+            // Hapus relasi permissions
+            $role->permissions()->detach();
+            
+            // Hapus role
+            $role->delete();
+            
+            return redirect()->route('admin.roles.index')
+                ->with('success', 'Role "' . $role->name . '" deleted successfully.');
+                
+        } catch (\Exception $e) {
+            return redirect()->route('admin.roles.index')
+                ->with('error', 'Failed to delete role: ' . $e->getMessage());
+        }
     }
 }

@@ -11,13 +11,13 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::withCount('users')->paginate(10);
-        return view('superadmin.roles.index', compact('roles'));
+        return view('admin.roles.index', compact('roles'));
     }
 
     public function create()
     {
         $permissions = Permission::all()->groupBy('group');
-        return view('superadmin.roles.create', compact('permissions'));
+        return view('admin.roles.create', compact('permissions'));
     }
 
     public function store(Request $request)

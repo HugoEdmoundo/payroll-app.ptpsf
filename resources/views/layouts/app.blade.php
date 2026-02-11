@@ -33,17 +33,6 @@
     @stack('styles')
 </head>
 <body class="bg-gray-50 h-full" x-data="{ sidebarOpen: false, dropdownOpen: false }">
-    <!-- Mobile overlay -->
-    <div x-show="sidebarOpen" 
-         x-transition:enter="transition ease-linear duration-300"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-linear duration-300"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
-         @click="sidebarOpen = false">
-    </div>
 
     <!-- Include Header -->
     @include('partials.header')

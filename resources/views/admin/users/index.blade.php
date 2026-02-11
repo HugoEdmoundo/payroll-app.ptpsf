@@ -20,7 +20,7 @@
     </div>
 
     <!-- Users Table -->
-    <div class="card p-0 overflow-hidden">
+    <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
@@ -37,14 +37,23 @@
                     <tr class="hover:bg-gray-50 transition duration-150">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
-                                <div class="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold mr-3">
-                                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                                <!-- Profile Photo -->
+                                <div class="h-10 w-10 rounded-full overflow-hidden flex-shrink-0 mr-3 bg-gradient-to-r from-indigo-500 to-purple-600">
+                                    @if($user->profile_photo)
+                                        <img src="{{ asset('storage/profile-photos/' . $user->profile_photo) }}" 
+                                             alt="{{ $user->name }}" 
+                                             class="h-full w-full object-cover">
+                                    @else
+                                        <div class="h-full w-full flex items-center justify-center text-white font-semibold">
+                                            {{ strtoupper(substr($user->name, 0, 1)) }}
+                                        </div>
+                                    @endif
                                 </div>
                                 <div>
                                     <div class="text-sm font-medium text-gray-900">{{ $user->name }}</div>
                                     <div class="text-sm text-gray-500">{{ $user->email }}</div>
                                     @if($user->position)
-                                    <div class="text-xs text-gray-400">{{ $user->position }}</div>
+                                    <div class="text-xs text-gray-400 mt-0.5">{{ $user->position }}</div>
                                     @endif
                                 </div>
                             </div>
@@ -58,34 +67,38 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($user->is_active)
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                <i class="fas fa-circle mr-1" style="font-size: 6px;"></i> Active
+                                <i class="fas fa-circle mr-1 text-[6px] text-green-500"></i> Active
                             </span>
                             @else
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                <i class="fas fa-circle mr-1" style="font-size: 6px;"></i> Inactive
+                                <i class="fas fa-circle mr-1 text-[6px] text-red-500"></i> Inactive
                             </span>
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {{ $user->join_date ? $user->join_date->format('d/m/Y') : '-' }}
+                            @if($user->join_date)
+                                <div class="flex flex-col">
+                                    <span class="font-medium">{{ $user->join_date->format('d/m/Y') }}</span>
+                                </div>
+                            @else
+                                <span class="text-gray-400">-</span>
+                            @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div class="flex space-x-2">
+                            <div class="flex items-center space-x-2">
                                 <a href="{{ route('admin.users.edit', $user) }}" 
-                                   class="text-indigo-600 hover:text-indigo-900 p-1 hover:bg-indigo-50 rounded transition duration-150"
-                                   title="Edit">
-                                    <i class="fas fa-edit"></i>
+                                   class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    <i class="fas fa-edit mr-1"></i> Edit
                                 </a>
-                                @if(!$user->role->is_superadmin)
+                                @if(!$user->role->is_superadmin && $user->id !== auth()->id())
                                 <form action="{{ route('admin.users.destroy', $user) }}" method="POST" 
-                                      onsubmit="return confirm('Are you sure you want to delete this user?')"
+                                      onsubmit="return confirm('Are you sure you want to delete this user? This action cannot be undone.')"
                                       class="inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" 
-                                            class="text-red-600 hover:text-red-900 p-1 hover:bg-red-50 rounded transition duration-150"
-                                            title="Delete">
-                                        <i class="fas fa-trash"></i>
+                                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                        <i class="fas fa-trash mr-1"></i> Delete
                                     </button>
                                 </form>
                                 @endif
@@ -100,10 +113,8 @@
 
     <!-- Pagination -->
     @if($users->hasPages())
-    <div class="flex justify-center">
-        <div class="inline-flex rounded-md shadow-sm">
-            {{ $users->links() }}
-        </div>
+    <div class="mt-6">
+        {{ $users->links() }}
     </div>
     @endif
 </div>

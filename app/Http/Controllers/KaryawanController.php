@@ -6,6 +6,7 @@ use App\Models\Karyawan;
 use App\Models\SystemSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class KaryawanController extends Controller
 {
@@ -35,7 +36,7 @@ class KaryawanController extends Controller
             'nama_karyawan' => 'required|string|max:255',
             'join_date' => 'required|date',
             'jabatan' => 'required|string',
-            'lokasi_kerja' => 'required|string|max:100',
+            'lokasi_kerja' => 'required|string',
             'jenis_karyawan' => 'required|string',
             'status_pegawai' => 'required|string',
             'no_rekening' => 'required|string|max:20',
@@ -43,9 +44,34 @@ class KaryawanController extends Controller
             'status_karyawan' => 'required|string',
         ]);
 
+        // HAPUS semua logic join_date, biarkan boot method yang handle
         Karyawan::create($request->all());
 
         return redirect()->route('karyawan.index')->with('success', 'Karyawan created successfully.');
+    }
+
+    public function update(Request $request, Karyawan $karyawan)
+    {
+        if (!Auth::user()->hasPermission('karyawan.edit')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'nama_karyawan' => 'required|string|max:255',
+            'join_date' => 'required|date',
+            'jabatan' => 'required|string',
+            'lokasi_kerja' => 'required|string',
+            'jenis_karyawan' => 'required|string',
+            'status_pegawai' => 'required|string',
+            'no_rekening' => 'required|string|max:20',
+            'bank' => 'required|string',
+            'status_karyawan' => 'required|string',
+        ]);
+
+        // HAPUS semua logic join_date, biarkan boot method yang handle
+        $karyawan->update($request->all());
+
+        return redirect()->route('karyawan.index')->with('success', 'Karyawan updated successfully.');
     }
 
     public function show(Karyawan $karyawan)
@@ -61,29 +87,6 @@ class KaryawanController extends Controller
 
         $settings = $this->getSettings();
         return view('karyawan.edit', compact('karyawan', 'settings'));
-    }
-
-    public function update(Request $request, Karyawan $karyawan)
-    {
-        if (!Auth::user()->hasPermission('karyawan.edit')) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $request->validate([
-            'nama_karyawan' => 'required|string|max:255',
-            'join_date' => 'required|date',
-            'jabatan' => 'required|string',
-            'lokasi_kerja' => 'required|string|max:100',
-            'jenis_karyawan' => 'required|string',
-            'status_pegawai' => 'required|string',
-            'no_rekening' => 'required|string|max:20',
-            'bank' => 'required|string',
-            'status_karyawan' => 'required|string',
-        ]);
-
-        $karyawan->update($request->all());
-
-        return redirect()->route('karyawan.index')->with('success', 'Karyawan updated successfully.');
     }
 
     public function destroy(Karyawan $karyawan)

@@ -7,12 +7,13 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
     public function index()
     {
-        // Cek apakah user adalah superadmin
         if (!auth()->user()->role->is_superadmin) {
             abort(403, 'Unauthorized access.');
         }
@@ -46,7 +47,8 @@ class UserController extends Controller
             'position' => 'nullable|string|max:100',
         ]);
 
-        $user = User::create([
+        // HAPUS join_date dari sini, biarkan boot method di User model yang handle
+        $data = [
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -54,7 +56,10 @@ class UserController extends Controller
             'phone' => $request->phone,
             'position' => $request->position,
             'is_active' => true,
-        ]);
+            // join_date TIDAK PERLU diisi, otomatis oleh boot()
+        ];
+
+        $user = User::create($data);
 
         return redirect()->route('admin.users.index')->with('success', 'User created successfully.');
     }
@@ -82,16 +87,30 @@ class UserController extends Controller
             'phone' => 'nullable|string|max:20',
             'position' => 'nullable|string|max:100',
             'is_active' => 'required|boolean',
+            'profile_photo' => 'nullable|image',
         ]);
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'role_id' => $request->role_id,
-            'phone' => $request->phone,
-            'position' => $request->position,
-            'is_active' => $request->is_active,
-        ]);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->role_id = $request->role_id;
+        $user->phone = $request->phone;
+        $user->position = $request->position;
+        $user->is_active = $request->is_active;
+        
+        // Join date TIDAK DIUPDATE
+
+        if ($request->hasFile('profile_photo')) {
+            if ($user->profile_photo) {
+                Storage::disk('public')->delete('profile-photos/' . $user->profile_photo);
+            }
+            
+            $file = $request->file('profile_photo');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('profile-photos', $filename, 'public');
+            $user->profile_photo = $filename;
+        }
+
+        $user->save();
 
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
     }
@@ -102,12 +121,10 @@ class UserController extends Controller
             abort(403, 'Unauthorized access.');
         }
         
-        // Prevent deleting own account
         if ($user->id === auth()->id()) {
             return redirect()->route('admin.users.index')->with('error', 'You cannot delete your own account.');
         }
         
-        // Prevent deleting superadmin
         if ($user->role->is_superadmin) {
             return redirect()->route('admin.users.index')->with('error', 'Cannot delete superadmin account.');
         }
