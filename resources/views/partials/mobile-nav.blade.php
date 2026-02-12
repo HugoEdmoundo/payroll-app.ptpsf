@@ -14,7 +14,7 @@
             $role = auth()->user()->role->name;
             $currentRoute = request()->route()->getName();
 
-            if ($role === 'Super Admin') {
+            if ($role === 'Superadmin') {
                 $navItems = [
                     ['label' => 'Home', 'route' => 'dashboard', 'icon' => 'fas fa-chart-line'],
                     ['label' => 'Karyawan', 'route' => 'karyawan.index', 'icon' => 'fas fa-users'],
