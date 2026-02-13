@@ -10,16 +10,16 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('users')->insert([
+        DB::table('users')->updateOrInsert(
+            ['email' => 'superadmin@hugedm.fun'],
             [
-                'name' => 'Super Admin',
-                'email' => 'superadmin@hugedm.fun',
+                'name' => 'Superadmin',
                 'password' => Hash::make('password123'),
                 'role_id' => 1, // Super Admin
                 'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
-        ]);
+        );
     }
 }
