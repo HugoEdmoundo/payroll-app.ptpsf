@@ -8,7 +8,7 @@
         <div class="px-6 py-6 border-b border-gray-100">
             <div class="flex items-center space-x-3">
                 
-                <div class="h-11 w-11 rounded-xl overflow-hidden shadow-sm">
+                <div class="h-12 w-12 rounded-xl overflow-hidden shadow-sm">
                     <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1768808187/LOGOPSF_v4fq0w.jpg"
                          alt="Logo PSF"
                          class="h-full w-full object-cover"
@@ -16,12 +16,11 @@
                 </div>
 
                 <div>
-                    <h1 class="text-base font-semibold text-gray-800 leading-tight">
+                    <h1 class="text-xl font-bold leading-tight tracking-wide 
+                            bg-gradient-to-r from-yellow-400 via-yellow-300 to-blue-600 
+                            bg-clip-text text-transparent">
                         PAYROLL PSF
                     </h1>
-                    <p class="text-xs text-gray-500">
-                        {{ auth()->user()->role->name }}
-                    </p>
                 </div>
 
             </div>

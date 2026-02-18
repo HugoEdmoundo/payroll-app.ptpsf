@@ -1,3 +1,5 @@
-import '../css/app.css';
+import './bootstrap';
+import Alpine from 'alpinejs';
 
-console.log("Laravel 11 + Vite + Tailwind siap!");
+window.Alpine = Alpine;
+Alpine.start();
