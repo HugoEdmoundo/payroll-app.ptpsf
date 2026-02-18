@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             [
-                'name' => 'Super Admin',
+                'name' => 'Superadmin',
                 'email' => 'superadmin@hugedm.fun',
                 'password' => Hash::make('password123'),
                 'role_id' => 1, // Super Admin

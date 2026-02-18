@@ -17,16 +17,16 @@ class SystemSettingSeeder extends Seeder
         
         $settings = [
             // Jenis Karyawan
-            ['group' => 'jenis_karyawan', 'key' => 'tetap', 'value' => 'Tetap', 'order' => 1],
-            ['group' => 'jenis_karyawan', 'key' => 'kontrak', 'value' => 'Kontrak', 'order' => 2],
-            ['group' => 'jenis_karyawan', 'key' => 'magang', 'value' => 'Magang', 'order' => 3],
-            ['group' => 'jenis_karyawan', 'key' => 'harian', 'value' => 'Harian', 'order' => 4],
+            ['group' => 'jenis_karyawan', 'key' => 'konsultan', 'value' => 'Konsultan', 'order' => 1],
+            ['group' => 'jenis_karyawan', 'key' => 'organik', 'value' => 'Organik', 'order' => 2],
+            ['group' => 'jenis_karyawan', 'key' => 'teknisi', 'value' => 'Teknisi', 'order' => 3],
+            ['group' => 'jenis_karyawan', 'key' => 'borongan', 'value' => 'Borongan', 'order' => 4],
             
             // Status Pegawai
-            ['group' => 'status_pegawai', 'key' => 'aktif', 'value' => 'Aktif', 'order' => 1],
-            ['group' => 'status_pegawai', 'key' => 'nonaktif', 'value' => 'Non-Aktif', 'order' => 2],
-            ['group' => 'status_pegawai', 'key' => 'cuti', 'value' => 'Cuti', 'order' => 3],
-            ['group' => 'status_pegawai', 'key' => 'resign', 'value' => 'Resign', 'order' => 4],
+            ['group' => 'status_pegawai', 'key' => 'harian', 'value' => 'Harian', 'order' => 1],
+            ['group' => 'status_pegawai', 'key' => 'ojt', 'value' => 'OJT', 'order' => 2],
+            ['group' => 'status_pegawai', 'key' => 'kontrak', 'value' => 'Kontrak', 'order' => 3],
+            ['group' => 'status_pegawai', 'key' => 'magang', 'value' => 'Magang', 'order' => 4],
             
             // Status Perkawinan
             ['group' => 'status_perkawinan', 'key' => 'belum_kawin', 'value' => 'Belum Kawin', 'order' => 1],
@@ -35,16 +35,15 @@ class SystemSettingSeeder extends Seeder
             ['group' => 'status_perkawinan', 'key' => 'cerai_mati', 'value' => 'Cerai Mati', 'order' => 4],
             
             // Status Karyawan
-            ['group' => 'status_karyawan', 'key' => 'probation', 'value' => 'Probation', 'order' => 1],
-            ['group' => 'status_karyawan', 'key' => 'permanent', 'value' => 'Permanent', 'order' => 2],
-            ['group' => 'status_karyawan', 'key' => 'kontrak', 'value' => 'Kontrak', 'order' => 3],
+            ['group' => 'status_karyawan', 'key' => 'active', 'value' => 'Active', 'order' => 1],
+            ['group' => 'status_karyawan', 'key' => 'nonactive', 'value' => 'Non-Active', 'order' => 2],
+            ['group' => 'status_karyawan', 'key' => 'resign', 'value' => 'Resign', 'order' => 3],
             
             // Lokasi Kerja
-            ['group' => 'lokasi_kerja', 'key' => 'jakarta', 'value' => 'Jakarta', 'order' => 1],
-            ['group' => 'lokasi_kerja', 'key' => 'bandung', 'value' => 'Bandung', 'order' => 2],
-            ['group' => 'lokasi_kerja', 'key' => 'surabaya', 'value' => 'Surabaya', 'order' => 3],
+            ['group' => 'lokasi_kerja', 'key' => 'cj', 'value' => 'Central Java', 'order' => 1],
+            ['group' => 'lokasi_kerja', 'key' => 'ej', 'value' => 'East Java', 'order' => 2],
+            ['group' => 'lokasi_kerja', 'key' => 'wj', 'value' => 'West Java', 'order' => 3],
             ['group' => 'lokasi_kerja', 'key' => 'bali', 'value' => 'Bali', 'order' => 4],
-            ['group' => 'lokasi_kerja', 'key' => 'medan', 'value' => 'Medan', 'order' => 5],
             
             // Bank Options
             ['group' => 'bank_options', 'key' => 'bca', 'value' => 'BCA', 'order' => 1],
@@ -52,16 +51,11 @@ class SystemSettingSeeder extends Seeder
             ['group' => 'bank_options', 'key' => 'bni', 'value' => 'BNI', 'order' => 3],
             ['group' => 'bank_options', 'key' => 'bri', 'value' => 'BRI', 'order' => 4],
             ['group' => 'bank_options', 'key' => 'cimb', 'value' => 'CIMB Niaga', 'order' => 5],
-            ['group' => 'bank_options', 'key' => 'danamon', 'value' => 'Danamon', 'order' => 6],
-            ['group' => 'bank_options', 'key' => 'permata', 'value' => 'Permata', 'order' => 7],
+            ['group' => 'bank_options', 'key' => 'bsi', 'value' => 'BSI', 'order' => 6],
             
             // Jabatan Options
-            ['group' => 'jabatan_options', 'key' => 'direktur', 'value' => 'Direktur', 'order' => 1],
+            ['group' => 'jabatan_options', 'key' => 'finance', 'value' => 'Finance', 'order' => 1],
             ['group' => 'jabatan_options', 'key' => 'manager', 'value' => 'Manager', 'order' => 2],
-            ['group' => 'jabatan_options', 'key' => 'supervisor', 'value' => 'Supervisor', 'order' => 3],
-            ['group' => 'jabatan_options', 'key' => 'staff', 'value' => 'Staff', 'order' => 4],
-            ['group' => 'jabatan_options', 'key' => 'admin', 'value' => 'Admin', 'order' => 5],
-            ['group' => 'jabatan_options', 'key' => 'operator', 'value' => 'Operator', 'order' => 6],
         ];
 
         foreach ($settings as $setting) {
