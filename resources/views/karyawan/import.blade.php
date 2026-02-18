@@ -28,9 +28,10 @@
                         <ul class="list-disc pl-5 space-y-1">
                             <li>Download the template file first</li>
                             <li>Fill in the data according to the format</li>
-                            <li>Ensure required fields are filled</li>
-                            <li>Maximum file size: 5MB</li>
-                            <li>Supported format: .xlsx, .xls</li>
+                            <li>Ensure required fields are filled (nama_karyawan, join_date, jabatan, lokasi_kerja, jenis_karyawan, status_pegawai, no_rekening, bank, status_karyawan)</li>
+                            <li>Email and no_telp are optional fields</li>
+                            <li>Maximum file size: 2MB</li>
+                            <li>Supported format: .xlsx, .xls, .csv</li>
                         </ul>
                     </div>
                 </div>
@@ -39,29 +40,36 @@
 
         <!-- Download Template -->
         <div class="mb-6">
-            <a href="#" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150">
+            <a href="{{ route('karyawan.export') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150">
                 <i class="fas fa-download mr-2"></i>Download Template
             </a>
         </div>
 
         <!-- Import Form -->
-        <form action="#" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('karyawan.import.store') }}" method="POST" enctype="multipart/form-data" x-data="{ fileName: '' }">
             @csrf
             
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Select Excel File</label>
-                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-indigo-400 transition-colors">
                         <div class="space-y-1 text-center">
                             <i class="fas fa-cloud-upload-alt text-gray-400 text-4xl"></i>
                             <div class="flex text-sm text-gray-600">
                                 <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                                     <span>Upload a file</span>
-                                    <input id="file-upload" name="file" type="file" class="sr-only" accept=".xlsx,.xls">
+                                    <input id="file-upload" 
+                                           name="file" 
+                                           type="file" 
+                                           class="sr-only" 
+                                           accept=".xlsx,.xls,.csv" 
+                                           required
+                                           @change="fileName = $event.target.files[0]?.name || ''">
                                 </label>
                                 <p class="pl-1">or drag and drop</p>
                             </div>
-                            <p class="text-xs text-gray-500">Excel files up to 5MB</p>
+                            <p class="text-xs text-gray-500">Excel/CSV files up to 2MB</p>
+                            <p x-show="fileName" x-text="'Selected: ' + fileName" class="text-xs text-indigo-600 font-medium mt-2"></p>
                         </div>
                     </div>
                     @error('file')

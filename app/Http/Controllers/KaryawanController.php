@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
 use App\Models\SystemSetting;
+use App\Imports\KaryawanImport;
+use App\Exports\KaryawanExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 
 class KaryawanController extends Controller
@@ -34,6 +37,8 @@ class KaryawanController extends Controller
 
         $request->validate([
             'nama_karyawan' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'no_telp' => 'nullable|string|max:20',
             'join_date' => 'required|date',
             'jabatan' => 'required|string',
             'lokasi_kerja' => 'required|string',
@@ -58,6 +63,8 @@ class KaryawanController extends Controller
 
         $request->validate([
             'nama_karyawan' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'no_telp' => 'nullable|string|max:20',
             'join_date' => 'required|date',
             'jabatan' => 'required|string',
             'lokasi_kerja' => 'required|string',
@@ -108,13 +115,31 @@ class KaryawanController extends Controller
         return view('karyawan.import');
     }
 
+    public function importStore(Request $request)
+    {
+        if (!Auth::user()->hasPermission('karyawan.import')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048'
+        ]);
+
+        try {
+            Excel::import(new KaryawanImport, $request->file('file'));
+            return redirect()->route('karyawan.index')->with('success', 'Data karyawan berhasil diimport.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Import gagal: ' . $e->getMessage());
+        }
+    }
+
     public function export()
     {
         if (!Auth::user()->hasPermission('karyawan.export')) {
             abort(403, 'Unauthorized action.');
         }
 
-        return back()->with('success', 'Export functionality to be implemented.');
+        return Excel::download(new KaryawanExport, 'karyawan_' . date('Y-m-d_His') . '.xlsx');
     }
 
     private function getSettings()

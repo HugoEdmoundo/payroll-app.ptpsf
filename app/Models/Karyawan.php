@@ -4,17 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasDynamicFields;
 use Carbon\Carbon;
 
 class Karyawan extends Model
 {
-    use HasFactory;
+    use HasFactory, HasDynamicFields;
 
     protected $table = 'karyawan';
     protected $primaryKey = 'id_karyawan';
     
     protected $fillable = [
         'nama_karyawan',
+        'email',
+        'no_telp',
         'join_date',
         'jabatan',
         'lokasi_kerja',

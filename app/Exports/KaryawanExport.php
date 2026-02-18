@@ -19,6 +19,8 @@ class KaryawanExport implements FromCollection, WithHeadings, WithMapping
         return [
             'ID',
             'Nama Karyawan',
+            'Email',
+            'No Telp',
             'Join Date',
             'Masa Kerja (Hari)',
             'Jabatan',
@@ -45,6 +47,8 @@ class KaryawanExport implements FromCollection, WithHeadings, WithMapping
         return [
             $karyawan->id_karyawan,
             $karyawan->nama_karyawan,
+            $karyawan->email,
+            $karyawan->no_telp,
             $karyawan->join_date->format('Y-m-d'),
             $karyawan->masa_kerja,
             $karyawan->jabatan,

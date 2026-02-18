@@ -52,19 +52,95 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+    
+    public function userPermissions()
+    {
+        return $this->belongsToMany(Permission::class, 'user_permissions')
+            ->withPivot('is_granted', 'notes')
+            ->withTimestamps();
+    }
 
+    /**
+     * Check if user has permission
+     * Priority: User-specific permissions > Role permissions > Superadmin
+     */
     public function hasPermission($permissionKey)
     {
+        // Superadmin always has all permissions
         if ($this->role && $this->role->is_superadmin) {
             return true;
         }
 
-        if (!$this->role || !$this->is_active) {
+        // Check if user is active
+        if (!$this->is_active) {
             return false;
         }
 
-        return $this->role->permissions()
+        // Check user-specific permissions first (highest priority)
+        $userPermission = $this->userPermissions()
             ->where('key', $permissionKey)
-            ->exists();
+            ->first();
+        
+        if ($userPermission) {
+            // If user has specific permission, use that (granted or denied)
+            return $userPermission->pivot->is_granted;
+        }
+
+        // Fall back to role permissions
+        if ($this->role) {
+            return $this->role->permissions()
+                ->where('key', $permissionKey)
+                ->exists();
+        }
+
+        return false;
+    }
+    
+    /**
+     * Check if user can perform specific action on module
+     * Example: canDo('karyawan', 'view'), canDo('users', 'edit')
+     */
+    public function canDo($module, $action)
+    {
+        // Superadmin can do everything
+        if ($this->role && $this->role->is_superadmin) {
+            return true;
+        }
+
+        if (!$this->is_active) {
+            return false;
+        }
+
+        // Build permission key
+        $permissionKey = "{$module}.{$action}";
+        
+        return $this->hasPermission($permissionKey);
+    }
+    
+    /**
+     * Get all user permissions (combined from role and user-specific)
+     */
+    public function getAllPermissions()
+    {
+        if ($this->role && $this->role->is_superadmin) {
+            return Permission::all();
+        }
+
+        $rolePermissions = $this->role ? $this->role->permissions : collect();
+        $userPermissions = $this->userPermissions;
+        
+        // Merge and prioritize user-specific permissions
+        $merged = $rolePermissions->keyBy('id');
+        
+        foreach ($userPermissions as $userPerm) {
+            if ($userPerm->pivot->is_granted) {
+                $merged->put($userPerm->id, $userPerm);
+            } else {
+                // If denied, remove from merged
+                $merged->forget($userPerm->id);
+            }
+        }
+        
+        return $merged->values();
     }
 }

@@ -10,16 +10,19 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
+        $superadminRole = \App\Models\Role::where('is_superadmin', true)->first();
+        
+        if (!$superadminRole) {
+            throw new \Exception('Superadmin role not found. Please run RoleSeeder first.');
+        }
+        
         DB::table('users')->updateOrInsert(
             ['email' => 'superadmin@hugedm.fun'],
             [
                 'name' => 'Superadmin',
-<<<<<<< HEAD
                 'email' => 'superadmin@hugedm.fun',
-=======
->>>>>>> 0cf1b5275661aee298a4278056bc54bbc662cffa
                 'password' => Hash::make('password123'),
-                'role_id' => 1, // Super Admin
+                'role_id' => $superadminRole->id,
                 'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),

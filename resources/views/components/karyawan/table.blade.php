@@ -7,6 +7,7 @@
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kontak</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jabatan</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Join Date</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Masa Kerja</th>
@@ -25,6 +26,25 @@
                 <td class="px-6 py-4">
                     <div class="text-sm font-medium text-gray-900">{{ $k->nama_karyawan }}</div>
                     <div class="text-sm text-gray-500">{{ $k->bank }}: {{ $k->no_rekening }}</div>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="text-sm text-gray-900">
+                        @if($k->email)
+                        <div class="flex items-center mb-1">
+                            <i class="fas fa-envelope text-gray-400 mr-2 w-4"></i>
+                            <span>{{ $k->email }}</span>
+                        </div>
+                        @endif
+                        @if($k->no_telp)
+                        <div class="flex items-center">
+                            <i class="fas fa-phone text-gray-400 mr-2 w-4"></i>
+                            <span>{{ $k->no_telp }}</span>
+                        </div>
+                        @endif
+                        @if(!$k->email && !$k->no_telp)
+                        <span class="text-gray-400 text-xs">-</span>
+                        @endif
+                    </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {{ $k->jabatan }}

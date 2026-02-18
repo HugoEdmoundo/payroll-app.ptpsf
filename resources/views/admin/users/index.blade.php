@@ -90,6 +90,15 @@
                                    class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                     <i class="fas fa-edit mr-1"></i> Edit
                                 </a>
+                                
+                                @if(!$user->role->is_superadmin)
+                                <a href="{{ route('admin.users.permissions.edit', $user) }}" 
+                                   class="inline-flex items-center px-3 py-1.5 border border-indigo-300 shadow-sm text-xs font-medium rounded-md text-indigo-700 bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                   title="Manage Permissions">
+                                    <i class="fas fa-shield-alt mr-1"></i> Permissions
+                                </a>
+                                @endif
+                                
                                 @if(!$user->role->is_superadmin && $user->id !== auth()->id())
                                 <form action="{{ route('admin.users.destroy', $user) }}" method="POST" 
                                       onsubmit="return confirm('Are you sure you want to delete this user? This action cannot be undone.')"

@@ -9,10 +9,17 @@ class Permission extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'key', 'group', 'description'];
+    protected $fillable = ['name', 'key', 'action_type', 'module', 'group', 'description'];
 
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'role_permissions');
+    }
+    
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_permissions')
+            ->withPivot('is_granted', 'notes')
+            ->withTimestamps();
     }
 }

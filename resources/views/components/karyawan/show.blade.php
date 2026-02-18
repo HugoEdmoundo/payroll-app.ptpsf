@@ -43,6 +43,30 @@
                         </p>
                     </div>
                     <div>
+                        <label class="text-xs font-medium text-gray-500 uppercase tracking-wider">Email</label>
+                        <p class="mt-1 text-sm font-medium text-gray-900">
+                            @if($karyawan->email)
+                            <a href="mailto:{{ $karyawan->email }}" class="text-indigo-600 hover:text-indigo-800">
+                                <i class="fas fa-envelope mr-1"></i>{{ $karyawan->email }}
+                            </a>
+                            @else
+                            <span class="text-gray-400">-</span>
+                            @endif
+                        </p>
+                    </div>
+                    <div>
+                        <label class="text-xs font-medium text-gray-500 uppercase tracking-wider">No Telepon</label>
+                        <p class="mt-1 text-sm font-medium text-gray-900">
+                            @if($karyawan->no_telp)
+                            <a href="tel:{{ $karyawan->no_telp }}" class="text-indigo-600 hover:text-indigo-800">
+                                <i class="fas fa-phone mr-1"></i>{{ $karyawan->no_telp }}
+                            </a>
+                            @else
+                            <span class="text-gray-400">-</span>
+                            @endif
+                        </p>
+                    </div>
+                    <div>
                         <label class="text-xs font-medium text-gray-500 uppercase tracking-wider">Join Date</label>
                         <p class="mt-1 text-sm font-medium text-gray-900">
                             {{ $karyawan->join_date->format('d F Y') }}

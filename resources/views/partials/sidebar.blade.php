@@ -36,6 +36,22 @@
                     $navItems = [
                         ['label' => 'Dashboard', 'route' => 'dashboard', 'icon' => 'fas fa-chart-line'],
                         ['label' => 'Data Karyawan', 'route' => 'karyawan.index', 'icon' => 'fas fa-users'],
+                        
+                        // Payroll Menu
+                        ['type' => 'divider', 'label' => 'PAYROLL'],
+                        ['label' => 'Pengaturan Gaji', 'route' => 'payroll.pengaturan.index', 'icon' => 'fas fa-cog'],
+                        ['label' => 'Acuan Gaji', 'route' => 'payroll.acuan.index', 'icon' => 'fas fa-file-invoice'],
+                        ['label' => 'Hitung Gaji', 'route' => 'payroll.hitung.index', 'icon' => 'fas fa-calculator'],
+                        ['label' => 'Slip Gaji', 'route' => 'payroll.slip.index', 'icon' => 'fas fa-receipt'],
+                        ['label' => 'NKI', 'route' => 'payroll.nki.index', 'icon' => 'fas fa-star'],
+                        ['label' => 'Absensi', 'route' => 'payroll.absensi.index', 'icon' => 'fas fa-calendar-check'],
+                        ['label' => 'Kasbon', 'route' => 'payroll.kasbon.index', 'icon' => 'fas fa-money-bill-wave'],
+                        
+                        // CMS & Admin Menu
+                        ['type' => 'divider', 'label' => 'ADMIN'],
+                        ['label' => 'CMS Dashboard', 'route' => 'admin.cms.index', 'icon' => 'fas fa-magic'],
+                        ['label' => 'Modules', 'route' => 'admin.modules.index', 'icon' => 'fas fa-cube'],
+                        ['label' => 'Dynamic Fields', 'route' => 'admin.fields.index', 'icon' => 'fas fa-list'],
                         ['label' => 'System Settings', 'route' => 'admin.settings.index', 'icon' => 'fas fa-cogs'],
                         ['label' => 'Manage Users', 'route' => 'admin.users.index', 'icon' => 'fas fa-users-cog'],
                         ['label' => 'Manage Roles', 'route' => 'admin.roles.index', 'icon' => 'fas fa-user-tag'],
@@ -44,29 +60,41 @@
                     $navItems = [
                         ['label' => 'Dashboard', 'route' => 'dashboard', 'icon' => 'fas fa-chart-line'],
                         ['label' => 'Data Karyawan', 'route' => 'karyawan.index', 'icon' => 'fas fa-users'],
+                        
+                        // User can see payroll if has permission
+                        ['type' => 'divider', 'label' => 'PAYROLL'],
+                        ['label' => 'Slip Gaji', 'route' => 'payroll.slip.index', 'icon' => 'fas fa-receipt'],
                     ];
                 }
             @endphp
 
             @foreach($navItems as $item)
-                @php
-                    $isActive = str_contains($currentRoute, $item['route']);
-                @endphp
+                @if(isset($item['type']) && $item['type'] === 'divider')
+                    <div class="pt-4 pb-2">
+                        <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                            {{ $item['label'] }}
+                        </p>
+                    </div>
+                @else
+                    @php
+                        $isActive = str_contains($currentRoute, $item['route']);
+                    @endphp
 
-                <a href="{{ route($item['route']) }}"
-                   class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg
-                          transition-all duration-200
-                          {{ $isActive 
-                             ? 'bg-indigo-100 text-indigo-700 shadow-sm' 
-                             : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                    <a href="{{ route($item['route']) }}"
+                       class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg
+                              transition-all duration-200
+                              {{ $isActive 
+                                 ? 'bg-indigo-100 text-indigo-700 shadow-sm' 
+                                 : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
 
-                    <i class="{{ $item['icon'] }} w-5 mr-3
-                              {{ $isActive ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                        <i class="{{ $item['icon'] }} w-5 mr-3
+                                  {{ $isActive ? 'text-indigo-600' : 'text-gray-400' }}"></i>
 
-                    <span class="truncate">
-                        {{ $item['label'] }}
-                    </span>
-                </a>
+                        <span class="truncate">
+                            {{ $item['label'] }}
+                        </span>
+                    </a>
+                @endif
             @endforeach
         </nav>
 
