@@ -8,6 +8,7 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Payroll\PengaturanGajiController;
 
 // Authentication routes
 Route::get('/', function () {
@@ -36,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/', [KaryawanController::class, 'store'])->name('store');
         Route::get('/import', [KaryawanController::class, 'import'])->name('import');
         Route::post('/import', [KaryawanController::class, 'importStore'])->name('import.store');
+        Route::get('/download-template', [KaryawanController::class, 'downloadTemplate'])->name('download-template');
         Route::get('/export', [KaryawanController::class, 'export'])->name('export');
         Route::get('/{karyawan}', [KaryawanController::class, 'show'])->name('show');
         Route::get('/{karyawan}/edit', [KaryawanController::class, 'edit'])->name('edit');
@@ -87,11 +89,53 @@ Route::middleware(['auth'])->group(function () {
         // Absensi
         Route::resource('absensi', \App\Http\Controllers\Payroll\AbsensiController::class);
         
+    // Payroll Management
+    Route::prefix('payroll')->name('payroll.')->group(function () {
+        // Pengaturan Gaji
+        Route::prefix('pengaturan-gaji')->name('pengaturan-gaji.')->group(function () {
+            Route::get('/', [PengaturanGajiController::class, 'index'])->name('index');
+            Route::get('/create', [PengaturanGajiController::class, 'create'])->name('create');
+            Route::post('/', [PengaturanGajiController::class, 'store'])->name('store');
+            Route::get('/{pengaturanGaji}', [PengaturanGajiController::class, 'show'])->name('show');
+            Route::get('/{pengaturanGaji}/edit', [PengaturanGajiController::class, 'edit'])->name('edit');
+            Route::put('/{pengaturanGaji}', [PengaturanGajiController::class, 'update'])->name('update');
+            Route::delete('/{pengaturanGaji}', [PengaturanGajiController::class, 'destroy'])->name('destroy');
+        });
+
+        // NKI (Tunjangan Prestasi)
+        Route::prefix('nki')->name('nki.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Payroll\NKIController::class, 'index'])->name('index');
+            Route::get('/create', [\App\Http\Controllers\Payroll\NKIController::class, 'create'])->name('create');
+            Route::post('/', [\App\Http\Controllers\Payroll\NKIController::class, 'store'])->name('store');
+            Route::get('/export', [\App\Http\Controllers\Payroll\NKIController::class, 'export'])->name('export');
+            Route::get('/import', [\App\Http\Controllers\Payroll\NKIController::class, 'import'])->name('import');
+            Route::post('/import', [\App\Http\Controllers\Payroll\NKIController::class, 'importStore'])->name('import.store');
+            Route::get('/{nki}', [\App\Http\Controllers\Payroll\NKIController::class, 'show'])->name('show');
+            Route::get('/{nki}/edit', [\App\Http\Controllers\Payroll\NKIController::class, 'edit'])->name('edit');
+            Route::put('/{nki}', [\App\Http\Controllers\Payroll\NKIController::class, 'update'])->name('update');
+            Route::delete('/{nki}', [\App\Http\Controllers\Payroll\NKIController::class, 'destroy'])->name('destroy');
+        });
+
+        // Absensi
+        Route::prefix('absensi')->name('absensi.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Payroll\AbsensiController::class, 'index'])->name('index');
+            Route::get('/create', [\App\Http\Controllers\Payroll\AbsensiController::class, 'create'])->name('create');
+            Route::post('/', [\App\Http\Controllers\Payroll\AbsensiController::class, 'store'])->name('store');
+            Route::get('/export', [\App\Http\Controllers\Payroll\AbsensiController::class, 'export'])->name('export');
+            Route::get('/import', [\App\Http\Controllers\Payroll\AbsensiController::class, 'import'])->name('import');
+            Route::post('/import', [\App\Http\Controllers\Payroll\AbsensiController::class, 'importStore'])->name('import.store');
+            Route::get('/{absensi}', [\App\Http\Controllers\Payroll\AbsensiController::class, 'show'])->name('show');
+            Route::get('/{absensi}/edit', [\App\Http\Controllers\Payroll\AbsensiController::class, 'edit'])->name('edit');
+            Route::put('/{absensi}', [\App\Http\Controllers\Payroll\AbsensiController::class, 'update'])->name('update');
+            Route::delete('/{absensi}', [\App\Http\Controllers\Payroll\AbsensiController::class, 'destroy'])->name('destroy');
+        });
+
         // Kasbon
         Route::prefix('kasbon')->name('kasbon.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Payroll\KasbonController::class, 'index'])->name('index');
             Route::get('/create', [\App\Http\Controllers\Payroll\KasbonController::class, 'create'])->name('create');
             Route::post('/', [\App\Http\Controllers\Payroll\KasbonController::class, 'store'])->name('store');
+            Route::get('/export', [\App\Http\Controllers\Payroll\KasbonController::class, 'export'])->name('export');
             Route::get('/{kasbon}', [\App\Http\Controllers\Payroll\KasbonController::class, 'show'])->name('show');
             Route::get('/{kasbon}/edit', [\App\Http\Controllers\Payroll\KasbonController::class, 'edit'])->name('edit');
             Route::put('/{kasbon}', [\App\Http\Controllers\Payroll\KasbonController::class, 'update'])->name('update');
@@ -99,6 +143,23 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/{kasbon}/approve', [\App\Http\Controllers\Payroll\KasbonController::class, 'approve'])->name('approve');
             Route::post('/{kasbon}/reject', [\App\Http\Controllers\Payroll\KasbonController::class, 'reject'])->name('reject');
             Route::post('/{kasbon}/cicilan', [\App\Http\Controllers\Payroll\KasbonController::class, 'addCicilan'])->name('cicilan.add');
+            Route::post('/{kasbon}/bayar-cicilan', [\App\Http\Controllers\Payroll\KasbonController::class, 'bayarCicilan'])->name('bayar-cicilan');
+        });
+
+        // Acuan Gaji
+        Route::prefix('acuan-gaji')->name('acuan-gaji.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'index'])->name('index');
+            Route::get('/history', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'history'])->name('history');
+            Route::post('/generate', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'generate'])->name('generate');
+            Route::get('/create', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'create'])->name('create');
+            Route::post('/', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'store'])->name('store');
+            Route::get('/export', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'export'])->name('export');
+            Route::get('/import', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'import'])->name('import');
+            Route::post('/import', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'importStore'])->name('import.store');
+            Route::get('/{acuanGaji}', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'show'])->name('show');
+            Route::get('/{acuanGaji}/edit', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'edit'])->name('edit');
+            Route::put('/{acuanGaji}', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'update'])->name('update');
+            Route::delete('/{acuanGaji}', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'destroy'])->name('destroy');
         });
     });
     

@@ -96,6 +96,122 @@
                     </a>
                 @endif
             @endforeach
+                $jenisKaryawan = \App\Models\SystemSetting::getOptions('jenis_karyawan');
+            @endphp
+
+            <!-- Dashboard -->
+            <a href="{{ route('dashboard') }}"
+               class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
+                      {{ str_contains($currentRoute, 'dashboard') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <i class="fas fa-chart-line w-5 mr-3 {{ str_contains($currentRoute, 'dashboard') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                <span class="truncate">Dashboard</span>
+            </a>
+
+            <!-- Data Karyawan -->
+            <a href="{{ route('karyawan.index') }}"
+               class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
+                      {{ str_contains($currentRoute, 'karyawan') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <i class="fas fa-users w-5 mr-3 {{ str_contains($currentRoute, 'karyawan') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                <span class="truncate">Data Karyawan</span>
+            </a>
+
+            <!-- Pengaturan Gaji -->
+            <a href="{{ route('payroll.pengaturan-gaji.index') }}"
+               class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
+                      {{ str_contains($currentRoute, 'pengaturan-gaji') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <i class="fas fa-money-bill-wave w-5 mr-3 {{ str_contains($currentRoute, 'pengaturan-gaji') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                <span class="truncate">Pengaturan Gaji</span>
+            </a>
+
+            <!-- Komponen with Dropdown -->
+            <div x-data="{ open: {{ str_contains($currentRoute, 'nki') || str_contains($currentRoute, 'absensi') || str_contains($currentRoute, 'kasbon') ? 'true' : 'false' }} }">
+                <button @click="open = !open"
+                        class="w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
+                               {{ str_contains($currentRoute, 'nki') || str_contains($currentRoute, 'absensi') || str_contains($currentRoute, 'kasbon') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                    <div class="flex items-center">
+                        <i class="fas fa-calculator w-5 mr-3 {{ str_contains($currentRoute, 'nki') || str_contains($currentRoute, 'absensi') || str_contains($currentRoute, 'kasbon') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                        <span class="truncate">Komponen</span>
+                    </div>
+                    <i class="fas fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
+                </button>
+                
+                <div x-show="open" x-transition class="ml-8 mt-2 space-y-1">
+                    <a href="{{ route('payroll.nki.index') }}"
+                       class="block px-4 py-2 text-sm rounded-lg transition-all duration-200
+                              {{ str_contains($currentRoute, 'nki') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-100' }}">
+                        NKI (Tunjangan Prestasi)
+                    </a>
+                    <a href="{{ route('payroll.absensi.index') }}"
+                       class="block px-4 py-2 text-sm rounded-lg transition-all duration-200
+                              {{ str_contains($currentRoute, 'absensi') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-100' }}">
+                        Absensi
+                    </a>
+                    <a href="{{ route('payroll.kasbon.index') }}"
+                       class="block px-4 py-2 text-sm rounded-lg transition-all duration-200
+                              {{ str_contains($currentRoute, 'kasbon') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-100' }}">
+                        Kasbon
+                    </a>
+                </div>
+            </div>
+
+            <!-- Acuan Gaji with Dropdown -->
+            <div x-data="{ open: {{ str_contains($currentRoute, 'acuan-gaji') ? 'true' : 'false' }} }">
+                <button @click="open = !open"
+                        class="w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
+                               {{ str_contains($currentRoute, 'acuan-gaji') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                    <div class="flex items-center">
+                        <i class="fas fa-file-invoice-dollar w-5 mr-3 {{ str_contains($currentRoute, 'acuan-gaji') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                        <span class="truncate">Acuan Gaji</span>
+                    </div>
+                    <i class="fas fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
+                </button>
+                
+                <div x-show="open" x-transition class="ml-8 mt-2 space-y-1">
+                    <a href="{{ route('payroll.acuan-gaji.index') }}"
+                       class="block px-4 py-2 text-sm rounded-lg transition-all duration-200
+                              {{ $currentRoute === 'payroll.acuan-gaji.index' && !request('jenis_karyawan') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-100' }}">
+                        Generate
+                    </a>
+                    @foreach($jenisKaryawan as $key => $value)
+                    <a href="{{ route('payroll.acuan-gaji.index', ['jenis_karyawan' => $value]) }}"
+                       class="block px-4 py-2 text-sm rounded-lg transition-all duration-200
+                              {{ request('jenis_karyawan') === $value ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-100' }}">
+                        {{ $value }}
+                    </a>
+                    @endforeach
+                    <a href="{{ route('payroll.acuan-gaji.history') }}"
+                       class="block px-4 py-2 text-sm rounded-lg transition-all duration-200 border-t border-gray-200 mt-2 pt-2
+                              {{ $currentRoute === 'payroll.acuan-gaji.history' ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-100' }}">
+                        <i class="fas fa-history mr-2"></i>History
+                    </a>
+                </div>
+            </div>
+
+            @if($role === 'Superadmin')
+            <!-- System Settings -->
+            <a href="{{ route('admin.settings.index') }}"
+               class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
+                      {{ str_contains($currentRoute, 'settings') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <i class="fas fa-cogs w-5 mr-3 {{ str_contains($currentRoute, 'settings') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                <span class="truncate">System Settings</span>
+            </a>
+
+            <!-- Manage Users -->
+            <a href="{{ route('admin.users.index') }}"
+               class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
+                      {{ str_contains($currentRoute, 'admin.users') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <i class="fas fa-users-cog w-5 mr-3 {{ str_contains($currentRoute, 'admin.users') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                <span class="truncate">Manage Users</span>
+            </a>
+
+            <!-- Manage Roles -->
+            <a href="{{ route('admin.roles.index') }}"
+               class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
+                      {{ str_contains($currentRoute, 'admin.roles') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <i class="fas fa-user-tag w-5 mr-3 {{ str_contains($currentRoute, 'admin.roles') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                <span class="truncate">Manage Roles</span>
+            </a>
+            @endif
         </nav>
 
         <!-- Footer -->
@@ -108,5 +224,3 @@
 
     </div>
 </aside>
-p
-p

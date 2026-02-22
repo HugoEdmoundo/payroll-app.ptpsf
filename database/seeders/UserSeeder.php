@@ -20,9 +20,16 @@ class UserSeeder extends Seeder
             ['email' => 'superadmin@hugedm.fun'],
             [
                 'name' => 'Superadmin',
+<<<<<<< HEAD
                 'email' => 'superadmin@hugedm.fun',
                 'password' => Hash::make('password123'),
                 'role_id' => $superadminRole->id,
+=======
+                
+                'email' => 'superadmin@hugedm.fun',
+                'password' => Hash::make('password123'),
+                'role_id' => 1, // Superadmin
+>>>>>>> fitur-baru
                 'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),

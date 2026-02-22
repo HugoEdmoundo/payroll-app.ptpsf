@@ -18,6 +18,12 @@ class PermissionSeeder extends Seeder
             ['name' => 'Import Karyawan', 'key' => 'karyawan.import', 'group' => 'karyawan', 'description' => 'Import karyawan from Excel'],
             ['name' => 'Export Karyawan', 'key' => 'karyawan.export', 'group' => 'karyawan', 'description' => 'Export karyawan to Excel'],
 
+            // Pengaturan Gaji Permissions
+            ['name' => 'View Pengaturan Gaji', 'key' => 'pengaturan_gaji.view', 'group' => 'pengaturan_gaji', 'description' => 'View pengaturan gaji data'],
+            ['name' => 'Create Pengaturan Gaji', 'key' => 'pengaturan_gaji.create', 'group' => 'pengaturan_gaji', 'description' => 'Create new pengaturan gaji'],
+            ['name' => 'Edit Pengaturan Gaji', 'key' => 'pengaturan_gaji.edit', 'group' => 'pengaturan_gaji', 'description' => 'Edit pengaturan gaji data'],
+            ['name' => 'Delete Pengaturan Gaji', 'key' => 'pengaturan_gaji.delete', 'group' => 'pengaturan_gaji', 'description' => 'Delete pengaturan gaji'],
+
             // User Management Permissions
             ['name' => 'View Users', 'key' => 'users.view', 'group' => 'users', 'description' => 'View system users'],
             ['name' => 'Create Users', 'key' => 'users.create', 'group' => 'users', 'description' => 'Create new users'],

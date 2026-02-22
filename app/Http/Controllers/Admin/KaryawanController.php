@@ -25,6 +25,8 @@ class KaryawanController extends Controller
     {
         $request->validate([
             'nama_karyawan' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'no_telp' => 'nullable|string|max:20',
             'join_date' => 'required|date',
             'jabatan' => 'required|string|max:100',
             'lokasi_kerja' => 'required|string|max:100',
@@ -55,6 +57,8 @@ class KaryawanController extends Controller
     {
         $request->validate([
             'nama_karyawan' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'no_telp' => 'nullable|string|max:20',
             'join_date' => 'required|date',
             'jabatan' => 'required|string|max:100',
             'lokasi_kerja' => 'required|string|max:100',

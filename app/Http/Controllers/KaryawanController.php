@@ -75,7 +75,6 @@ class KaryawanController extends Controller
             'status_karyawan' => 'required|string',
         ]);
 
-        // HAPUS semua logic join_date, biarkan boot method yang handle
         $karyawan->update($request->all());
 
         return redirect()->route('karyawan.index')->with('success', 'Karyawan updated successfully.');
@@ -115,6 +114,7 @@ class KaryawanController extends Controller
         return view('karyawan.import');
     }
 
+<<<<<<< HEAD
     public function importStore(Request $request)
     {
         if (!Auth::user()->hasPermission('karyawan.import')) {
@@ -131,6 +131,16 @@ class KaryawanController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Import gagal: ' . $e->getMessage());
         }
+=======
+    public function downloadTemplate()
+    {
+        $filename = 'template_karyawan_' . date('YmdHis') . '.xlsx';
+        
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\KaryawanTemplateExport(),
+            $filename
+        );
+>>>>>>> fitur-baru
     }
 
     public function export()
@@ -139,7 +149,39 @@ class KaryawanController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+<<<<<<< HEAD
         return Excel::download(new KaryawanExport, 'karyawan_' . date('Y-m-d_His') . '.xlsx');
+=======
+        $filename = 'karyawan_' . date('YmdHis') . '.xlsx';
+        
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\KaryawanExport(),
+            $filename
+        );
+    }
+
+    public function importStore(Request $request)
+    {
+        if (!Auth::user()->hasPermission('karyawan.import')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+
+        try {
+            \Maatwebsite\Excel\Facades\Excel::import(
+                new \App\Imports\KaryawanImport,
+                $request->file('file')
+            );
+
+            return redirect()->route('karyawan.index')
+                            ->with('success', 'Data karyawan berhasil diimport.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Import gagal: ' . $e->getMessage());
+        }
+>>>>>>> fitur-baru
     }
 
     private function getSettings()

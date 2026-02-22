@@ -11,26 +11,6 @@
         @enderror
     </div>
 
-    <!-- Email -->
-    <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-        <input type="email" name="email" value="{{ old('email', $karyawan->email ?? '') }}"
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-        @error('email')
-        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-        @enderror
-    </div>
-
-    <!-- No Telp -->
-    <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">No Telepon</label>
-        <input type="text" name="no_telp" value="{{ old('no_telp', $karyawan->no_telp ?? '') }}"
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-        @error('no_telp')
-        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-        @enderror
-    </div>
-
     <!-- Join Date -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Join Date *</label>
@@ -129,8 +109,12 @@
     <!-- No Rekening -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">No Rekening *</label>
-        <input type="text" name="no_rekening" value="{{ old('no_rekening', $karyawan->no_rekening ?? '') }}" required
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+        <input type="tel" name="no_rekening" value="{{ old('no_rekening', $karyawan->no_rekening ?? '') }}" required
+               onkeypress="return hanyaAngka(event)"
+               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 20)"
+               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+               placeholder="Nomor Rekening.."
+               maxlength="20">
         @error('no_rekening')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
@@ -139,8 +123,12 @@
     <!-- NPWP -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">NPWP</label>
-        <input type="text" name="npwp" value="{{ old('npwp', $karyawan->npwp ?? '') }}"
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+        <input type="tel" name="npwp" value="{{ old('npwp', $karyawan->npwp ?? '') }}"
+               onkeypress="return hanyaAngka(event)"
+               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 15)"
+               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+               placeholder="NPWP.. (maks 15 digit)"
+               maxlength="15">
         @error('npwp')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
@@ -149,9 +137,27 @@
     <!-- BPJS Kesehatan -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Kesehatan</label>
-        <input type="text" name="bpjs_kesehatan_no" value="{{ old('bpjs_kesehatan_no', $karyawan->bpjs_kesehatan_no ?? '') }}"
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+        <input type="tel" name="bpjs_kesehatan_no" value="{{ old('bpjs_kesehatan_no', $karyawan->bpjs_kesehatan_no ?? '') }}"
+               onkeypress="return hanyaAngka(event)"
+               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13)"
+               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+               placeholder="BPJS Kes.. (maks 13 digit)"
+               maxlength="13">
         @error('bpjs_kesehatan_no')
+        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <!-- BPJS Kecelakaan Kerja -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Kecelakaan Kerja</label>
+        <input type="tel" name="bpjs_kecelakaan_kerja_no" value="{{ old('bpjs_kecelakaan_kerja_no', $karyawan->bpjs_kecelakaan_kerja_no ?? '') }}"
+               onkeypress="return hanyaAngka(event)"
+               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13)"
+               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+               placeholder="BPJS KK.. (maks 13 digit)"
+               maxlength="13">
+        @error('bpjs_kecelakaan_kerja_no')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
     </div>
@@ -159,8 +165,12 @@
     <!-- BPJS TK -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">BPJS TK</label>
-        <input type="text" name="bpjs_tk_no" value="{{ old('bpjs_tk_no', $karyawan->bpjs_tk_no ?? '') }}"
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+        <input type="tel" name="bpjs_tk_no" value="{{ old('bpjs_tk_no', $karyawan->bpjs_tk_no ?? '') }}"
+               onkeypress="return hanyaAngka(event)"
+               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)"
+               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+               placeholder="BPJS TK.. (maks 11 digit)"
+               maxlength="11">
         @error('bpjs_tk_no')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
@@ -196,7 +206,10 @@
     <!-- Jumlah Anak -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah Anak</label>
-        <input type="number" name="jumlah_anak" value="{{ old('jumlah_anak', $karyawan->jumlah_anak ?? 0) }}" min="0"
+        <input type="number" name="jumlah_anak" value="{{ old('jumlah_anak', $karyawan->jumlah_anak ?? 0) }}" 
+               min="0" max="50" step="1"
+               onkeypress="return hanyaAngka(event)"
+               oninput="if(this.value.length > 2) this.value = this.value.slice(0,2); if(parseInt(this.value) > 50) this.value = 50; if(parseInt(this.value) < 0) this.value = 0;"
                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
         @error('jumlah_anak')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -206,8 +219,12 @@
     <!-- No Telp Istri -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">No Telp Istri</label>
-        <input type="text" name="no_telp_istri" value="{{ old('no_telp_istri', $karyawan->no_telp_istri ?? '') }}"
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+        <input type="tel" name="no_telp_istri" value="{{ old('no_telp_istri', $karyawan->no_telp_istri ?? '') }}"
+               onkeypress="return hanyaAngka(event)"
+               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 15)"
+               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+               placeholder="08xxxxxxxxxx"
+               maxlength="15">
         @error('no_telp_istri')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
@@ -230,3 +247,15 @@
         @enderror
     </div>
 </div>
+
+<script>
+function hanyaAngka(event) {
+    var charCode = (event.which) ? event.which : event.keyCode;
+    // Izinkan hanya angka (0-9)
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        event.preventDefault();
+        return false;
+    }
+    return true;
+}
+</script>

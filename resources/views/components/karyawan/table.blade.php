@@ -25,7 +25,14 @@
                 </td>
                 <td class="px-6 py-4">
                     <div class="text-sm font-medium text-gray-900">{{ $k->nama_karyawan }}</div>
-                    <div class="text-sm text-gray-500">{{ $k->bank }}: {{ $k->no_rekening }}</div>
+                    <div class="text-sm text-gray-500">
+                        @if($k->email)
+                        <i class="fas fa-envelope mr-1"></i>{{ $k->email }}
+                        @endif
+                        @if($k->no_telp)
+                        <span class="ml-2"><i class="fas fa-phone mr-1"></i>{{ $k->no_telp }}</span>
+                        @endif
+                    </div>
                 </td>
                 <td class="px-6 py-4">
                     <div class="text-sm text-gray-900">

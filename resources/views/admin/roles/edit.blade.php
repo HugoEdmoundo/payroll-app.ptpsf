@@ -47,27 +47,45 @@
                 
                 <!-- Permissions -->
                 <div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Permissions</h3>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Permissions</h3>
+                        <button type="button" onclick="toggleAllPermissions()" 
+                                class="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+                            <i class="fas fa-check-double mr-1"></i>Toggle All
+                        </button>
+                    </div>
                     <div class="space-y-4">
                         @foreach($permissions as $group => $groupPermissions)
-                        <div class="border border-gray-200 rounded-lg overflow-hidden">
-                            <div class="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                                <div class="flex items-center">
-                                    <h4 class="text-sm font-semibold text-gray-900 uppercase">{{ $group }}</h4>
+                        <div class="border-2 border-gray-200 rounded-xl overflow-hidden hover:border-indigo-200 transition duration-150">
+                            <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-5 py-3 border-b border-gray-200">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide flex items-center">
+                                        <i class="fas fa-{{ $group === 'Karyawan' ? 'users' : ($group === 'Payroll' ? 'money-bill-wave' : ($group === 'Admin' ? 'shield-alt' : 'cog')) }} text-indigo-600 mr-2"></i>
+                                        {{ $group }}
+                                        <span class="ml-2 px-2 py-0.5 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-full">
+                                            {{ $groupPermissions->count() }}
+                                        </span>
+                                    </h4>
+                                    <button type="button" onclick="toggleGroup('{{ $group }}')" 
+                                            class="text-xs text-indigo-600 hover:text-indigo-700 font-medium">
+                                        Select All
+                                    </button>
                                 </div>
                             </div>
-                            <div class="p-4">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="p-5 bg-white">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                     @foreach($groupPermissions as $permission)
-                                    <div class="flex items-center">
+                                    <div class="flex items-start p-3 rounded-lg hover:bg-gray-50 transition duration-150">
                                         <input type="checkbox" name="permissions[]" 
-                                               value="{{ $permission->id }}" id="permission_{{ $permission->id }}"
+                                               value="{{ $permission->id }}" 
+                                               id="permission_{{ $permission->id }}"
+                                               data-group="{{ $group }}"
                                                {{ in_array($permission->id, $rolePermissions) ? 'checked' : '' }}
-                                               class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                                        <label for="permission_{{ $permission->id }}" class="ml-2 text-sm text-gray-700">
-                                            {{ $permission->name }}
+                                               class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded mt-0.5">
+                                        <label for="permission_{{ $permission->id }}" class="ml-3 flex-1 cursor-pointer">
+                                            <span class="text-sm font-medium text-gray-900">{{ $permission->name }}</span>
                                             @if($permission->description)
-                                            <p class="text-xs text-gray-500">{{ $permission->description }}</p>
+                                            <p class="text-xs text-gray-500 mt-0.5">{{ $permission->description }}</p>
                                             @endif
                                         </label>
                                     </div>
@@ -94,4 +112,18 @@
         </form>
     </div>
 </div>
+
+<script>
+function toggleAllPermissions() {
+    const checkboxes = document.querySelectorAll('input[name="permissions[]"]');
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    checkboxes.forEach(cb => cb.checked = !allChecked);
+}
+
+function toggleGroup(group) {
+    const checkboxes = document.querySelectorAll(`input[data-group="${group}"]`);
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    checkboxes.forEach(cb => cb.checked = !allChecked);
+}
+</script>
 @endsection

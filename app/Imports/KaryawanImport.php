@@ -22,6 +22,7 @@ class KaryawanImport implements ToModel, WithHeadingRow
             'status_pegawai' => $row['status_pegawai'] ?? 'Aktif',
             'npwp' => $row['npwp'] ?? null,
             'bpjs_kesehatan_no' => $row['bpjs_kesehatan_no'] ?? null,
+            'bpjs_kecelakaan_kerja_no' => $row['bpjs_kecelakaan_kerja_no'] ?? null,
             'bpjs_tk_no' => $row['bpjs_tk_no'] ?? null,
             'no_rekening' => $row['no_rekening'] ?? '',
             'bank' => $row['bank'] ?? '',
