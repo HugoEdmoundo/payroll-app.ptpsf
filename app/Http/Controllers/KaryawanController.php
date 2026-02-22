@@ -34,6 +34,8 @@ class KaryawanController extends Controller
 
         $request->validate([
             'nama_karyawan' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'no_telp' => 'nullable|string|max:20',
             'join_date' => 'required|date',
             'jabatan' => 'required|string',
             'lokasi_kerja' => 'required|string',
@@ -58,6 +60,8 @@ class KaryawanController extends Controller
 
         $request->validate([
             'nama_karyawan' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'no_telp' => 'nullable|string|max:20',
             'join_date' => 'required|date',
             'jabatan' => 'required|string',
             'lokasi_kerja' => 'required|string',
@@ -68,7 +72,6 @@ class KaryawanController extends Controller
             'status_karyawan' => 'required|string',
         ]);
 
-        // HAPUS semua logic join_date, biarkan boot method yang handle
         $karyawan->update($request->all());
 
         return redirect()->route('karyawan.index')->with('success', 'Karyawan updated successfully.');
@@ -108,13 +111,51 @@ class KaryawanController extends Controller
         return view('karyawan.import');
     }
 
+    public function downloadTemplate()
+    {
+        $filename = 'template_karyawan_' . date('YmdHis') . '.xlsx';
+        
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\KaryawanTemplateExport(),
+            $filename
+        );
+    }
+
     public function export()
     {
         if (!Auth::user()->hasPermission('karyawan.export')) {
             abort(403, 'Unauthorized action.');
         }
 
-        return back()->with('success', 'Export functionality to be implemented.');
+        $filename = 'karyawan_' . date('YmdHis') . '.xlsx';
+        
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\KaryawanExport(),
+            $filename
+        );
+    }
+
+    public function importStore(Request $request)
+    {
+        if (!Auth::user()->hasPermission('karyawan.import')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+
+        try {
+            \Maatwebsite\Excel\Facades\Excel::import(
+                new \App\Imports\KaryawanImport,
+                $request->file('file')
+            );
+
+            return redirect()->route('karyawan.index')
+                            ->with('success', 'Data karyawan berhasil diimport.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Import gagal: ' . $e->getMessage());
+        }
     }
 
     private function getSettings()

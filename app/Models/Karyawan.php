@@ -15,6 +15,8 @@ class Karyawan extends Model
     
     protected $fillable = [
         'nama_karyawan',
+        'email',
+        'no_telp',
         'join_date',
         'jabatan',
         'lokasi_kerja',
@@ -22,6 +24,7 @@ class Karyawan extends Model
         'status_pegawai',
         'npwp',
         'bpjs_kesehatan_no',
+        'bpjs_kecelakaan_kerja_no',
         'bpjs_tk_no',
         'no_rekening',
         'bank',

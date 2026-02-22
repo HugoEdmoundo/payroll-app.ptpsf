@@ -39,13 +39,13 @@
 
         <!-- Download Template -->
         <div class="mb-6">
-            <a href="#" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150">
+            <a href="{{ route('karyawan.download-template') }}" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition duration-150">
                 <i class="fas fa-download mr-2"></i>Download Template
             </a>
         </div>
 
         <!-- Import Form -->
-        <form action="#" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('karyawan.import.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
             <div class="space-y-4">

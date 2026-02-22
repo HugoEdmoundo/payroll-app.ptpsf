@@ -84,6 +84,28 @@
                         <label class="text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi Kerja</label>
                         <p class="mt-1 text-sm font-medium text-gray-900">{{ $karyawan->lokasi_kerja }}</p>
                     </div>
+                    <div>
+                        <label class="text-xs font-medium text-gray-500 uppercase tracking-wider">Email</label>
+                        <p class="mt-1 text-sm font-medium text-gray-900">
+                            @if($karyawan->email)
+                                <i class="fas fa-envelope text-indigo-500 mr-1"></i>
+                                <a href="mailto:{{ $karyawan->email }}" class="text-indigo-600 hover:text-indigo-800">{{ $karyawan->email }}</a>
+                            @else
+                                <span class="text-gray-400">-</span>
+                            @endif
+                        </p>
+                    </div>
+                    <div>
+                        <label class="text-xs font-medium text-gray-500 uppercase tracking-wider">No Telepon</label>
+                        <p class="mt-1 text-sm font-medium text-gray-900">
+                            @if($karyawan->no_telp)
+                                <i class="fas fa-phone text-green-500 mr-1"></i>
+                                <a href="tel:{{ $karyawan->no_telp }}" class="text-green-600 hover:text-green-800">{{ $karyawan->no_telp }}</a>
+                            @else
+                                <span class="text-gray-400">-</span>
+                            @endif
+                        </p>
+                    </div>
                 </div>
             </div>
 

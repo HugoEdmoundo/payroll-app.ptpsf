@@ -13,6 +13,8 @@ class KaryawanImport implements ToModel, WithHeadingRow
     {
         return new Karyawan([
             'nama_karyawan' => $row['nama_karyawan'] ?? '',
+            'email' => $row['email'] ?? null,
+            'no_telp' => $row['no_telp'] ?? null,
             'join_date' => isset($row['join_date']) ? Carbon::parse($row['join_date']) : now(),
             'jabatan' => $row['jabatan'] ?? '',
             'lokasi_kerja' => $row['lokasi_kerja'] ?? '',
@@ -20,6 +22,7 @@ class KaryawanImport implements ToModel, WithHeadingRow
             'status_pegawai' => $row['status_pegawai'] ?? 'Aktif',
             'npwp' => $row['npwp'] ?? null,
             'bpjs_kesehatan_no' => $row['bpjs_kesehatan_no'] ?? null,
+            'bpjs_kecelakaan_kerja_no' => $row['bpjs_kecelakaan_kerja_no'] ?? null,
             'bpjs_tk_no' => $row['bpjs_tk_no'] ?? null,
             'no_rekening' => $row['no_rekening'] ?? '',
             'bank' => $row['bank'] ?? '',
