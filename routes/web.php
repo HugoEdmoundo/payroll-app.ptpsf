@@ -45,50 +45,6 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{karyawan}', [KaryawanController::class, 'destroy'])->name('destroy');
     });
     
-    // Payroll routes
-    Route::prefix('payroll')->name('payroll.')->group(function () {
-        // Pengaturan Gaji
-        Route::resource('pengaturan', \App\Http\Controllers\Payroll\PengaturanGajiController::class);
-        
-        // Acuan Gaji
-        Route::prefix('acuan')->name('acuan.')->group(function () {
-            Route::get('/', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'index'])->name('index');
-            Route::get('/create', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'create'])->name('create');
-            Route::post('/', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'store'])->name('store');
-            Route::get('/{acuanGaji}', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'show'])->name('show');
-            Route::get('/{acuanGaji}/edit', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'edit'])->name('edit');
-            Route::put('/{acuanGaji}', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'update'])->name('update');
-            Route::delete('/{acuanGaji}', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'destroy'])->name('destroy');
-            Route::post('/generate', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'generate'])->name('generate');
-        });
-        
-        // Hitung Gaji
-        Route::prefix('hitung')->name('hitung.')->group(function () {
-            Route::get('/', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'index'])->name('index');
-            Route::get('/create', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'create'])->name('create');
-            Route::post('/', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'store'])->name('store');
-            Route::get('/{hitungGaji}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'show'])->name('show');
-            Route::get('/{hitungGaji}/edit', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'edit'])->name('edit');
-            Route::put('/{hitungGaji}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'update'])->name('update');
-            Route::delete('/{hitungGaji}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'destroy'])->name('destroy');
-            Route::get('/{hitungGaji}/preview', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'preview'])->name('preview');
-            Route::post('/{hitungGaji}/approve', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'approve'])->name('approve');
-        });
-        
-        // Slip Gaji
-        Route::prefix('slip')->name('slip.')->group(function () {
-            Route::get('/', [\App\Http\Controllers\Payroll\SlipGajiController::class, 'index'])->name('index');
-            Route::get('/{slipGaji}', [\App\Http\Controllers\Payroll\SlipGajiController::class, 'show'])->name('show');
-            Route::get('/{slipGaji}/print', [\App\Http\Controllers\Payroll\SlipGajiController::class, 'print'])->name('print');
-            Route::post('/{slipGaji}/send', [\App\Http\Controllers\Payroll\SlipGajiController::class, 'send'])->name('send');
-        });
-        
-        // NKI
-        Route::resource('nki', \App\Http\Controllers\Payroll\NKIController::class);
-        
-        // Absensi
-        Route::resource('absensi', \App\Http\Controllers\Payroll\AbsensiController::class);
-        
     // Payroll Management
     Route::prefix('payroll')->name('payroll.')->group(function () {
         // Pengaturan Gaji

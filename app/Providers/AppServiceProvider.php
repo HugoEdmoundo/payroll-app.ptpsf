@@ -21,7 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-<<<<<<< HEAD
         // Custom Blade Directives for Permissions
         \Blade::directive('canDo', function ($expression) {
             return "<?php if(auth()->check() && auth()->user()->canDo({$expression})): ?>";
@@ -37,7 +36,6 @@ class AppServiceProvider extends ServiceProvider
         
         \Blade::directive('endhasPermission', function () {
             return "<?php endif; ?>";
-=======
         // Route model binding for Payroll models
         Route::bind('pengaturanGaji', function ($value) {
             return PengaturanGaji::where('id_pengaturan', $value)->firstOrFail();
@@ -66,7 +64,6 @@ class AppServiceProvider extends ServiceProvider
                 'role' => auth()->check() ? auth()->user()->role->name : null,
                 'jenisKaryawan' => \App\Models\SystemSetting::getOptions('jenis_karyawan'),
             ]);
->>>>>>> fitur-baru
         });
     }
 }

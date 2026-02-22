@@ -6,15 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\NKI;
 use App\Models\Karyawan;
 use Illuminate\Http\Request;
-<<<<<<< HEAD
-
-class NKIController extends Controller
-{
-    public function index()
-    {
-        $nki = NKI::with('karyawan')->orderBy('periode', 'desc')->paginate(15);
-        return view('payroll.nki.index', compact('nki'));
-=======
 use Illuminate\Support\Facades\Auth;
 
 class NKIController extends Controller
@@ -41,50 +32,19 @@ class NKIController extends Controller
                         ->paginate(15);
 
         return view('payroll.nki.index', compact('nkiList'));
->>>>>>> fitur-baru
     }
 
     public function create()
     {
-<<<<<<< HEAD
-        $karyawan = Karyawan::where('status', 'Aktif')->get();
-        return view('payroll.nki.create', compact('karyawan'));
-=======
         $karyawanList = Karyawan::where('status_karyawan', 'Active')
                                ->orderBy('nama_karyawan')
                                ->get();
         
         return view('payroll.nki.create', compact('karyawanList'));
->>>>>>> fitur-baru
     }
 
     public function store(Request $request)
     {
-<<<<<<< HEAD
-        $validated = $request->validate([
-            'karyawan_id' => 'required|exists:karyawan,id',
-            'periode' => 'required|string',
-            'kemampuan' => 'required|numeric|min:0|max:10',
-            'konstribusi' => 'required|numeric|min:0|max:10',
-            'kedisiplinan' => 'required|numeric|min:0|max:10',
-            'lainnya' => 'required|numeric|min:0|max:10',
-            'catatan' => 'nullable|string'
-        ]);
-
-        $validated['nilai_nki'] = NKI::hitungNKI(
-            $validated['kemampuan'],
-            $validated['konstribusi'],
-            $validated['kedisiplinan'],
-            $validated['lainnya']
-        );
-        
-        $validated['persentase_prestasi'] = NKI::hitungPersentasePrestasi($validated['nilai_nki']);
-        $validated['dinilai_oleh'] = auth()->id();
-
-        NKI::create($validated);
-
-        return redirect()->route('payroll.nki.index')->with('success', 'NKI berhasil ditambahkan');
-=======
         $request->validate([
             'id_karyawan' => 'required|exists:karyawan,id_karyawan',
             'periode' => 'required|string|regex:/^\d{4}-\d{2}$/',
@@ -108,59 +68,25 @@ class NKIController extends Controller
 
         return redirect()->route('payroll.nki.index')
                         ->with('success', 'Data NKI berhasil ditambahkan.');
->>>>>>> fitur-baru
     }
 
     public function show(NKI $nki)
     {
-<<<<<<< HEAD
-        $nki->load('karyawan', 'penilai');
-=======
         $nki->load('karyawan');
->>>>>>> fitur-baru
         return view('payroll.nki.show', compact('nki'));
     }
 
     public function edit(NKI $nki)
     {
-<<<<<<< HEAD
-        $karyawan = Karyawan::where('status', 'Aktif')->get();
-        return view('payroll.nki.edit', compact('nki', 'karyawan'));
-=======
         $karyawanList = Karyawan::where('status_karyawan', 'Active')
                                ->orderBy('nama_karyawan')
                                ->get();
         
         return view('payroll.nki.edit', compact('nki', 'karyawanList'));
->>>>>>> fitur-baru
     }
 
     public function update(Request $request, NKI $nki)
     {
-<<<<<<< HEAD
-        $validated = $request->validate([
-            'karyawan_id' => 'required|exists:karyawan,id',
-            'periode' => 'required|string',
-            'kemampuan' => 'required|numeric|min:0|max:10',
-            'konstribusi' => 'required|numeric|min:0|max:10',
-            'kedisiplinan' => 'required|numeric|min:0|max:10',
-            'lainnya' => 'required|numeric|min:0|max:10',
-            'catatan' => 'nullable|string'
-        ]);
-
-        $validated['nilai_nki'] = NKI::hitungNKI(
-            $validated['kemampuan'],
-            $validated['konstribusi'],
-            $validated['kedisiplinan'],
-            $validated['lainnya']
-        );
-        
-        $validated['persentase_prestasi'] = NKI::hitungPersentasePrestasi($validated['nilai_nki']);
-
-        $nki->update($validated);
-
-        return redirect()->route('payroll.nki.index')->with('success', 'NKI berhasil diupdate');
-=======
         $request->validate([
             'id_karyawan' => 'required|exists:karyawan,id_karyawan',
             'periode' => 'required|string|regex:/^\d{4}-\d{2}$/',
@@ -185,15 +111,11 @@ class NKIController extends Controller
 
         return redirect()->route('payroll.nki.index')
                         ->with('success', 'Data NKI berhasil diupdate.');
->>>>>>> fitur-baru
     }
 
     public function destroy(NKI $nki)
     {
         $nki->delete();
-<<<<<<< HEAD
-        return redirect()->route('payroll.nki.index')->with('success', 'NKI berhasil dihapus');
-=======
 
         return redirect()->route('payroll.nki.index')
                         ->with('success', 'Data NKI berhasil dihapus.');
@@ -218,7 +140,7 @@ class NKIController extends Controller
     public function importStore(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+            'file' => 'required|mimes:xlsx,xls,csv',
         ]);
 
         try {
@@ -232,6 +154,5 @@ class NKIController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Import gagal: ' . $e->getMessage());
         }
->>>>>>> fitur-baru
     }
 }

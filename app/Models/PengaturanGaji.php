@@ -2,40 +2,11 @@
 
 namespace App\Models;
 
-<<<<<<< HEAD
-=======
 use Illuminate\Database\Eloquent\Factories\HasFactory;
->>>>>>> fitur-baru
 use Illuminate\Database\Eloquent\Model;
 
 class PengaturanGaji extends Model
 {
-<<<<<<< HEAD
-    protected $table = 'pengaturan_gaji';
-    
-    protected $fillable = [
-        'jenis_karyawan',
-        'jabatan',
-        'wilayah_id',
-        'gaji_pokok',
-        'tunjangan_operasional',
-        'tunjangan_prestasi',
-        'tunjangan_konjungtur',
-        'benefit_ibadah',
-        'benefit_komunikasi',
-        'benefit_operasional',
-        'bpjs_kesehatan',
-        'bpjs_kecelakaan_kerja',
-        'bpjs_kematian',
-        'bpjs_jht',
-        'bpjs_jp',
-        'potongan_koperasi',
-        'net_gaji',
-        'total_bpjs',
-        'nett',
-        'is_active',
-        'catatan'
-=======
     use HasFactory;
 
     protected $table = 'pengaturan_gaji';
@@ -55,39 +26,11 @@ class PengaturanGaji extends Model
         'bpjs_total',
         'total_gaji',
         'keterangan',
->>>>>>> fitur-baru
     ];
 
     protected $casts = [
         'gaji_pokok' => 'decimal:2',
         'tunjangan_operasional' => 'decimal:2',
-<<<<<<< HEAD
-        'tunjangan_prestasi' => 'decimal:2',
-        'tunjangan_konjungtur' => 'decimal:2',
-        'benefit_ibadah' => 'decimal:2',
-        'benefit_komunikasi' => 'decimal:2',
-        'benefit_operasional' => 'decimal:2',
-        'bpjs_kesehatan' => 'decimal:2',
-        'bpjs_kecelakaan_kerja' => 'decimal:2',
-        'bpjs_kematian' => 'decimal:2',
-        'bpjs_jht' => 'decimal:2',
-        'bpjs_jp' => 'decimal:2',
-        'potongan_koperasi' => 'decimal:2',
-        'net_gaji' => 'decimal:2',
-        'total_bpjs' => 'decimal:2',
-        'nett' => 'decimal:2',
-        'is_active' => 'boolean'
-    ];
-
-    public function wilayah()
-    {
-        return $this->belongsTo(MasterWilayah::class, 'wilayah_id');
-    }
-
-    public function acuanGaji()
-    {
-        return $this->hasMany(AcuanGaji::class);
-=======
         'potongan_koperasi' => 'decimal:2',
         'gaji_nett' => 'decimal:2',
         'bpjs_kesehatan' => 'decimal:2',
@@ -112,6 +55,5 @@ class PengaturanGaji extends Model
             // Calculate Total Gaji (Gaji Nett + BPJS Total)
             $model->total_gaji = $model->gaji_nett + $model->bpjs_total;
         });
->>>>>>> fitur-baru
     }
 }

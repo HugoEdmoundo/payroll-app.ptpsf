@@ -3,71 +3,12 @@
 namespace App\Http\Controllers\Payroll;
 
 use App\Http\Controllers\Controller;
-<<<<<<< HEAD
-=======
 use App\Models\Absensi;
 use App\Models\Karyawan;
->>>>>>> fitur-baru
 use Illuminate\Http\Request;
 
 class AbsensiController extends Controller
 {
-<<<<<<< HEAD
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-=======
     public function index(Request $request)
     {
         $query = Absensi::with('karyawan');
@@ -198,7 +139,7 @@ class AbsensiController extends Controller
     public function importStore(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+            'file' => 'required|mimes:xlsx,xls,csv',
         ]);
 
         try {
@@ -212,6 +153,5 @@ class AbsensiController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Import gagal: ' . $e->getMessage());
         }
->>>>>>> fitur-baru
     }
 }

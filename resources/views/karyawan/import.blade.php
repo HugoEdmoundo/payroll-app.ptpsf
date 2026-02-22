@@ -30,7 +30,6 @@
                             <li>Fill in the data according to the format</li>
                             <li>Ensure required fields are filled (nama_karyawan, join_date, jabatan, lokasi_kerja, jenis_karyawan, status_pegawai, no_rekening, bank, status_karyawan)</li>
                             <li>Email and no_telp are optional fields</li>
-                            <li>Maximum file size: 2MB</li>
                             <li>Supported format: .xlsx, .xls, .csv</li>
                         </ul>
                     </div>
@@ -40,21 +39,13 @@
 
         <!-- Download Template -->
         <div class="mb-6">
-<<<<<<< HEAD
-            <a href="{{ route('karyawan.export') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150">
-=======
             <a href="{{ route('karyawan.download-template') }}" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition duration-150">
->>>>>>> fitur-baru
                 <i class="fas fa-download mr-2"></i>Download Template
             </a>
         </div>
 
         <!-- Import Form -->
-<<<<<<< HEAD
-        <form action="{{ route('karyawan.import.store') }}" method="POST" enctype="multipart/form-data" x-data="{ fileName: '' }">
-=======
         <form action="{{ route('karyawan.import.store') }}" method="POST" enctype="multipart/form-data">
->>>>>>> fitur-baru
             @csrf
             
             <div class="space-y-4">
@@ -71,13 +62,11 @@
                                            type="file" 
                                            class="sr-only" 
                                            accept=".xlsx,.xls,.csv" 
-                                           required
-                                           @change="fileName = $event.target.files[0]?.name || ''">
+                                           required>
                                 </label>
                                 <p class="pl-1">or drag and drop</p>
                             </div>
-                            <p class="text-xs text-gray-500">Excel/CSV files up to 2MB</p>
-                            <p x-show="fileName" x-text="'Selected: ' + fileName" class="text-xs text-indigo-600 font-medium mt-2"></p>
+                            <p class="text-xs text-gray-500">Excel/CSV files</p>
                         </div>
                     </div>
                     @error('file')

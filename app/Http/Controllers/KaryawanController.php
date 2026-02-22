@@ -114,24 +114,6 @@ class KaryawanController extends Controller
         return view('karyawan.import');
     }
 
-<<<<<<< HEAD
-    public function importStore(Request $request)
-    {
-        if (!Auth::user()->hasPermission('karyawan.import')) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv|max:2048'
-        ]);
-
-        try {
-            Excel::import(new KaryawanImport, $request->file('file'));
-            return redirect()->route('karyawan.index')->with('success', 'Data karyawan berhasil diimport.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Import gagal: ' . $e->getMessage());
-        }
-=======
     public function downloadTemplate()
     {
         $filename = 'template_karyawan_' . date('YmdHis') . '.xlsx';
@@ -140,7 +122,6 @@ class KaryawanController extends Controller
             new \App\Exports\KaryawanTemplateExport(),
             $filename
         );
->>>>>>> fitur-baru
     }
 
     public function export()
@@ -149,9 +130,6 @@ class KaryawanController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-<<<<<<< HEAD
-        return Excel::download(new KaryawanExport, 'karyawan_' . date('Y-m-d_His') . '.xlsx');
-=======
         $filename = 'karyawan_' . date('YmdHis') . '.xlsx';
         
         return \Maatwebsite\Excel\Facades\Excel::download(
@@ -181,7 +159,6 @@ class KaryawanController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Import gagal: ' . $e->getMessage());
         }
->>>>>>> fitur-baru
     }
 
     private function getSettings()

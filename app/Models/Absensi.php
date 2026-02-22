@@ -2,19 +2,6 @@
 
 namespace App\Models;
 
-<<<<<<< HEAD
-use Illuminate\Database\Eloquent\Model;
-
-class Absensi extends Model
-{
-    protected $table = 'absensi';
-    
-    protected $fillable = [
-        'karyawan_id',
-        'periode',
-        'hadir',
-        'onsite',
-=======
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
@@ -32,21 +19,10 @@ class Absensi extends Model
         'jumlah_hari_bulan',
         'hadir',
         'on_site',
->>>>>>> fitur-baru
         'absence',
         'idle_rest',
         'izin_sakit_cuti',
         'tanpa_keterangan',
-<<<<<<< HEAD
-        'total_hari_kerja',
-        'potongan_absensi',
-        'catatan'
-    ];
-
-    protected $casts = [
-        'hadir' => 'integer',
-        'onsite' => 'integer',
-=======
         'potongan_absensi',
         'keterangan',
     ];
@@ -55,26 +31,10 @@ class Absensi extends Model
         'jumlah_hari_bulan' => 'integer',
         'hadir' => 'integer',
         'on_site' => 'integer',
->>>>>>> fitur-baru
         'absence' => 'integer',
         'idle_rest' => 'integer',
         'izin_sakit_cuti' => 'integer',
         'tanpa_keterangan' => 'integer',
-<<<<<<< HEAD
-        'total_hari_kerja' => 'integer',
-        'potongan_absensi' => 'decimal:2'
-    ];
-
-    public function karyawan()
-    {
-        return $this->belongsTo(Karyawan::class);
-    }
-
-    public static function hitungPotongan($absence, $tanpaKeterangan, $totalHari, $gajiPokok, $tunjanganPrestasi, $operasional)
-    {
-        if ($totalHari == 0) return 0;
-        return (($absence + $tanpaKeterangan) / $totalHari) * ($gajiPokok + $tunjanganPrestasi + $operasional);
-=======
         'potongan_absensi' => 'decimal:2',
     ];
 
@@ -108,6 +68,5 @@ class Absensi extends Model
         $baseAmount = $gajiPokok + $tunjanganPrestasi + $operasional;
         
         return ($totalAbsence / $this->jumlah_hari_bulan) * $baseAmount;
->>>>>>> fitur-baru
     }
 }

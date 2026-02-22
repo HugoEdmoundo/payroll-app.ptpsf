@@ -2,29 +2,11 @@
 
 namespace App\Models;
 
-<<<<<<< HEAD
-=======
 use Illuminate\Database\Eloquent\Factories\HasFactory;
->>>>>>> fitur-baru
 use Illuminate\Database\Eloquent\Model;
 
 class NKI extends Model
 {
-<<<<<<< HEAD
-    protected $table = 'nki';
-    
-    protected $fillable = [
-        'karyawan_id',
-        'periode',
-        'kemampuan',
-        'konstribusi',
-        'kedisiplinan',
-        'lainnya',
-        'nilai_nki',
-        'persentase_prestasi',
-        'catatan',
-        'dinilai_oleh'
-=======
     use HasFactory;
 
     protected $table = 'nki';
@@ -40,41 +22,10 @@ class NKI extends Model
         'nilai_nki',
         'persentase_tunjangan',
         'keterangan',
->>>>>>> fitur-baru
     ];
 
     protected $casts = [
         'kemampuan' => 'decimal:2',
-<<<<<<< HEAD
-        'konstribusi' => 'decimal:2',
-        'kedisiplinan' => 'decimal:2',
-        'lainnya' => 'decimal:2',
-        'nilai_nki' => 'decimal:2',
-        'persentase_prestasi' => 'decimal:2'
-    ];
-
-    public function karyawan()
-    {
-        return $this->belongsTo(Karyawan::class);
-    }
-
-    public function penilai()
-    {
-        return $this->belongsTo(User::class, 'dinilai_oleh');
-    }
-
-    public static function hitungNKI($kemampuan, $konstribusi, $kedisiplinan, $lainnya)
-    {
-        return ($kemampuan * 0.2) + ($konstribusi * 0.2) + ($kedisiplinan * 0.4) + ($lainnya * 0.2);
-    }
-
-    public static function hitungPersentasePrestasi($nilaiNKI)
-    {
-        if ($nilaiNKI >= 8.5) return 100;
-        if ($nilaiNKI >= 8.0) return 80;
-        if ($nilaiNKI >= 7.0) return 70;
-        return 70;
-=======
         'kontribusi' => 'decimal:2',
         'kedisiplinan' => 'decimal:2',
         'lainnya' => 'decimal:2',
@@ -108,6 +59,5 @@ class NKI extends Model
     public function karyawan()
     {
         return $this->belongsTo(Karyawan::class, 'id_karyawan', 'id_karyawan');
->>>>>>> fitur-baru
     }
 }
