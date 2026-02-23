@@ -1,3 +1,9 @@
+@php
+    $role = auth()->user()->role->name;
+    $currentRoute = request()->route()->getName();
+    $jenisKaryawan = \App\Models\SystemSetting::getOptions('jenis_karyawan');
+@endphp
+
 <aside class="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 
               bg-white border-r border-gray-200 shadow-sm">
 
@@ -28,75 +34,6 @@
 
         <!-- Navigation -->
         <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-            @php
-                $role = auth()->user()->role->name;
-                $currentRoute = request()->route()->getName();
-                
-                if ($role === 'Superadmin') {
-                    $navItems = [
-                        ['label' => 'Dashboard', 'route' => 'dashboard', 'icon' => 'fas fa-chart-line'],
-                        ['label' => 'Data Karyawan', 'route' => 'karyawan.index', 'icon' => 'fas fa-users'],
-                        
-                        // Payroll Menu
-                        ['type' => 'divider', 'label' => 'PAYROLL'],
-                        ['label' => 'Pengaturan Gaji', 'route' => 'payroll.pengaturan-gaji.index', 'icon' => 'fas fa-cog'],
-                        ['label' => 'Acuan Gaji', 'route' => 'payroll.acuan-gaji.index', 'icon' => 'fas fa-file-invoice'],
-                        ['label' => 'NKI', 'route' => 'payroll.nki.index', 'icon' => 'fas fa-star'],
-                        ['label' => 'Absensi', 'route' => 'payroll.absensi.index', 'icon' => 'fas fa-calendar-check'],
-                        ['label' => 'Kasbon', 'route' => 'payroll.kasbon.index', 'icon' => 'fas fa-money-bill-wave'],
-                        
-                        // CMS & Admin Menu
-                        ['type' => 'divider', 'label' => 'ADMIN'],
-                        ['label' => 'CMS Dashboard', 'route' => 'admin.cms.index', 'icon' => 'fas fa-magic'],
-                        ['label' => 'Modules', 'route' => 'admin.modules.index', 'icon' => 'fas fa-cube'],
-                        ['label' => 'Dynamic Fields', 'route' => 'admin.fields.index', 'icon' => 'fas fa-list'],
-                        ['label' => 'System Settings', 'route' => 'admin.settings.index', 'icon' => 'fas fa-cogs'],
-                        ['label' => 'Manage Users', 'route' => 'admin.users.index', 'icon' => 'fas fa-users-cog'],
-                        ['label' => 'Manage Roles', 'route' => 'admin.roles.index', 'icon' => 'fas fa-user-tag'],
-                    ];
-                } else {
-                    $navItems = [
-                        ['label' => 'Dashboard', 'route' => 'dashboard', 'icon' => 'fas fa-chart-line'],
-                        ['label' => 'Data Karyawan', 'route' => 'karyawan.index', 'icon' => 'fas fa-users'],
-                        
-                        // User can see payroll if has permission
-                        ['type' => 'divider', 'label' => 'PAYROLL'],
-                        ['label' => 'Acuan Gaji', 'route' => 'payroll.acuan-gaji.index', 'icon' => 'fas fa-file-invoice'],
-                    ];
-                }
-            @endphp
-
-            @foreach($navItems as $item)
-                @if(isset($item['type']) && $item['type'] === 'divider')
-                    <div class="pt-4 pb-2">
-                        <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                            {{ $item['label'] }}
-                        </p>
-                    </div>
-                @else
-                    @php
-                        $isActive = str_contains($currentRoute, $item['route']);
-                    @endphp
-
-                    <a href="{{ route($item['route']) }}"
-                       class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg
-                              transition-all duration-200
-                              {{ $isActive 
-                                 ? 'bg-indigo-100 text-indigo-700 shadow-sm' 
-                                 : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-
-                        <i class="{{ $item['icon'] }} w-5 mr-3
-                                  {{ $isActive ? 'text-indigo-600' : 'text-gray-400' }}"></i>
-
-                        <span class="truncate">
-                            {{ $item['label'] }}
-                        </span>
-                    </a>
-                @endif
-            @endforeach
-                $jenisKaryawan = \App\Models\SystemSetting::getOptions('jenis_karyawan');
-            @endphp
-
             <!-- Dashboard -->
             <a href="{{ route('dashboard') }}"
                class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
