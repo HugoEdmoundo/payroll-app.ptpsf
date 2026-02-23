@@ -25,7 +25,7 @@ class RoleController extends Controller
             abort(403, 'Unauthorized access.');
         }
         
-        $permissions = Permission::all()->groupBy('group');
+        $permissions = Permission::all();
         return view('admin.roles.create', compact('permissions'));
     }
 
@@ -64,7 +64,7 @@ class RoleController extends Controller
             abort(403, 'Cannot edit superadmin role.');
         }
 
-        $permissions = Permission::all()->groupBy('group');
+        $permissions = Permission::all();
         $rolePermissions = $role->permissions->pluck('id')->toArray();
         
         return view('admin.roles.edit', compact('role', 'permissions', 'rolePermissions'));
