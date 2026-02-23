@@ -11,7 +11,7 @@ class DynamicFieldController extends Controller
 {
     public function index(Request $request)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -29,7 +29,7 @@ class DynamicFieldController extends Controller
 
     public function create(Request $request)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -41,7 +41,7 @@ class DynamicFieldController extends Controller
 
     public function store(Request $request)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -83,7 +83,7 @@ class DynamicFieldController extends Controller
 
     public function show(DynamicField $field)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -93,7 +93,7 @@ class DynamicFieldController extends Controller
 
     public function edit(DynamicField $field)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -103,7 +103,7 @@ class DynamicFieldController extends Controller
 
     public function update(Request $request, DynamicField $field)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -146,7 +146,7 @@ class DynamicFieldController extends Controller
 
     public function destroy(DynamicField $field)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         

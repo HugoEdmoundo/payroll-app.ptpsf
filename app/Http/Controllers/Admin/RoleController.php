@@ -11,7 +11,7 @@ class RoleController extends Controller
 {
     public function index()
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -21,7 +21,7 @@ class RoleController extends Controller
 
     public function create()
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -31,7 +31,7 @@ class RoleController extends Controller
 
     public function store(Request $request)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -56,7 +56,7 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -72,7 +72,7 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -97,7 +97,7 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         

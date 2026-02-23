@@ -27,7 +27,7 @@
                             <p class="text-gray-600">{{ auth()->user()->email }}</p>
                             <div class="mt-1 flex items-center space-x-2">
                                 <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    {{ auth()->user()->role->name }}
+                                    {{ auth()->user()->role ? auth()->user()->role->name : 'No Role' }}
                                 </span>
                                 @if(auth()->user()->is_active)
                                 <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -235,7 +235,7 @@ document.getElementById('photo')?.addEventListener('change', function(e) {
                     <p class="text-gray-600">{{ auth()->user()->email }}</p>
                     <div class="mt-1 flex items-center space-x-2">
                         <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            {{ auth()->user()->role->name }}
+                            {{ auth()->user()->role ? auth()->user()->role->name : 'No Role' }}
                         </span>
                         @if(auth()->user()->is_active)
                         <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">

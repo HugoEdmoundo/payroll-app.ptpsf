@@ -13,7 +13,7 @@ class UserController extends Controller
     public function index()
     {
         // Cek apakah user adalah superadmin
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -23,7 +23,7 @@ class UserController extends Controller
 
     public function create()
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -33,7 +33,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -61,7 +61,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -71,7 +71,7 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -98,7 +98,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         

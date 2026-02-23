@@ -53,6 +53,14 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
     
+    /**
+     * Check if user is superadmin
+     */
+    public function isSuperadmin()
+    {
+        return $this->role && $this->role->is_superadmin;
+    }
+    
     public function userPermissions()
     {
         return $this->belongsToMany(Permission::class, 'user_permissions')
@@ -67,7 +75,7 @@ class User extends Authenticatable
     public function hasPermission($permissionKey)
     {
         // Superadmin always has all permissions
-        if ($this->role && $this->role->is_superadmin) {
+        if ($this->isSuperadmin()) {
             return true;
         }
 
@@ -103,7 +111,7 @@ class User extends Authenticatable
     public function canDo($module, $action)
     {
         // Superadmin can do everything
-        if ($this->role && $this->role->is_superadmin) {
+        if ($this->isSuperadmin()) {
             return true;
         }
 
@@ -122,7 +130,7 @@ class User extends Authenticatable
      */
     public function getAllPermissions()
     {
-        if ($this->role && $this->role->is_superadmin) {
+        if ($this->isSuperadmin()) {
             return Permission::all();
         }
 

@@ -11,7 +11,7 @@ class UserPermissionController extends Controller
 {
     public function edit(User $user)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -45,7 +45,7 @@ class UserPermissionController extends Controller
     
     public function update(Request $request, User $user)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         

@@ -10,7 +10,7 @@ class ModuleController extends Controller
 {
     public function index()
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -20,7 +20,7 @@ class ModuleController extends Controller
 
     public function create()
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -29,7 +29,7 @@ class ModuleController extends Controller
 
     public function store(Request $request)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -50,7 +50,7 @@ class ModuleController extends Controller
 
     public function show(Module $module)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -60,7 +60,7 @@ class ModuleController extends Controller
 
     public function edit(Module $module)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -69,7 +69,7 @@ class ModuleController extends Controller
 
     public function update(Request $request, Module $module)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -94,7 +94,7 @@ class ModuleController extends Controller
 
     public function destroy(Module $module)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         

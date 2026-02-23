@@ -12,7 +12,7 @@ class CMSController extends Controller
 {
     public function index()
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         

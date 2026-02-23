@@ -63,7 +63,7 @@ class AppServiceProvider extends ServiceProvider
         view()->composer('partials.sidebar', function ($view) {
             $view->with([
                 'currentRoute' => Route::currentRouteName(),
-                'role' => auth()->check() ? auth()->user()->role->name : null,
+                'role' => auth()->check() && auth()->user()->role ? auth()->user()->role->name : 'No Role',
                 'jenisKaryawan' => \App\Models\SystemSetting::getOptions('jenis_karyawan'),
             ]);
         });

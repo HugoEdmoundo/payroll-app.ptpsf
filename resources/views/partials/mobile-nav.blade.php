@@ -11,7 +11,7 @@
                 px-2 py-1">
 
         @php
-            $role = auth()->user()->role->name;
+            $role = auth()->user()->role ? auth()->user()->role->name : 'No Role';
             $currentRoute = request()->route()->getName();
 
             if ($role === 'Superadmin') {

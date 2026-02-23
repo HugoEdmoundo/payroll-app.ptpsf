@@ -1,5 +1,5 @@
 @php
-    $role = auth()->user()->role->name;
+    $role = auth()->user()->role ? auth()->user()->role->name : 'No Role';
     $currentRoute = request()->route()->getName();
     $jenisKaryawan = \App\Models\SystemSetting::getOptions('jenis_karyawan');
 @endphp

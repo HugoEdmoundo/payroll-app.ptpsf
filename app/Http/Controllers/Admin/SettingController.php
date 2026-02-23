@@ -10,7 +10,7 @@ class SettingController extends Controller
 {
     public function index()
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -31,7 +31,7 @@ class SettingController extends Controller
 
     public function update(Request $request, $group)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
@@ -87,7 +87,7 @@ class SettingController extends Controller
     
     public function destroy($group, $id)
     {
-        if (!auth()->user()->role->is_superadmin) {
+        if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         

@@ -109,7 +109,7 @@
                                 {{ auth()->user()->name }}
                             </p>
                             <p class="text-xs text-gray-500">
-                                {{ auth()->user()->role->name }}
+                                {{ auth()->user()->role ? auth()->user()->role->name : 'No Role' }}
                             </p>
                         </div>
 
@@ -177,7 +177,7 @@
                                         {{ auth()->user()->email }}
                                     </p>
                                     <p class="text-xs mt-2 bg-white/20 inline-block px-3 py-1 rounded-full">
-                                        {{ auth()->user()->role->name }}
+                                        {{ auth()->user()->role ? auth()->user()->role->name : 'No Role' }}
                                     </p>
                                 </div>
 
