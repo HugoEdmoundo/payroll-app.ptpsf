@@ -55,10 +55,15 @@
                            class="text-blue-600 hover:text-blue-900 p-1 hover:bg-blue-50 rounded" title="View">
                             <i class="fas fa-eye"></i>
                         </a>
+                        
+                        @if(auth()->user()->hasPermission('kasbon.edit'))
                         <a href="{{ route('payroll.kasbon.edit', $kasbon->id_kasbon) }}" 
                            class="text-indigo-600 hover:text-indigo-900 p-1 hover:bg-indigo-50 rounded" title="Edit">
                             <i class="fas fa-edit"></i>
                         </a>
+                        @endif
+                        
+                        @if(auth()->user()->hasPermission('kasbon.delete'))
                         <form action="{{ route('payroll.kasbon.destroy', $kasbon->id_kasbon) }}" method="POST" 
                               onsubmit="return confirm('Yakin ingin menghapus data kasbon ini?')"
                               class="inline">
@@ -69,6 +74,7 @@
                                 <i class="fas fa-trash"></i>
                             </button>
                         </form>
+                        @endif
                     </div>
                 </td>
             </tr>
@@ -83,9 +89,11 @@
     </div>
     <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada data kasbon</h3>
     <p class="text-gray-500 mb-6">Mulai dengan membuat data kasbon baru.</p>
+    @if(auth()->user()->hasPermission('kasbon.create'))
     <a href="{{ route('payroll.kasbon.create') }}" 
        class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700 transition duration-150">
         <i class="fas fa-plus mr-2"></i>Tambah Kasbon
     </a>
+    @endif
 </div>
 @endif

@@ -12,14 +12,19 @@
             <p class="mt-1 text-sm text-gray-600">Employee loan management with direct deduction or installment payment</p>
         </div>
         <div class="mt-4 md:mt-0 flex space-x-3">
+            @if(auth()->user()->hasPermission('kasbon.export'))
             <a href="{{ route('payroll.kasbon.export') }}" 
                class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150">
                 <i class="fas fa-download mr-2"></i>Export
             </a>
+            @endif
+            
+            @if(auth()->user()->hasPermission('kasbon.create'))
             <a href="{{ route('payroll.kasbon.create') }}" 
                class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
                 <i class="fas fa-plus mr-2"></i>Add Kasbon
             </a>
+            @endif
         </div>
     </div>
 

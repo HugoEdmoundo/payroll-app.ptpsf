@@ -42,10 +42,15 @@
                            class="text-blue-600 hover:text-blue-900 p-1 hover:bg-blue-50 rounded" title="View">
                             <i class="fas fa-eye"></i>
                         </a>
+                        
+                        @if(auth()->user()->hasPermission('acuan_gaji.edit'))
                         <a href="{{ route('payroll.acuan-gaji.edit', $acuan->id_acuan) }}" 
                            class="text-indigo-600 hover:text-indigo-900 p-1 hover:bg-indigo-50 rounded" title="Edit">
                             <i class="fas fa-edit"></i>
                         </a>
+                        @endif
+                        
+                        @if(auth()->user()->hasPermission('acuan_gaji.delete'))
                         <form action="{{ route('payroll.acuan-gaji.destroy', $acuan->id_acuan) }}" method="POST" 
                               onsubmit="return confirm('Yakin ingin menghapus acuan gaji ini?')"
                               class="inline">
@@ -56,6 +61,7 @@
                                 <i class="fas fa-trash"></i>
                             </button>
                         </form>
+                        @endif
                     </div>
                 </td>
             </tr>
@@ -70,9 +76,11 @@
     </div>
     <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada acuan gaji</h3>
     <p class="text-gray-500 mb-6">Mulai dengan membuat acuan gaji baru.</p>
+    @if(auth()->user()->hasPermission('acuan_gaji.create'))
     <a href="{{ route('payroll.acuan-gaji.create') }}" 
        class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700 transition duration-150">
         <i class="fas fa-plus mr-2"></i>Tambah Acuan Gaji
     </a>
+    @endif
 </div>
 @endif

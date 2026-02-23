@@ -12,22 +12,33 @@
             <p class="mt-1 text-sm text-gray-600">Salary reference combining configuration and components data</p>
         </div>
         <div class="mt-4 md:mt-0 flex flex-wrap gap-3">
+            @if(auth()->user()->hasPermission('acuan_gaji.import'))
             <a href="{{ route('payroll.acuan-gaji.import') }}" 
                class="px-4 py-2 border border-indigo-300 rounded-lg text-sm font-medium text-indigo-700 hover:bg-indigo-50 transition duration-150">
                 <i class="fas fa-upload mr-2"></i>Import
             </a>
+            @endif
+            
+            @if(auth()->user()->hasPermission('acuan_gaji.export'))
             <a href="{{ route('payroll.acuan-gaji.export', request()->all()) }}" 
                class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150">
                 <i class="fas fa-download mr-2"></i>Export
             </a>
+            @endif
+            
+            @if(auth()->user()->hasPermission('acuan_gaji.generate'))
             <button onclick="document.getElementById('generateModal').classList.remove('hidden')"
                     class="px-4 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition duration-150">
                 <i class="fas fa-magic mr-2"></i>Generate
             </button>
+            @endif
+            
+            @if(auth()->user()->hasPermission('acuan_gaji.create'))
             <a href="{{ route('payroll.acuan-gaji.create') }}" 
                class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
                 <i class="fas fa-plus mr-2"></i>Add Manual
             </a>
+            @endif
         </div>
     </div>
 
