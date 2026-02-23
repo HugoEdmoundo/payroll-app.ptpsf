@@ -65,6 +65,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/', [\App\Http\Controllers\Payroll\NKIController::class, 'store'])->name('store');
             Route::get('/export', [\App\Http\Controllers\Payroll\NKIController::class, 'export'])->name('export');
             Route::get('/import', [\App\Http\Controllers\Payroll\NKIController::class, 'import'])->name('import');
+            Route::get('/download-template', [\App\Http\Controllers\Payroll\NKIController::class, 'downloadTemplate'])->name('download-template');
             Route::post('/import', [\App\Http\Controllers\Payroll\NKIController::class, 'importStore'])->name('import.store');
             Route::get('/{nki}', [\App\Http\Controllers\Payroll\NKIController::class, 'show'])->name('show');
             Route::get('/{nki}/edit', [\App\Http\Controllers\Payroll\NKIController::class, 'edit'])->name('edit');
@@ -79,6 +80,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/', [\App\Http\Controllers\Payroll\AbsensiController::class, 'store'])->name('store');
             Route::get('/export', [\App\Http\Controllers\Payroll\AbsensiController::class, 'export'])->name('export');
             Route::get('/import', [\App\Http\Controllers\Payroll\AbsensiController::class, 'import'])->name('import');
+            Route::get('/download-template', [\App\Http\Controllers\Payroll\AbsensiController::class, 'downloadTemplate'])->name('download-template');
             Route::post('/import', [\App\Http\Controllers\Payroll\AbsensiController::class, 'importStore'])->name('import.store');
             Route::get('/{absensi}', [\App\Http\Controllers\Payroll\AbsensiController::class, 'show'])->name('show');
             Route::get('/{absensi}/edit', [\App\Http\Controllers\Payroll\AbsensiController::class, 'edit'])->name('edit');
@@ -111,6 +113,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'store'])->name('store');
             Route::get('/export', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'export'])->name('export');
             Route::get('/import', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'import'])->name('import');
+            Route::get('/download-template', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'downloadTemplate'])->name('download-template');
             Route::post('/import', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'importStore'])->name('import.store');
             Route::get('/{acuanGaji}', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'show'])->name('show');
             Route::get('/{acuanGaji}/edit', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'edit'])->name('edit');

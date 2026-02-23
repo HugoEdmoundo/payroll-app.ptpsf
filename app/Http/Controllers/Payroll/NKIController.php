@@ -137,6 +137,16 @@ class NKIController extends Controller
         return view('payroll.nki.import');
     }
 
+    public function downloadTemplate()
+    {
+        $filename = 'template_nki_' . date('YmdHis') . '.xlsx';
+        
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\NKITemplateExport(),
+            $filename
+        );
+    }
+
     public function importStore(Request $request)
     {
         $request->validate([

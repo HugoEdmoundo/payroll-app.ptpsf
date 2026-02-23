@@ -35,30 +35,37 @@
         <!-- Navigation -->
         <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
             <!-- Dashboard -->
+            @if(auth()->user()->hasPermission('dashboard.view'))
             <a href="{{ route('dashboard') }}"
                class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'dashboard') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <i class="fas fa-chart-line w-5 mr-3 {{ str_contains($currentRoute, 'dashboard') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
                 <span class="truncate">Dashboard</span>
             </a>
+            @endif
 
             <!-- Data Karyawan -->
+            @if(auth()->user()->hasPermission('karyawan.view'))
             <a href="{{ route('karyawan.index') }}"
                class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'karyawan') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <i class="fas fa-users w-5 mr-3 {{ str_contains($currentRoute, 'karyawan') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
                 <span class="truncate">Data Karyawan</span>
             </a>
+            @endif
 
             <!-- Pengaturan Gaji -->
+            @if(auth()->user()->hasPermission('pengaturan_gaji.view'))
             <a href="{{ route('payroll.pengaturan-gaji.index') }}"
                class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'pengaturan-gaji') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <i class="fas fa-money-bill-wave w-5 mr-3 {{ str_contains($currentRoute, 'pengaturan-gaji') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
                 <span class="truncate">Pengaturan Gaji</span>
             </a>
+            @endif
 
             <!-- Komponen with Dropdown -->
+            @if(auth()->user()->hasPermission('nki.view') || auth()->user()->hasPermission('absensi.view') || auth()->user()->hasPermission('kasbon.view'))
             <div x-data="{ open: {{ str_contains($currentRoute, 'nki') || str_contains($currentRoute, 'absensi') || str_contains($currentRoute, 'kasbon') ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                         class="w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
@@ -71,25 +78,33 @@
                 </button>
                 
                 <div x-show="open" x-transition class="ml-8 mt-2 space-y-1">
+                    @if(auth()->user()->hasPermission('nki.view'))
                     <a href="{{ route('payroll.nki.index') }}"
                        class="block px-4 py-2 text-sm rounded-lg transition-all duration-200
                               {{ str_contains($currentRoute, 'nki') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         NKI (Tunjangan Prestasi)
                     </a>
+                    @endif
+                    @if(auth()->user()->hasPermission('absensi.view'))
                     <a href="{{ route('payroll.absensi.index') }}"
                        class="block px-4 py-2 text-sm rounded-lg transition-all duration-200
                               {{ str_contains($currentRoute, 'absensi') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         Absensi
                     </a>
+                    @endif
+                    @if(auth()->user()->hasPermission('kasbon.view'))
                     <a href="{{ route('payroll.kasbon.index') }}"
                        class="block px-4 py-2 text-sm rounded-lg transition-all duration-200
                               {{ str_contains($currentRoute, 'kasbon') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         Kasbon
                     </a>
+                    @endif
                 </div>
             </div>
+            @endif
 
             <!-- Acuan Gaji with Dropdown -->
+            @if(auth()->user()->hasPermission('acuan_gaji.view'))
             <div x-data="{ open: {{ str_contains($currentRoute, 'acuan-gaji') ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                         class="w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
@@ -121,25 +136,30 @@
                     </a>
                 </div>
             </div>
+            @endif
 
-            @if($role === 'Superadmin')
             <!-- System Settings -->
+            @if(auth()->user()->hasPermission('settings.view'))
             <a href="{{ route('admin.settings.index') }}"
                class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'settings') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <i class="fas fa-cogs w-5 mr-3 {{ str_contains($currentRoute, 'settings') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
                 <span class="truncate">System Settings</span>
             </a>
+            @endif
 
             <!-- Manage Users -->
+            @if(auth()->user()->hasPermission('users.view'))
             <a href="{{ route('admin.users.index') }}"
                class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'admin.users') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <i class="fas fa-users-cog w-5 mr-3 {{ str_contains($currentRoute, 'admin.users') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
                 <span class="truncate">Manage Users</span>
             </a>
+            @endif
 
             <!-- Manage Roles -->
+            @if(auth()->user()->hasPermission('roles.view'))
             <a href="{{ route('admin.roles.index') }}"
                class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'admin.roles') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">

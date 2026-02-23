@@ -31,6 +31,13 @@
                     @enderror
                 </div>
 
+                <div class="mb-6">
+                    <a href="{{ route('payroll.absensi.download-template') }}" 
+                       class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-150 shadow-md">
+                        <i class="fas fa-download mr-2"></i>Download Template Excel
+                    </a>
+                </div>
+
                 <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
                     <p class="text-sm text-blue-800 font-medium mb-2">
                         <i class="fas fa-info-circle mr-2"></i>Format File Excel:

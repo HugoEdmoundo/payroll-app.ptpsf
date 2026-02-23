@@ -341,4 +341,13 @@ class AcuanGajiController extends Controller
             return back()->withErrors(['file' => 'Import failed: ' . $e->getMessage()]);
         }
     }
+
+    public function downloadTemplate()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\AcuanGajiTemplateExport,
+            'template_acuan_gaji.xlsx'
+        );
+    }
+
 }

@@ -10,40 +10,102 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            // Karyawan Permissions
-            ['name' => 'View Karyawan', 'key' => 'karyawan.view', 'group' => 'karyawan', 'description' => 'View karyawan data'],
-            ['name' => 'Create Karyawan', 'key' => 'karyawan.create', 'group' => 'karyawan', 'description' => 'Create new karyawan'],
-            ['name' => 'Edit Karyawan', 'key' => 'karyawan.edit', 'group' => 'karyawan', 'description' => 'Edit karyawan data'],
-            ['name' => 'Delete Karyawan', 'key' => 'karyawan.delete', 'group' => 'karyawan', 'description' => 'Delete karyawan'],
-            ['name' => 'Import Karyawan', 'key' => 'karyawan.import', 'group' => 'karyawan', 'description' => 'Import karyawan from Excel'],
-            ['name' => 'Export Karyawan', 'key' => 'karyawan.export', 'group' => 'karyawan', 'description' => 'Export karyawan to Excel'],
+            // Dashboard
+            ['name' => 'View Dashboard', 'key' => 'dashboard.view', 'group' => 'Dashboard', 'module' => 'dashboard', 'action_type' => 'view', 'description' => 'View dashboard'],
 
-            // Pengaturan Gaji Permissions
-            ['name' => 'View Pengaturan Gaji', 'key' => 'pengaturan_gaji.view', 'group' => 'pengaturan_gaji', 'description' => 'View pengaturan gaji data'],
-            ['name' => 'Create Pengaturan Gaji', 'key' => 'pengaturan_gaji.create', 'group' => 'pengaturan_gaji', 'description' => 'Create new pengaturan gaji'],
-            ['name' => 'Edit Pengaturan Gaji', 'key' => 'pengaturan_gaji.edit', 'group' => 'pengaturan_gaji', 'description' => 'Edit pengaturan gaji data'],
-            ['name' => 'Delete Pengaturan Gaji', 'key' => 'pengaturan_gaji.delete', 'group' => 'pengaturan_gaji', 'description' => 'Delete pengaturan gaji'],
+            // Karyawan Module
+            ['name' => 'View Karyawan', 'key' => 'karyawan.view', 'group' => 'Karyawan', 'module' => 'karyawan', 'action_type' => 'view', 'description' => 'View karyawan data'],
+            ['name' => 'Create Karyawan', 'key' => 'karyawan.create', 'group' => 'Karyawan', 'module' => 'karyawan', 'action_type' => 'create', 'description' => 'Create new karyawan'],
+            ['name' => 'Edit Karyawan', 'key' => 'karyawan.edit', 'group' => 'Karyawan', 'module' => 'karyawan', 'action_type' => 'edit', 'description' => 'Edit karyawan data'],
+            ['name' => 'Delete Karyawan', 'key' => 'karyawan.delete', 'group' => 'Karyawan', 'module' => 'karyawan', 'action_type' => 'delete', 'description' => 'Delete karyawan'],
+            ['name' => 'Import Karyawan', 'key' => 'karyawan.import', 'group' => 'Karyawan', 'module' => 'karyawan', 'action_type' => 'import', 'description' => 'Import karyawan from Excel'],
+            ['name' => 'Export Karyawan', 'key' => 'karyawan.export', 'group' => 'Karyawan', 'module' => 'karyawan', 'action_type' => 'export', 'description' => 'Export karyawan to Excel'],
 
-            // User Management Permissions
-            ['name' => 'View Users', 'key' => 'users.view', 'group' => 'users', 'description' => 'View system users'],
-            ['name' => 'Create Users', 'key' => 'users.create', 'group' => 'users', 'description' => 'Create new users'],
-            ['name' => 'Edit Users', 'key' => 'users.edit', 'group' => 'users', 'description' => 'Edit user data'],
-            ['name' => 'Delete Users', 'key' => 'users.delete', 'group' => 'users', 'description' => 'Delete users'],
+            // Pengaturan Gaji Module
+            ['name' => 'View Pengaturan Gaji', 'key' => 'pengaturan_gaji.view', 'group' => 'Payroll', 'module' => 'pengaturan_gaji', 'action_type' => 'view', 'description' => 'View pengaturan gaji data'],
+            ['name' => 'Create Pengaturan Gaji', 'key' => 'pengaturan_gaji.create', 'group' => 'Payroll', 'module' => 'pengaturan_gaji', 'action_type' => 'create', 'description' => 'Create new pengaturan gaji'],
+            ['name' => 'Edit Pengaturan Gaji', 'key' => 'pengaturan_gaji.edit', 'group' => 'Payroll', 'module' => 'pengaturan_gaji', 'action_type' => 'edit', 'description' => 'Edit pengaturan gaji data'],
+            ['name' => 'Delete Pengaturan Gaji', 'key' => 'pengaturan_gaji.delete', 'group' => 'Payroll', 'module' => 'pengaturan_gaji', 'action_type' => 'delete', 'description' => 'Delete pengaturan gaji'],
 
-            // Role Management Permissions
-            ['name' => 'View Roles', 'key' => 'roles.view', 'group' => 'roles', 'description' => 'View system roles'],
-            ['name' => 'Create Roles', 'key' => 'roles.create', 'group' => 'roles', 'description' => 'Create new roles'],
-            ['name' => 'Edit Roles', 'key' => 'roles.edit', 'group' => 'roles', 'description' => 'Edit role permissions'],
-            ['name' => 'Delete Roles', 'key' => 'roles.delete', 'group' => 'roles', 'description' => 'Delete roles'],
+            // NKI Module
+            ['name' => 'View NKI', 'key' => 'nki.view', 'group' => 'Payroll', 'module' => 'nki', 'action_type' => 'view', 'description' => 'View NKI data'],
+            ['name' => 'Create NKI', 'key' => 'nki.create', 'group' => 'Payroll', 'module' => 'nki', 'action_type' => 'create', 'description' => 'Create new NKI'],
+            ['name' => 'Edit NKI', 'key' => 'nki.edit', 'group' => 'Payroll', 'module' => 'nki', 'action_type' => 'edit', 'description' => 'Edit NKI data'],
+            ['name' => 'Delete NKI', 'key' => 'nki.delete', 'group' => 'Payroll', 'module' => 'nki', 'action_type' => 'delete', 'description' => 'Delete NKI'],
+            ['name' => 'Import NKI', 'key' => 'nki.import', 'group' => 'Payroll', 'module' => 'nki', 'action_type' => 'import', 'description' => 'Import NKI from Excel'],
+            ['name' => 'Export NKI', 'key' => 'nki.export', 'group' => 'Payroll', 'module' => 'nki', 'action_type' => 'export', 'description' => 'Export NKI to Excel'],
 
-            // System Settings Permissions
-            ['name' => 'Manage Settings', 'key' => 'settings.manage', 'group' => 'settings', 'description' => 'Manage system settings'],
-            ['name' => 'View Settings', 'key' => 'settings.view', 'group' => 'settings', 'description' => 'View system settings'],
+            // Absensi Module
+            ['name' => 'View Absensi', 'key' => 'absensi.view', 'group' => 'Payroll', 'module' => 'absensi', 'action_type' => 'view', 'description' => 'View absensi data'],
+            ['name' => 'Create Absensi', 'key' => 'absensi.create', 'group' => 'Payroll', 'module' => 'absensi', 'action_type' => 'create', 'description' => 'Create new absensi'],
+            ['name' => 'Edit Absensi', 'key' => 'absensi.edit', 'group' => 'Payroll', 'module' => 'absensi', 'action_type' => 'edit', 'description' => 'Edit absensi data'],
+            ['name' => 'Delete Absensi', 'key' => 'absensi.delete', 'group' => 'Payroll', 'module' => 'absensi', 'action_type' => 'delete', 'description' => 'Delete absensi'],
+            ['name' => 'Import Absensi', 'key' => 'absensi.import', 'group' => 'Payroll', 'module' => 'absensi', 'action_type' => 'import', 'description' => 'Import absensi from Excel'],
+            ['name' => 'Export Absensi', 'key' => 'absensi.export', 'group' => 'Payroll', 'module' => 'absensi', 'action_type' => 'export', 'description' => 'Export absensi to Excel'],
+
+            // Kasbon Module
+            ['name' => 'View Kasbon', 'key' => 'kasbon.view', 'group' => 'Payroll', 'module' => 'kasbon', 'action_type' => 'view', 'description' => 'View kasbon data'],
+            ['name' => 'Create Kasbon', 'key' => 'kasbon.create', 'group' => 'Payroll', 'module' => 'kasbon', 'action_type' => 'create', 'description' => 'Create new kasbon'],
+            ['name' => 'Edit Kasbon', 'key' => 'kasbon.edit', 'group' => 'Payroll', 'module' => 'kasbon', 'action_type' => 'edit', 'description' => 'Edit kasbon data'],
+            ['name' => 'Delete Kasbon', 'key' => 'kasbon.delete', 'group' => 'Payroll', 'module' => 'kasbon', 'action_type' => 'delete', 'description' => 'Delete kasbon'],
+            ['name' => 'Export Kasbon', 'key' => 'kasbon.export', 'group' => 'Payroll', 'module' => 'kasbon', 'action_type' => 'export', 'description' => 'Export kasbon to Excel'],
+
+            // Acuan Gaji Module
+            ['name' => 'View Acuan Gaji', 'key' => 'acuan_gaji.view', 'group' => 'Payroll', 'module' => 'acuan_gaji', 'action_type' => 'view', 'description' => 'View acuan gaji data'],
+            ['name' => 'Create Acuan Gaji', 'key' => 'acuan_gaji.create', 'group' => 'Payroll', 'module' => 'acuan_gaji', 'action_type' => 'create', 'description' => 'Create new acuan gaji'],
+            ['name' => 'Edit Acuan Gaji', 'key' => 'acuan_gaji.edit', 'group' => 'Payroll', 'module' => 'acuan_gaji', 'action_type' => 'edit', 'description' => 'Edit acuan gaji data'],
+            ['name' => 'Delete Acuan Gaji', 'key' => 'acuan_gaji.delete', 'group' => 'Payroll', 'module' => 'acuan_gaji', 'action_type' => 'delete', 'description' => 'Delete acuan gaji'],
+            ['name' => 'Import Acuan Gaji', 'key' => 'acuan_gaji.import', 'group' => 'Payroll', 'module' => 'acuan_gaji', 'action_type' => 'import', 'description' => 'Import acuan gaji from Excel'],
+            ['name' => 'Export Acuan Gaji', 'key' => 'acuan_gaji.export', 'group' => 'Payroll', 'module' => 'acuan_gaji', 'action_type' => 'export', 'description' => 'Export acuan gaji to Excel'],
+
+            // Hitung Gaji Module
+            ['name' => 'View Hitung Gaji', 'key' => 'hitung_gaji.view', 'group' => 'Payroll', 'module' => 'hitung_gaji', 'action_type' => 'view', 'description' => 'View hitung gaji data'],
+            ['name' => 'Create Hitung Gaji', 'key' => 'hitung_gaji.create', 'group' => 'Payroll', 'module' => 'hitung_gaji', 'action_type' => 'create', 'description' => 'Calculate salary'],
+            ['name' => 'Delete Hitung Gaji', 'key' => 'hitung_gaji.delete', 'group' => 'Payroll', 'module' => 'hitung_gaji', 'action_type' => 'delete', 'description' => 'Delete hitung gaji'],
+            ['name' => 'Export Hitung Gaji', 'key' => 'hitung_gaji.export', 'group' => 'Payroll', 'module' => 'hitung_gaji', 'action_type' => 'export', 'description' => 'Export hitung gaji to Excel'],
+
+            // Slip Gaji Module
+            ['name' => 'View Slip Gaji', 'key' => 'slip_gaji.view', 'group' => 'Payroll', 'module' => 'slip_gaji', 'action_type' => 'view', 'description' => 'View slip gaji'],
+            ['name' => 'Download Slip Gaji', 'key' => 'slip_gaji.download', 'group' => 'Payroll', 'module' => 'slip_gaji', 'action_type' => 'export', 'description' => 'Download slip gaji PDF'],
+
+            // User Management Module
+            ['name' => 'View Users', 'key' => 'users.view', 'group' => 'Admin', 'module' => 'users', 'action_type' => 'view', 'description' => 'View system users'],
+            ['name' => 'Create Users', 'key' => 'users.create', 'group' => 'Admin', 'module' => 'users', 'action_type' => 'create', 'description' => 'Create new users'],
+            ['name' => 'Edit Users', 'key' => 'users.edit', 'group' => 'Admin', 'module' => 'users', 'action_type' => 'edit', 'description' => 'Edit user data'],
+            ['name' => 'Delete Users', 'key' => 'users.delete', 'group' => 'Admin', 'module' => 'users', 'action_type' => 'delete', 'description' => 'Delete users'],
+
+            // Role Management Module
+            ['name' => 'View Roles', 'key' => 'roles.view', 'group' => 'Admin', 'module' => 'roles', 'action_type' => 'view', 'description' => 'View system roles'],
+            ['name' => 'Create Roles', 'key' => 'roles.create', 'group' => 'Admin', 'module' => 'roles', 'action_type' => 'create', 'description' => 'Create new roles'],
+            ['name' => 'Edit Roles', 'key' => 'roles.edit', 'group' => 'Admin', 'module' => 'roles', 'action_type' => 'edit', 'description' => 'Edit role permissions'],
+            ['name' => 'Delete Roles', 'key' => 'roles.delete', 'group' => 'Admin', 'module' => 'roles', 'action_type' => 'delete', 'description' => 'Delete roles'],
+
+            // System Settings Module
+            ['name' => 'View Settings', 'key' => 'settings.view', 'group' => 'Admin', 'module' => 'settings', 'action_type' => 'view', 'description' => 'View system settings'],
+            ['name' => 'Manage Settings', 'key' => 'settings.manage', 'group' => 'Admin', 'module' => 'settings', 'action_type' => 'edit', 'description' => 'Manage system settings'],
+
+            // CMS Module
+            ['name' => 'View CMS', 'key' => 'cms.view', 'group' => 'Admin', 'module' => 'cms', 'action_type' => 'view', 'description' => 'View CMS content'],
+            ['name' => 'Create CMS', 'key' => 'cms.create', 'group' => 'Admin', 'module' => 'cms', 'action_type' => 'create', 'description' => 'Create CMS content'],
+            ['name' => 'Edit CMS', 'key' => 'cms.edit', 'group' => 'Admin', 'module' => 'cms', 'action_type' => 'edit', 'description' => 'Edit CMS content'],
+            ['name' => 'Delete CMS', 'key' => 'cms.delete', 'group' => 'Admin', 'module' => 'cms', 'action_type' => 'delete', 'description' => 'Delete CMS content'],
+
+            // Modules Management
+            ['name' => 'View Modules', 'key' => 'modules.view', 'group' => 'Admin', 'module' => 'modules', 'action_type' => 'view', 'description' => 'View system modules'],
+            ['name' => 'Create Modules', 'key' => 'modules.create', 'group' => 'Admin', 'module' => 'modules', 'action_type' => 'create', 'description' => 'Create new modules'],
+            ['name' => 'Edit Modules', 'key' => 'modules.edit', 'group' => 'Admin', 'module' => 'modules', 'action_type' => 'edit', 'description' => 'Edit modules'],
+            ['name' => 'Delete Modules', 'key' => 'modules.delete', 'group' => 'Admin', 'module' => 'modules', 'action_type' => 'delete', 'description' => 'Delete modules'],
+
+            // Dynamic Fields Management
+            ['name' => 'View Dynamic Fields', 'key' => 'dynamic_fields.view', 'group' => 'Admin', 'module' => 'dynamic_fields', 'action_type' => 'view', 'description' => 'View dynamic fields'],
+            ['name' => 'Create Dynamic Fields', 'key' => 'dynamic_fields.create', 'group' => 'Admin', 'module' => 'dynamic_fields', 'action_type' => 'create', 'description' => 'Create dynamic fields'],
+            ['name' => 'Edit Dynamic Fields', 'key' => 'dynamic_fields.edit', 'group' => 'Admin', 'module' => 'dynamic_fields', 'action_type' => 'edit', 'description' => 'Edit dynamic fields'],
+            ['name' => 'Delete Dynamic Fields', 'key' => 'dynamic_fields.delete', 'group' => 'Admin', 'module' => 'dynamic_fields', 'action_type' => 'delete', 'description' => 'Delete dynamic fields'],
         ];
 
         foreach ($permissions as $permission) {
             Permission::updateOrCreate(
-                ['key' => $permission['key']], // cek unik berdasarkan key
+                ['key' => $permission['key']],
                 $permission
             );
         }

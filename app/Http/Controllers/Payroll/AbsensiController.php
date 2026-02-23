@@ -136,6 +136,16 @@ class AbsensiController extends Controller
         return view('payroll.absensi.import');
     }
 
+    public function downloadTemplate()
+    {
+        $filename = 'template_absensi_' . date('YmdHis') . '.xlsx';
+        
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\AbsensiTemplateExport(),
+            $filename
+        );
+    }
+
     public function importStore(Request $request)
     {
         $request->validate([
