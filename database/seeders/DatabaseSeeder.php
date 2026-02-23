@@ -13,6 +13,10 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             SystemSettingSeeder::class,
             UserSeeder::class,
+            MasterWilayahSeeder::class,
+            KaryawanSeeder::class,
+            PengaturanGajiSeeder::class,
+            AcuanGajiSeeder::class,
         ]);
     }
 }
