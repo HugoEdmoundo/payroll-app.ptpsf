@@ -12,21 +12,22 @@ class KaryawanSeeder extends Seeder
     {
         // Create master status pegawai first
         $statusPegawai = [
-            ['nama_status' => 'Tetap', 'keterangan' => 'Karyawan Tetap'],
-            ['nama_status' => 'Kontrak', 'keterangan' => 'Karyawan Kontrak'],
-            ['nama_status' => 'Magang', 'keterangan' => 'Karyawan Magang'],
+            ['nama' => 'Tetap', 'keterangan' => 'Karyawan Tetap', 'gunakan_nki' => true, 'durasi_hari' => null],
+            ['nama' => 'Kontrak', 'keterangan' => 'Karyawan Kontrak', 'gunakan_nki' => true, 'durasi_hari' => null],
+            ['nama' => 'Magang', 'keterangan' => 'Karyawan Magang', 'gunakan_nki' => false, 'durasi_hari' => 90],
+            ['nama' => 'Harian', 'keterangan' => 'Karyawan Harian', 'gunakan_nki' => false, 'durasi_hari' => 14],
+            ['nama' => 'OJT', 'keterangan' => 'On Job Training', 'gunakan_nki' => false, 'durasi_hari' => 90],
         ];
 
         foreach ($statusPegawai as $status) {
             MasterStatusPegawai::firstOrCreate(
-                ['nama_status' => $status['nama_status']],
+                ['nama' => $status['nama']],
                 $status
             );
         }
 
         $karyawan = [
             [
-                'nik' => 'PSF001',
                 'nama_karyawan' => 'Ahmad Fauzi',
                 'email' => 'ahmad.fauzi@psf.com',
                 'no_telp' => '081234567890',
@@ -40,7 +41,6 @@ class KaryawanSeeder extends Seeder
                 'status_karyawan' => 'Aktif',
             ],
             [
-                'nik' => 'PSF002',
                 'nama_karyawan' => 'Siti Nurhaliza',
                 'email' => 'siti.nurhaliza@psf.com',
                 'no_telp' => '081234567891',
@@ -54,7 +54,6 @@ class KaryawanSeeder extends Seeder
                 'status_karyawan' => 'Aktif',
             ],
             [
-                'nik' => 'PSF003',
                 'nama_karyawan' => 'Budi Santoso',
                 'email' => 'budi.santoso@psf.com',
                 'no_telp' => '081234567892',
@@ -68,7 +67,6 @@ class KaryawanSeeder extends Seeder
                 'status_karyawan' => 'Aktif',
             ],
             [
-                'nik' => 'PSF004',
                 'nama_karyawan' => 'Dewi Lestari',
                 'email' => 'dewi.lestari@psf.com',
                 'no_telp' => '081234567893',
@@ -82,7 +80,6 @@ class KaryawanSeeder extends Seeder
                 'status_karyawan' => 'Aktif',
             ],
             [
-                'nik' => 'PSF005',
                 'nama_karyawan' => 'Eko Prasetyo',
                 'email' => 'eko.prasetyo@psf.com',
                 'no_telp' => '081234567894',
@@ -99,7 +96,7 @@ class KaryawanSeeder extends Seeder
 
         foreach ($karyawan as $data) {
             Karyawan::firstOrCreate(
-                ['nik' => $data['nik']],
+                ['nama_karyawan' => $data['nama_karyawan'], 'email' => $data['email']],
                 $data
             );
         }

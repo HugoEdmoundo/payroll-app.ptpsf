@@ -10,9 +10,9 @@ class PengaturanGajiSeeder extends Seeder
 {
     public function run(): void
     {
-        $jakarta = MasterWilayah::where('kode_wilayah', 'JKT')->first();
-        $bandung = MasterWilayah::where('kode_wilayah', 'BDG')->first();
-        $surabaya = MasterWilayah::where('kode_wilayah', 'SBY')->first();
+        $jakarta = MasterWilayah::where('kode', 'JKT')->first();
+        $bandung = MasterWilayah::where('kode', 'BDG')->first();
+        $surabaya = MasterWilayah::where('kode', 'SBY')->first();
 
         $pengaturan = [
             // Manager - Jakarta
