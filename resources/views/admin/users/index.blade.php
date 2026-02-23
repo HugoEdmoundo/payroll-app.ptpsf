@@ -59,10 +59,16 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
+                            @if($user->role)
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
                                 {{ $user->role->is_superadmin ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800' }}">
                                 {{ $user->role->name }}
                             </span>
+                            @else
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                No Role
+                            </span>
+                            @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($user->is_active)
@@ -91,7 +97,7 @@
                                     <i class="fas fa-edit mr-1"></i> Edit
                                 </a>
                                 
-                                @if(!$user->role->is_superadmin)
+                                @if($user->role && !$user->role->is_superadmin)
                                 <a href="{{ route('admin.users.permissions.edit', $user) }}" 
                                    class="inline-flex items-center px-3 py-1.5 border border-indigo-300 shadow-sm text-xs font-medium rounded-md text-indigo-700 bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                    title="Manage Permissions">
@@ -99,7 +105,7 @@
                                 </a>
                                 @endif
                                 
-                                @if(!$user->role->is_superadmin && $user->id !== auth()->id())
+                                @if($user->role && !$user->role->is_superadmin && $user->id !== auth()->id())
                                 <form action="{{ route('admin.users.destroy', $user) }}" method="POST" 
                                       onsubmit="return confirm('Are you sure you want to delete this user? This action cannot be undone.')"
                                       class="inline">
