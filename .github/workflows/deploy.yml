@@ -1,38 +1,112 @@
-name: Deploy Laravel 11
+name: Deploy to VPS
 
 on:
   push:
     branches:
       - main
+      - master
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Deploy to VPS
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            cd /opt
-
-            if [ ! -d "just-atesting" ]; then
-              git clone git@github.com:HugoEdmoundo/payroll-app.ptpsf.git just-atesting
-            fi
-
-            cd just-atesting
-            git pull origin main
-            
-            composer install --no-dev --optimize-autoloader
-
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-
-            chown -R www-data:www-data /opt/just-atesting
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, dom, filter, gd, json, zip
+        coverage: none
+        
+    - name: Install Composer dependencies
+      run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install NPM dependencies
+      run: npm ci
+      
+    - name: Build assets
+      run: npm run build
+      
+    - name: Create deployment archive
+      run: |
+        mkdir -p deployment
+        rsync -av --exclude='node_modules' --exclude='.git' --exclude='deployment' --exclude='storage' --exclude='.env' . deployment/
+        cd deployment
+        tar -czf ../deployment.tar.gz .
+        
+    - name: Deploy to VPS
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_PORT }}
+        source: "deployment.tar.gz"
+        target: "/tmp"
+        
+    - name: Execute deployment commands
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_PORT }}
+        script: |
+          cd ${{ secrets.VPS_DEPLOY_PATH }}
+          
+          # Backup current deployment
+          if [ -d "current" ]; then
+            cp -r current backup-$(date +%Y%m%d-%H%M%S)
+          fi
+          
+          # Extract new deployment
+          mkdir -p releases/$(date +%Y%m%d-%H%M%S)
+          cd releases/$(date +%Y%m%d-%H%M%S)
+          tar -xzf /tmp/deployment.tar.gz
+          rm /tmp/deployment.tar.gz
+          
+          # Copy .env from previous deployment
+          if [ -f "${{ secrets.VPS_DEPLOY_PATH }}/current/.env" ]; then
+            cp ${{ secrets.VPS_DEPLOY_PATH }}/current/.env .env
+          fi
+          
+          # Link storage
+          if [ -d "${{ secrets.VPS_DEPLOY_PATH }}/storage" ]; then
+            rm -rf storage
+            ln -s ${{ secrets.VPS_DEPLOY_PATH }}/storage storage
+          else
+            mkdir -p ${{ secrets.VPS_DEPLOY_PATH }}/storage
+            ln -s ${{ secrets.VPS_DEPLOY_PATH }}/storage storage
+          fi
+          
+          # Set permissions
+          chmod -R 755 .
+          chmod -R 775 bootstrap/cache
+          
+          # Run migrations
+          php artisan migrate --force
+          
+          # Clear and cache
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          
+          # Update current symlink
+          cd ${{ secrets.VPS_DEPLOY_PATH }}
+          rm -f current
+          ln -s releases/$(date +%Y%m%d-%H%M%S) current
+          
+          # Restart services
+          sudo systemctl reload php8.2-fpm
+          sudo systemctl reload nginx
+          
+          echo "Deployment completed successfully!"
