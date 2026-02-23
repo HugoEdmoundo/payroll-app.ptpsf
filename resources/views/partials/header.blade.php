@@ -12,7 +12,7 @@
                 <!-- Mobile Logo -->
                 <div class="ml-3 lg:hidden flex items-center">
                     <div class="h-9 w-9 rounded-xl overflow-hidden mr-2 shadow-md">
-                        <img src="{{ asset('images/logo-psf.jpg') }}"
+                        <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1768808187/LOGOPSF_v4fq0w.jpg"
                              alt="Logo PSF"
                              class="h-full w-full object-cover"
                              onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\'h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold\'>P</div>';"/>

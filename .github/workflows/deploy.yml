@@ -20,7 +20,8 @@ jobs:
           script: |
             cd /opt/just-atesting
 
-            git pull origin main
+            git fetch origin
+            git reset --hard origin/main
 
             composer install --no-dev --optimize-autoloader
 
@@ -28,10 +29,9 @@ jobs:
             npm run build
 
             php artisan migrate --force
+            php artisan db:seed --force
 
+            php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
-            php artisan optimize
-
-            chown -R www-data:www-data /opt/just-atesting
