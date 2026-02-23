@@ -39,10 +39,8 @@
                         
                         // Payroll Menu
                         ['type' => 'divider', 'label' => 'PAYROLL'],
-                        ['label' => 'Pengaturan Gaji', 'route' => 'payroll.pengaturan.index', 'icon' => 'fas fa-cog'],
-                        ['label' => 'Acuan Gaji', 'route' => 'payroll.acuan.index', 'icon' => 'fas fa-file-invoice'],
-                        ['label' => 'Hitung Gaji', 'route' => 'payroll.hitung.index', 'icon' => 'fas fa-calculator'],
-                        ['label' => 'Slip Gaji', 'route' => 'payroll.slip.index', 'icon' => 'fas fa-receipt'],
+                        ['label' => 'Pengaturan Gaji', 'route' => 'payroll.pengaturan-gaji.index', 'icon' => 'fas fa-cog'],
+                        ['label' => 'Acuan Gaji', 'route' => 'payroll.acuan-gaji.index', 'icon' => 'fas fa-file-invoice'],
                         ['label' => 'NKI', 'route' => 'payroll.nki.index', 'icon' => 'fas fa-star'],
                         ['label' => 'Absensi', 'route' => 'payroll.absensi.index', 'icon' => 'fas fa-calendar-check'],
                         ['label' => 'Kasbon', 'route' => 'payroll.kasbon.index', 'icon' => 'fas fa-money-bill-wave'],
@@ -63,7 +61,7 @@
                         
                         // User can see payroll if has permission
                         ['type' => 'divider', 'label' => 'PAYROLL'],
-                        ['label' => 'Slip Gaji', 'route' => 'payroll.slip.index', 'icon' => 'fas fa-receipt'],
+                        ['label' => 'Acuan Gaji', 'route' => 'payroll.acuan-gaji.index', 'icon' => 'fas fa-file-invoice'],
                     ];
                 }
             @endphp
