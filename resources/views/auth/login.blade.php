@@ -8,7 +8,7 @@
         <div class="flex flex-col items-center">
             <!-- Logo -->
             <div class="h-20 w-20 rounded-lg flex items-center justify-center overflow-hidden mb-4">
-                <img src="{{ asset('images/logo-psf.jpg') }}" 
+                <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1768808187/LOGOPSF_v4fq0w.jpg" 
                      alt="Logo PSF" 
                      class="h-full w-full object-cover"
                      onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\'h-20 w-20 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-3xl\'>P</div>';">
