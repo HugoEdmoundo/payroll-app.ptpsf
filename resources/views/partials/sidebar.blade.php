@@ -15,7 +15,7 @@
             <div class="flex items-center space-x-3">
                 
                 <div class="h-12 w-12 rounded-xl overflow-hidden shadow-sm">
-                    <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1768808187/LOGOPSF_v4fq0w.jpg"
+                    <img src="{{ asset('images/logo-psf.jpg') }}"
                          alt="Logo PSF"
                          class="h-full w-full object-cover"
                          onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\'h-9 w-9 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold\'>P</div>';">
