@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('hitung_gaji', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('acuan_gaji_id')->constrained('acuan_gaji')->onDelete('cascade');
+            $table->unsignedBigInteger('acuan_gaji_id');
             $table->foreignId('karyawan_id')->constrained('karyawan', 'id_karyawan')->onDelete('cascade');
             $table->string('periode'); // YYYY-MM
             
@@ -40,6 +40,9 @@ return new class extends Migration
             
             $table->text('catatan_umum')->nullable();
             $table->timestamps();
+            
+            // Foreign key to acuan_gaji with custom primary key
+            $table->foreign('acuan_gaji_id')->references('id_acuan')->on('acuan_gaji')->onDelete('cascade');
             
             $table->unique(['karyawan_id', 'periode']);
         });
