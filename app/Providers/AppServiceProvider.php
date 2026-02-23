@@ -36,6 +36,8 @@ class AppServiceProvider extends ServiceProvider
         
         \Blade::directive('endhasPermission', function () {
             return "<?php endif; ?>";
+        });
+        
         // Route model binding for Payroll models
         Route::bind('pengaturanGaji', function ($value) {
             return PengaturanGaji::where('id_pengaturan', $value)->firstOrFail();
