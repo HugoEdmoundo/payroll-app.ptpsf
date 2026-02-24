@@ -7,116 +7,127 @@ use App\Models\PengaturanGaji;
 
 class PengaturanGajiSeeder extends Seeder
 {
+    /**
+     * Seed pengaturan gaji yang sinkron dengan SystemSettingSeeder
+     */
     public function run(): void
     {
-        $pengaturan = [
-            // Manager - Jakarta
+        $this->command->info('Seeding Pengaturan Gaji...');
+        
+        // Data dari SystemSettingSeeder
+        $pengaturanGaji = [
+            // Organik
             [
-                'jenis_karyawan' => 'Tetap',
+                'jenis_karyawan' => 'Organik',
                 'jabatan' => 'Manager',
-                'lokasi_kerja' => 'Jakarta',
+                'lokasi_kerja' => 'Central Java',
                 'gaji_pokok' => 15000000,
-                'tunjangan_operasional' => 2000000,
-                'potongan_koperasi' => 100000,
-                'bpjs_kesehatan' => 750000,
-                'bpjs_ketenagakerjaan' => 500000,
-                'bpjs_kecelakaan_kerja' => 150000,
-                'bpjs_total' => 1400000,
-                'gaji_nett' => 16900000,
-                'total_gaji' => 18300000,
-                'keterangan' => 'Pengaturan gaji Manager Jakarta',
-            ],
-            // Supervisor - Jakarta
-            [
-                'jenis_karyawan' => 'Tetap',
-                'jabatan' => 'Supervisor',
-                'lokasi_kerja' => 'Jakarta',
-                'gaji_pokok' => 10000000,
+                'tunjangan_jabatan' => 3000000,
+                'tunjangan_prestasi' => 2000000,
                 'tunjangan_operasional' => 1500000,
-                'potongan_koperasi' => 100000,
                 'bpjs_kesehatan' => 500000,
-                'bpjs_ketenagakerjaan' => 350000,
-                'bpjs_kecelakaan_kerja' => 100000,
-                'bpjs_total' => 950000,
-                'gaji_nett' => 11400000,
-                'total_gaji' => 12350000,
-                'keterangan' => 'Pengaturan gaji Supervisor Jakarta',
+                'bpjs_ketenagakerjaan' => 300000,
             ],
-            // Staff - Jakarta
             [
-                'jenis_karyawan' => 'Tetap',
-                'jabatan' => 'Staff',
-                'lokasi_kerja' => 'Jakarta',
-                'gaji_pokok' => 7000000,
-                'tunjangan_operasional' => 1000000,
-                'potongan_koperasi' => 100000,
-                'bpjs_kesehatan' => 350000,
-                'bpjs_ketenagakerjaan' => 250000,
-                'bpjs_kecelakaan_kerja' => 70000,
-                'bpjs_total' => 670000,
-                'gaji_nett' => 7900000,
-                'total_gaji' => 8570000,
-                'keterangan' => 'Pengaturan gaji Staff Tetap Jakarta',
-            ],
-            // Staff Kontrak - Jakarta
-            [
-                'jenis_karyawan' => 'Kontrak',
-                'jabatan' => 'Staff',
-                'lokasi_kerja' => 'Jakarta',
-                'gaji_pokok' => 6000000,
+                'jenis_karyawan' => 'Organik',
+                'jabatan' => 'Finance',
+                'lokasi_kerja' => 'Central Java',
+                'gaji_pokok' => 8000000,
+                'tunjangan_jabatan' => 1500000,
+                'tunjangan_prestasi' => 1000000,
                 'tunjangan_operasional' => 800000,
-                'potongan_koperasi' => 50000,
                 'bpjs_kesehatan' => 300000,
                 'bpjs_ketenagakerjaan' => 200000,
-                'bpjs_kecelakaan_kerja' => 60000,
-                'bpjs_total' => 560000,
-                'gaji_nett' => 6750000,
-                'total_gaji' => 7310000,
-                'keterangan' => 'Pengaturan gaji Staff Kontrak Jakarta',
             ],
-            // Supervisor - Bandung
+            
+            // Konsultan
             [
-                'jenis_karyawan' => 'Tetap',
-                'jabatan' => 'Supervisor',
-                'lokasi_kerja' => 'Bandung',
-                'gaji_pokok' => 9000000,
-                'tunjangan_operasional' => 1300000,
-                'potongan_koperasi' => 100000,
+                'jenis_karyawan' => 'Konsultan',
+                'jabatan' => 'Senior Engineer',
+                'lokasi_kerja' => 'East Java',
+                'gaji_pokok' => 12000000,
+                'tunjangan_jabatan' => 2500000,
+                'tunjangan_prestasi' => 1800000,
+                'tunjangan_operasional' => 1200000,
+                'bpjs_kesehatan' => 400000,
+                'bpjs_ketenagakerjaan' => 250000,
+            ],
+            [
+                'jenis_karyawan' => 'Konsultan',
+                'jabatan' => 'Project Manager',
+                'lokasi_kerja' => 'Central Java',
+                'gaji_pokok' => 14000000,
+                'tunjangan_jabatan' => 2800000,
+                'tunjangan_prestasi' => 2000000,
+                'tunjangan_operasional' => 1400000,
                 'bpjs_kesehatan' => 450000,
-                'bpjs_ketenagakerjaan' => 300000,
-                'bpjs_kecelakaan_kerja' => 90000,
-                'bpjs_total' => 840000,
-                'gaji_nett' => 10200000,
-                'total_gaji' => 11040000,
-                'keterangan' => 'Pengaturan gaji Supervisor Bandung',
+                'bpjs_ketenagakerjaan' => 280000,
             ],
-            // Staff - Surabaya
+            
+            // Teknisi
             [
-                'jenis_karyawan' => 'Kontrak',
-                'jabatan' => 'Staff',
-                'lokasi_kerja' => 'Surabaya',
+                'jenis_karyawan' => 'Teknisi',
+                'jabatan' => 'Junior Engineer',
+                'lokasi_kerja' => 'West Java',
+                'gaji_pokok' => 6000000,
+                'tunjangan_jabatan' => 1000000,
+                'tunjangan_prestasi' => 800000,
+                'tunjangan_operasional' => 600000,
+                'bpjs_kesehatan' => 250000,
+                'bpjs_ketenagakerjaan' => 150000,
+            ],
+            [
+                'jenis_karyawan' => 'Teknisi',
+                'jabatan' => 'Senior Installer',
+                'lokasi_kerja' => 'Bali',
+                'gaji_pokok' => 7500000,
+                'tunjangan_jabatan' => 1200000,
+                'tunjangan_prestasi' => 1000000,
+                'tunjangan_operasional' => 700000,
+                'bpjs_kesehatan' => 280000,
+                'bpjs_ketenagakerjaan' => 180000,
+            ],
+            [
+                'jenis_karyawan' => 'Teknisi',
+                'jabatan' => 'Junior Installer',
+                'lokasi_kerja' => 'Central Java',
+                'gaji_pokok' => 5500000,
+                'tunjangan_jabatan' => 900000,
+                'tunjangan_prestasi' => 700000,
+                'tunjangan_operasional' => 500000,
+                'bpjs_kesehatan' => 220000,
+                'bpjs_ketenagakerjaan' => 140000,
+            ],
+            
+            // Borongan
+            [
+                'jenis_karyawan' => 'Borongan',
+                'jabatan' => 'Team Leader (junior)',
+                'lokasi_kerja' => 'Central Java',
+                'gaji_pokok' => 5000000,
+                'tunjangan_jabatan' => 800000,
+                'tunjangan_prestasi' => 600000,
+                'tunjangan_operasional' => 400000,
+                'bpjs_kesehatan' => 0,
+                'bpjs_ketenagakerjaan' => 0,
+            ],
+            [
+                'jenis_karyawan' => 'Borongan',
+                'jabatan' => 'Team Leader (senior)',
+                'lokasi_kerja' => 'East Java',
                 'gaji_pokok' => 6500000,
-                'tunjangan_operasional' => 900000,
-                'potongan_koperasi' => 75000,
-                'bpjs_kesehatan' => 325000,
-                'bpjs_ketenagakerjaan' => 220000,
-                'bpjs_kecelakaan_kerja' => 65000,
-                'bpjs_total' => 610000,
-                'gaji_nett' => 7325000,
-                'total_gaji' => 7935000,
-                'keterangan' => 'Pengaturan gaji Staff Kontrak Surabaya',
+                'tunjangan_jabatan' => 1100000,
+                'tunjangan_prestasi' => 900000,
+                'tunjangan_operasional' => 550000,
+                'bpjs_kesehatan' => 0,
+                'bpjs_ketenagakerjaan' => 0,
             ],
         ];
 
-        foreach ($pengaturan as $data) {
-            PengaturanGaji::firstOrCreate(
-                [
-                    'jenis_karyawan' => $data['jenis_karyawan'],
-                    'jabatan' => $data['jabatan'],
-                    'lokasi_kerja' => $data['lokasi_kerja'],
-                ],
-                $data
-            );
+        foreach ($pengaturanGaji as $data) {
+            PengaturanGaji::create($data);
         }
+
+        $this->command->info('Pengaturan Gaji seeded successfully! Created ' . count($pengaturanGaji) . ' configurations.');
     }
 }

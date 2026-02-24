@@ -4,101 +4,156 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Karyawan;
-use App\Models\MasterStatusPegawai;
+use Carbon\Carbon;
 
 class KaryawanSeeder extends Seeder
 {
+    /**
+     * Seed karyawan dengan data yang sinkron dengan SystemSettingSeeder
+     */
     public function run(): void
     {
-        // Create master status pegawai first
-        $statusPegawai = [
-            ['nama' => 'Tetap', 'keterangan' => 'Karyawan Tetap', 'gunakan_nki' => true, 'durasi_hari' => null],
-            ['nama' => 'Kontrak', 'keterangan' => 'Karyawan Kontrak', 'gunakan_nki' => true, 'durasi_hari' => null],
-            ['nama' => 'Magang', 'keterangan' => 'Karyawan Magang', 'gunakan_nki' => false, 'durasi_hari' => 90],
-            ['nama' => 'Harian', 'keterangan' => 'Karyawan Harian', 'gunakan_nki' => false, 'durasi_hari' => 14],
-            ['nama' => 'OJT', 'keterangan' => 'On Job Training', 'gunakan_nki' => false, 'durasi_hari' => 90],
-        ];
-
-        foreach ($statusPegawai as $status) {
-            MasterStatusPegawai::firstOrCreate(
-                ['nama' => $status['nama']],
-                $status
-            );
-        }
-
-        $karyawan = [
-            [
-                'nama_karyawan' => 'Ahmad Fauzi',
-                'email' => 'ahmad.fauzi@psf.com',
-                'no_telp' => '081234567890',
-                'join_date' => '2023-01-15',
-                'jabatan' => 'Manager',
-                'lokasi_kerja' => 'Jakarta',
-                'jenis_karyawan' => 'Tetap',
-                'status_pegawai' => 'Tetap',
-                'no_rekening' => '1234567890',
-                'bank' => 'BCA',
-                'status_karyawan' => 'Aktif',
-            ],
-            [
-                'nama_karyawan' => 'Siti Nurhaliza',
-                'email' => 'siti.nurhaliza@psf.com',
-                'no_telp' => '081234567891',
-                'join_date' => '2023-02-20',
-                'jabatan' => 'Staff',
-                'lokasi_kerja' => 'Jakarta',
-                'jenis_karyawan' => 'Tetap',
-                'status_pegawai' => 'Tetap',
-                'no_rekening' => '1234567891',
-                'bank' => 'Mandiri',
-                'status_karyawan' => 'Aktif',
-            ],
+        $this->command->info('Seeding Karyawan...');
+        
+        $karyawans = [
             [
                 'nama_karyawan' => 'Budi Santoso',
-                'email' => 'budi.santoso@psf.com',
+                'email' => 'budi.santoso@ptpsf.com',
+                'no_telp' => '081234567890',
+                'join_date' => Carbon::now()->subYears(3),
+                'masa_kerja' => 36,
+                'jabatan' => 'Manager',
+                'lokasi_kerja' => 'Central Java',
+                'jenis_karyawan' => 'Organik',
+                'status_pegawai' => 'Kontrak',
+                'npwp' => '12.345.678.9-012.000',
+                'bpjs_kesehatan_no' => '0001234567890',
+                'bpjs_kecelakaan_kerja_no' => '0001234567890',
+                'bpjs_tk_no' => '0001234567890',
+                'no_rekening' => '1234567890',
+                'bank' => 'BCA',
+                'status_perkawinan' => 'Kawin',
+                'nama_istri' => 'Siti Nurhaliza',
+                'jumlah_anak' => 2,
+                'no_telp_istri' => '081234567891',
+                'status_karyawan' => 'Active',
+            ],
+            [
+                'nama_karyawan' => 'Ahmad Fauzi',
+                'email' => 'ahmad.fauzi@ptpsf.com',
                 'no_telp' => '081234567892',
-                'join_date' => '2023-03-10',
-                'jabatan' => 'Supervisor',
-                'lokasi_kerja' => 'Bandung',
-                'jenis_karyawan' => 'Tetap',
-                'status_pegawai' => 'Tetap',
-                'no_rekening' => '1234567892',
-                'bank' => 'BRI',
-                'status_karyawan' => 'Aktif',
+                'join_date' => Carbon::now()->subYears(2),
+                'masa_kerja' => 24,
+                'jabatan' => 'Senior Engineer',
+                'lokasi_kerja' => 'East Java',
+                'jenis_karyawan' => 'Konsultan',
+                'status_pegawai' => 'Kontrak',
+                'npwp' => '12.345.678.9-013.000',
+                'bpjs_kesehatan_no' => '0001234567891',
+                'bpjs_kecelakaan_kerja_no' => '0001234567891',
+                'bpjs_tk_no' => '0001234567891',
+                'no_rekening' => '2234567890',
+                'bank' => 'Mandiri',
+                'status_perkawinan' => 'Belum Kawin',
+                'nama_istri' => null,
+                'jumlah_anak' => 0,
+                'no_telp_istri' => null,
+                'status_karyawan' => 'Active',
             ],
             [
                 'nama_karyawan' => 'Dewi Lestari',
-                'email' => 'dewi.lestari@psf.com',
+                'email' => 'dewi.lestari@ptpsf.com',
                 'no_telp' => '081234567893',
-                'join_date' => '2023-04-05',
-                'jabatan' => 'Staff',
-                'lokasi_kerja' => 'Surabaya',
-                'jenis_karyawan' => 'Kontrak',
+                'join_date' => Carbon::now()->subYears(1)->subMonths(6),
+                'masa_kerja' => 18,
+                'jabatan' => 'Finance',
+                'lokasi_kerja' => 'Central Java',
+                'jenis_karyawan' => 'Organik',
                 'status_pegawai' => 'Kontrak',
-                'no_rekening' => '1234567893',
+                'npwp' => '12.345.678.9-014.000',
+                'bpjs_kesehatan_no' => '0001234567892',
+                'bpjs_kecelakaan_kerja_no' => '0001234567892',
+                'bpjs_tk_no' => '0001234567892',
+                'no_rekening' => '3234567890',
                 'bank' => 'BNI',
-                'status_karyawan' => 'Aktif',
+                'status_perkawinan' => 'Kawin',
+                'nama_istri' => null,
+                'jumlah_anak' => 1,
+                'no_telp_istri' => null,
+                'status_karyawan' => 'Active',
             ],
             [
                 'nama_karyawan' => 'Eko Prasetyo',
-                'email' => 'eko.prasetyo@psf.com',
+                'email' => 'eko.prasetyo@ptpsf.com',
                 'no_telp' => '081234567894',
-                'join_date' => '2023-05-12',
-                'jabatan' => 'Staff',
-                'lokasi_kerja' => 'Jakarta',
-                'jenis_karyawan' => 'Tetap',
-                'status_pegawai' => 'Tetap',
-                'no_rekening' => '1234567894',
-                'bank' => 'BCA',
-                'status_karyawan' => 'Aktif',
+                'join_date' => Carbon::now()->subYear(),
+                'masa_kerja' => 12,
+                'jabatan' => 'Junior Engineer',
+                'lokasi_kerja' => 'West Java',
+                'jenis_karyawan' => 'Teknisi',
+                'status_pegawai' => 'OJT',
+                'npwp' => null,
+                'bpjs_kesehatan_no' => '0001234567893',
+                'bpjs_kecelakaan_kerja_no' => '0001234567893',
+                'bpjs_tk_no' => '0001234567893',
+                'no_rekening' => '4234567890',
+                'bank' => 'BRI',
+                'status_perkawinan' => 'Belum Kawin',
+                'nama_istri' => null,
+                'jumlah_anak' => 0,
+                'no_telp_istri' => null,
+                'status_karyawan' => 'Active',
+            ],
+            [
+                'nama_karyawan' => 'Fitri Handayani',
+                'email' => 'fitri.handayani@ptpsf.com',
+                'no_telp' => '081234567895',
+                'join_date' => Carbon::now()->subMonths(8),
+                'masa_kerja' => 8,
+                'jabatan' => 'Senior Installer',
+                'lokasi_kerja' => 'Bali',
+                'jenis_karyawan' => 'Teknisi',
+                'status_pegawai' => 'Harian',
+                'npwp' => null,
+                'bpjs_kesehatan_no' => '0001234567894',
+                'bpjs_kecelakaan_kerja_no' => '0001234567894',
+                'bpjs_tk_no' => '0001234567894',
+                'no_rekening' => '5234567890',
+                'bank' => 'CIMB Niaga',
+                'status_perkawinan' => 'Belum Kawin',
+                'nama_istri' => null,
+                'jumlah_anak' => 0,
+                'no_telp_istri' => null,
+                'status_karyawan' => 'Active',
+            ],
+            [
+                'nama_karyawan' => 'Gunawan Wijaya',
+                'email' => 'gunawan.wijaya@ptpsf.com',
+                'no_telp' => '081234567896',
+                'join_date' => Carbon::now()->subMonths(6),
+                'masa_kerja' => 6,
+                'jabatan' => 'Team Leader (junior)',
+                'lokasi_kerja' => 'Central Java',
+                'jenis_karyawan' => 'Borongan',
+                'status_pegawai' => 'Harian',
+                'npwp' => null,
+                'bpjs_kesehatan_no' => null,
+                'bpjs_kecelakaan_kerja_no' => null,
+                'bpjs_tk_no' => null,
+                'no_rekening' => '6234567890',
+                'bank' => 'BSI',
+                'status_perkawinan' => 'Belum Kawin',
+                'nama_istri' => null,
+                'jumlah_anak' => 0,
+                'no_telp_istri' => null,
+                'status_karyawan' => 'Active',
             ],
         ];
 
-        foreach ($karyawan as $data) {
-            Karyawan::firstOrCreate(
-                ['nama_karyawan' => $data['nama_karyawan'], 'email' => $data['email']],
-                $data
-            );
+        foreach ($karyawans as $data) {
+            Karyawan::create($data);
         }
+
+        $this->command->info('Karyawan seeded successfully! Created ' . count($karyawans) . ' karyawan.');
     }
 }

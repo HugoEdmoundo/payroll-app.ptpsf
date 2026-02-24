@@ -56,6 +56,15 @@ class SystemSettingSeeder extends Seeder
             // Jabatan Options
             ['group' => 'jabatan_options', 'key' => 'finance', 'value' => 'Finance', 'order' => 1],
             ['group' => 'jabatan_options', 'key' => 'manager', 'value' => 'Manager', 'order' => 2],
+            ['group' => 'jabatan_options', 'key' => 'junior installer', 'value' => 'Junior Installer', 'order' => 3],
+            ['group' => 'jabatan_options', 'key' => 'junior leader', 'value' => 'Junior Leader', 'order' => 4],
+            ['group' => 'jabatan_options', 'key' => 'junior engineer', 'value' => 'Junior Engineer', 'order' => 5],
+            ['group' => 'jabatan_options', 'key' => 'senior installer', 'value' => 'Senior Installer', 'order' => 6],
+            ['group' => 'jabatan_options', 'key' => 'senior leader', 'value' => 'Senior Leader', 'order' => 7],
+            ['group' => 'jabatan_options', 'key' => 'senior engineer', 'value' => 'Senior Engineer', 'order' => 8],
+            ['group' => 'jabatan_options', 'key' => 'project manager', 'value' => 'Project Manager', 'order' => 9],
+            ['group' => 'jabatan_options', 'key' => 'team leader (senior)', 'value' => 'Team Leader (senior)', 'order' => 10],
+            ['group' => 'jabatan_options', 'key' => 'team leader (junior)', 'value' => 'Team Leader (junior)', 'order' => 11],
         ];
 
         foreach ($settings as $setting) {
