@@ -1,0 +1,191 @@
+@extends('layouts.app')
+
+@section('title', 'Acuan Gaji - ' . \Carbon\Carbon::createFromFormat('Y-m', $periode)->format('F Y'))
+@section('breadcrumb', 'Acuan Gaji')
+
+@section('content')
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Acuan Gaji</h1>
+            <p class="mt-1 text-sm text-gray-600">Periode: {{ \Carbon\Carbon::createFromFormat('Y-m', $periode)->format('F Y') }}</p>
+        </div>
+        <div class="mt-4 md:mt-0 flex flex-wrap gap-3">
+            <a href="{{ route('payroll.acuan-gaji.index') }}" 
+               class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
+                <i class="fas fa-arrow-left mr-2"></i>Kembali
+            </a>
+            
+            @if(auth()->user()->hasPermission('acuan_gaji.export'))
+            <a href="{{ route('payroll.acuan-gaji.export', ['periode' => $periode]) }}" 
+               class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
+                <i class="fas fa-download mr-2"></i>Export
+            </a>
+            @endif
+            
+            @if(auth()->user()->hasPermission('acuan_gaji.create'))
+            <a href="{{ route('payroll.acuan-gaji.create') }}" 
+               class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700">
+                <i class="fas fa-plus mr-2"></i>Tambah
+            </a>
+            @endif
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card p-4">
+        <form method="GET" action="{{ route('payroll.acuan-gaji.periode', $periode) }}" id="filterForm">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Search -->
+                <div class="md:col-span-1">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                        <input type="text" 
+                               name="search" 
+                               value="{{ request('search') }}"
+                               placeholder="Cari nama, jenis, lokasi, jabatan..."
+                               class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                               onkeyup="if(event.key === 'Enter') this.form.submit()">
+                    </div>
+                </div>
+                
+                <!-- Lokasi Kerja Filter -->
+                <div>
+                    <select name="lokasi_kerja" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            onchange="this.form.submit()">
+                        <option value="">Semua Lokasi Kerja</option>
+                        @foreach($lokasiKerjaList as $lokasi)
+                        <option value="{{ $lokasi }}" {{ request('lokasi_kerja') == $lokasi ? 'selected' : '' }}>
+                            {{ $lokasi }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+                
+                <!-- Jabatan Filter -->
+                <div>
+                    <select name="jabatan" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            onchange="this.form.submit()">
+                        <option value="">Semua Jabatan</option>
+                        @foreach($jabatanList as $jabatan)
+                        <option value="{{ $jabatan }}" {{ request('jabatan') == $jabatan ? 'selected' : '' }}>
+                            {{ $jabatan }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            
+            @if(request('search') || request('lokasi_kerja') || request('jabatan'))
+            <div class="mt-3">
+                <a href="{{ route('payroll.acuan-gaji.periode', $periode) }}" 
+                   class="text-sm text-indigo-600 hover:text-indigo-800">
+                    <i class="fas fa-times mr-1"></i>Clear Filters
+                </a>
+            </div>
+            @endif
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Karyawan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Karyawan</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Gaji Pokok</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pendapatan</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pengeluaran</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Gaji Bersih</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($acuanGajiList as $acuan)
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <div class="h-10 w-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white font-semibold">
+                                        {{ strtoupper(substr($acuan->karyawan->nama_karyawan, 0, 2)) }}
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">{{ $acuan->karyawan->nama_karyawan }}</div>
+                                    <div class="text-sm text-gray-500">{{ $acuan->karyawan->jabatan }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ $acuan->karyawan->jenis_karyawan }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                            Rp {{ number_format($acuan->gaji_pokok, 0, ',', '.') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">
+                            Rp {{ number_format($acuan->total_pendapatan, 0, ',', '.') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">
+                            Rp {{ number_format($acuan->total_pengeluaran, 0, ',', '.') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-indigo-600 font-bold">
+                            Rp {{ number_format($acuan->gaji_bersih, 0, ',', '.') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                            <div class="flex items-center justify-center space-x-2">
+                                <a href="{{ route('payroll.acuan-gaji.show', $acuan) }}" 
+                                   class="text-indigo-600 hover:text-indigo-900" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                
+                                @if(auth()->user()->hasPermission('acuan_gaji.edit'))
+                                <a href="{{ route('payroll.acuan-gaji.edit', $acuan) }}" 
+                                   class="text-blue-600 hover:text-blue-900" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                @endif
+                                
+                                @if(auth()->user()->hasPermission('acuan_gaji.delete'))
+                                <form action="{{ route('payroll.acuan-gaji.destroy', $acuan) }}" 
+                                      method="POST" 
+                                      onsubmit="return confirm('Yakin ingin menghapus data ini?')"
+                                      class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-900" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="px-6 py-12 text-center">
+                            <i class="fas fa-file-invoice-dollar text-gray-400 text-5xl mb-4"></i>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Data</h3>
+                            <p class="text-gray-500">Belum ada data acuan gaji untuk periode ini.</p>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    @if($acuanGajiList->hasPages())
+    <div class="flex justify-center">
+        {{ $acuanGajiList->links() }}
+    </div>
+    @endif
+</div>
+@endsection

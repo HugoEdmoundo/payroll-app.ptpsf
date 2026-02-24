@@ -15,65 +15,43 @@ class AcuanGajiController extends Controller
 {
     public function index(Request $request)
     {
-        $query = AcuanGaji::with('karyawan');
+        // Get all unique periodes from Acuan Gaji
+        $periodes = AcuanGaji::select('periode')
+                            ->distinct()
+                            ->orderBy('periode', 'desc')
+                            ->get()
+                            ->map(function($item) {
+                                $totalKaryawan = AcuanGaji::where('periode', $item->periode)->count();
+                                
+                                return [
+                                    'periode' => $item->periode,
+                                    'total_karyawan' => $totalKaryawan,
+                                ];
+                            });
 
-        // Filter by periode
-        if ($request->has('periode') && $request->periode != '') {
-            $query->where('periode', $request->periode);
-        }
-
-        // Filter by jenis karyawan
-        if ($request->has('jenis_karyawan') && $request->jenis_karyawan != '') {
-            $query->whereHas('karyawan', function($q) use ($request) {
-                $q->where('jenis_karyawan', $request->jenis_karyawan);
-            });
-        }
-
-        // Filter by jabatan
-        if ($request->has('jabatan') && $request->jabatan != '') {
-            $query->whereHas('karyawan', function($q) use ($request) {
-                $q->where('jabatan', $request->jabatan);
-            });
-        }
-
-        // Search
-        if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->whereHas('karyawan', function($q) use ($search) {
-                $q->where('nama_karyawan', 'like', "%{$search}%");
-            });
-        }
-
-        $acuanGajiList = $query->orderBy('periode', 'desc')
-                              ->orderBy('id_acuan', 'desc')
-                              ->paginate(15);
-
-        // Get jabatan list for filter (if jenis_karyawan selected)
-        $jabatanList = [];
-        if ($request->has('jenis_karyawan') && $request->jenis_karyawan != '') {
-            $jabatanList = Karyawan::where('jenis_karyawan', $request->jenis_karyawan)
-                                  ->where('status_karyawan', 'Active')
-                                  ->distinct()
-                                  ->pluck('jabatan')
-                                  ->toArray();
-        }
-
-        return view('payroll.acuan-gaji.index', compact('acuanGajiList', 'jabatanList'));
+        return view('payroll.acuan-gaji.index', compact('periodes'));
     }
 
-    public function history(Request $request)
+    public function showPeriode(Request $request, $periode)
     {
-        $query = AcuanGaji::with('karyawan');
+        $query = AcuanGaji::with('karyawan')
+                         ->where('periode', $periode);
 
-        // Filter by periode
-        if ($request->has('periode') && $request->periode != '') {
-            $query->where('periode', $request->periode);
+        // Global search (nama, jenis_karyawan, lokasi_kerja, jabatan)
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->whereHas('karyawan', function($q) use ($search) {
+                $q->where('nama_karyawan', 'like', "%{$search}%")
+                  ->orWhere('jenis_karyawan', 'like', "%{$search}%")
+                  ->orWhere('lokasi_kerja', 'like', "%{$search}%")
+                  ->orWhere('jabatan', 'like', "%{$search}%");
+            });
         }
 
-        // Filter by jenis karyawan
-        if ($request->has('jenis_karyawan') && $request->jenis_karyawan != '') {
+        // Filter by lokasi kerja
+        if ($request->has('lokasi_kerja') && $request->lokasi_kerja != '') {
             $query->whereHas('karyawan', function($q) use ($request) {
-                $q->where('jenis_karyawan', $request->jenis_karyawan);
+                $q->where('lokasi_kerja', $request->lokasi_kerja);
             });
         }
 
@@ -84,35 +62,21 @@ class AcuanGajiController extends Controller
             });
         }
 
-        // Search
-        if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->whereHas('karyawan', function($q) use ($search) {
-                $q->where('nama_karyawan', 'like', "%{$search}%");
-            });
-        }
+        $acuanGajiList = $query->orderBy('id_acuan', 'desc')
+                              ->paginate(50);
 
-        $acuanGajiList = $query->orderBy('periode', 'desc')
-                              ->orderBy('id_acuan', 'desc')
-                              ->paginate(15);
-
-        // Get jabatan list for filter (if jenis_karyawan selected)
-        $jabatanList = [];
-        if ($request->has('jenis_karyawan') && $request->jenis_karyawan != '') {
-            $jabatanList = Karyawan::where('jenis_karyawan', $request->jenis_karyawan)
-                                  ->where('status_karyawan', 'Active')
+        // Get unique lokasi kerja and jabatan for filters
+        $lokasiKerjaList = Karyawan::select('lokasi_kerja')
                                   ->distinct()
-                                  ->pluck('jabatan')
-                                  ->toArray();
-        }
+                                  ->orderBy('lokasi_kerja')
+                                  ->pluck('lokasi_kerja');
+        
+        $jabatanList = Karyawan::select('jabatan')
+                              ->distinct()
+                              ->orderBy('jabatan')
+                              ->pluck('jabatan');
 
-        // Get all unique periodes for filter
-        $periodeList = AcuanGaji::distinct()
-                                ->orderBy('periode', 'desc')
-                                ->pluck('periode')
-                                ->toArray();
-
-        return view('payroll.acuan-gaji.history', compact('acuanGajiList', 'jabatanList', 'periodeList'));
+        return view('payroll.acuan-gaji.periode', compact('acuanGajiList', 'periode', 'lokasiKerjaList', 'jabatanList'));
     }
 
     // Generate Acuan Gaji for all employees in a periode

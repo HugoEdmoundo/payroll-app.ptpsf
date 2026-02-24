@@ -107,7 +107,7 @@ Route::middleware(['auth'])->group(function () {
         // Acuan Gaji
         Route::prefix('acuan-gaji')->name('acuan-gaji.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'index'])->name('index');
-            Route::get('/history', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'history'])->name('history');
+            Route::get('/periode/{periode}', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'showPeriode'])->name('periode');
             Route::post('/generate', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'generate'])->name('generate');
             Route::get('/create', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'create'])->name('create');
             Route::post('/', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'store'])->name('store');
