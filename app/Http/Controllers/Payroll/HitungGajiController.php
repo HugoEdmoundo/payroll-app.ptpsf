@@ -96,42 +96,51 @@ class HitungGajiController extends Controller
                                    ->where('lokasi_kerja', $karyawan->lokasi_kerja)
                                    ->first();
 
-        // Get NKI and calculate Tunjangan Prestasi
+        if (!$pengaturan) {
+            return back()->withErrors(['acuan_gaji_id' => 'Pengaturan gaji tidak ditemukan untuk karyawan ini.'])->withInput();
+        }
+
+        // Calculate NKI (Tunjangan Prestasi) - FINAL CALCULATION
         $nki = NKI::where('id_karyawan', $acuanGaji->id_karyawan)
                  ->where('periode', $acuanGaji->periode)
                  ->first();
         
         $tunjanganPrestasi = 0;
-        if ($nki && $pengaturan && $pengaturan->tunjangan_operasional > 0) {
+        if ($nki && $pengaturan->tunjangan_operasional > 0) {
+            // NKI Formula: NKI ≥ 8.5 → 100% | NKI ≥ 8.0 → 80% | NKI < 8.0 → 70%
+            // Tunjangan Prestasi = Nilai Acuan Prestasi × Persentase NKI
             $tunjanganPrestasi = $pengaturan->tunjangan_operasional * ($nki->persentase_tunjangan / 100);
         }
 
-        // Get Absensi and calculate Potongan Absensi
+        // Calculate Absensi (Potongan Absensi) - FINAL CALCULATION
         $absensi = Absensi::where('id_karyawan', $acuanGaji->id_karyawan)
                          ->where('periode', $acuanGaji->periode)
                          ->first();
         
         $potonganAbsensi = 0;
-        if ($absensi && $pengaturan) {
+        if ($absensi) {
+            // Potongan Absensi Formula:
+            // (Absence + Tanpa Keterangan) ÷ Jumlah Hari Bulan × (Gaji Pokok + Tunjangan Prestasi + Operasional)
+            // Note: BPJS tidak ikut dihitung
             $totalAbsence = $absensi->absence + $absensi->tanpa_keterangan;
             $baseAmount = $pengaturan->gaji_pokok + $tunjanganPrestasi + $pengaturan->tunjangan_operasional;
             $potonganAbsensi = ($totalAbsence / $absensi->jumlah_hari_bulan) * $baseAmount;
         }
 
-        // Prepare pendapatan acuan (from Acuan Gaji + NKI)
+        // Prepare pendapatan acuan (from Acuan Gaji + Calculated NKI)
         $pendapatanAcuan = [
             'gaji_pokok' => $acuanGaji->gaji_pokok,
-            'tunjangan_prestasi' => $tunjanganPrestasi, // From NKI
+            'tunjangan_prestasi' => $tunjanganPrestasi, // CALCULATED from NKI
             'benefit_operasional' => $acuanGaji->benefit_operasional,
             'bpjs_kesehatan' => $acuanGaji->bpjs_kesehatan_pendapatan,
             'bpjs_ketenagakerjaan' => $acuanGaji->bpjs_kematian_pendapatan,
             'bpjs_kecelakaan_kerja' => $acuanGaji->bpjs_kecelakaan_kerja_pendapatan,
         ];
 
-        // Prepare pengeluaran acuan (from Acuan Gaji + Absensi)
+        // Prepare pengeluaran acuan (from Acuan Gaji + Calculated Absensi)
         $pengeluaranAcuan = [
             'potongan_koperasi' => $acuanGaji->koperasi,
-            'potongan_absensi' => $potonganAbsensi, // From Absensi
+            'potongan_absensi' => $potonganAbsensi, // CALCULATED from Absensi
             'potongan_kasbon' => $acuanGaji->kasbon,
         ];
 
