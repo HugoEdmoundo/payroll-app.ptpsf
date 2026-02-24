@@ -124,6 +124,7 @@ Route::middleware(['auth'])->group(function () {
         // Hitung Gaji
         Route::prefix('hitung-gaji')->name('hitung-gaji.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'index'])->name('index');
+            Route::get('/periode/{periode}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'showPeriode'])->name('periode');
             Route::get('/modal/{karyawanId}/{periode}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'getModalData'])->name('modal');
             Route::post('/', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'store'])->name('store');
             Route::get('/{hitungGaji}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'show'])->name('show');

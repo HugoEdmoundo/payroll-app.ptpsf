@@ -15,7 +15,27 @@ class HitungGajiController extends Controller
 {
     public function index(Request $request)
     {
-        $query = HitungGaji::with(['karyawan', 'acuanGaji']);
+        // Get all unique periodes from Hitung Gaji
+        $periodes = HitungGaji::select('periode')
+                            ->distinct()
+                            ->orderBy('periode', 'desc')
+                            ->get()
+                            ->map(function($item) {
+                                $totalKaryawan = HitungGaji::where('periode', $item->periode)->count();
+                                
+                                return [
+                                    'periode' => $item->periode,
+                                    'total_karyawan' => $totalKaryawan,
+                                ];
+                            });
+
+        return view('payroll.hitung-gaji.index', compact('periodes'));
+    }
+
+    public function showPeriode(Request $request, $periode)
+    {
+        $query = HitungGaji::with(['karyawan'])
+                          ->where('periode', $periode);
 
         // Global search (nama, jenis_karyawan, lokasi_kerja, jabatan)
         if ($request->has('search') && $request->search != '') {
@@ -28,11 +48,10 @@ class HitungGajiController extends Controller
             });
         }
 
-        $hitungGajiList = $query->orderBy('periode', 'desc')
-                                ->orderBy('created_at', 'desc')
+        $hitungGajiList = $query->orderBy('created_at', 'desc')
                                 ->paginate(50);
 
-        return view('payroll.hitung-gaji.index', compact('hitungGajiList'));
+        return view('payroll.hitung-gaji.periode', compact('hitungGajiList', 'periode'));
     }
 
     public function create(Request $request)
