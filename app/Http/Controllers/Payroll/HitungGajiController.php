@@ -47,7 +47,7 @@ class HitungGajiController extends Controller
         // Get periode from request or default to current month
         $periode = $request->get('periode', date('Y-m'));
         
-        // Get acuan gaji for this periode
+        // Get acuan gaji for this periode that don't have hitung gaji yet
         $acuanGajiList = AcuanGaji::with('karyawan')
                                   ->where('periode', $periode)
                                   ->whereDoesntHave('hitungGaji')
@@ -65,17 +65,7 @@ class HitungGajiController extends Controller
     {
         $request->validate([
             'acuan_gaji_id' => 'required|exists:acuan_gaji,id_acuan',
-            'penyesuaian_pendapatan' => 'nullable|array',
-            'penyesuaian_pendapatan.*.komponen' => 'required|string',
-            'penyesuaian_pendapatan.*.nominal' => 'required|numeric|min:0',
-            'penyesuaian_pendapatan.*.tipe' => 'required|in:+,-',
-            'penyesuaian_pendapatan.*.deskripsi' => 'required|string',
-            'penyesuaian_pengeluaran' => 'nullable|array',
-            'penyesuaian_pengeluaran.*.komponen' => 'required|string',
-            'penyesuaian_pengeluaran.*.nominal' => 'required|numeric|min:0',
-            'penyesuaian_pengeluaran.*.tipe' => 'required|in:+,-',
-            'penyesuaian_pengeluaran.*.deskripsi' => 'required|string',
-            'catatan_umum' => 'nullable|string',
+            'keterangan' => 'nullable|string',
         ]);
 
         $acuanGaji = AcuanGaji::findOrFail($request->acuan_gaji_id);
@@ -107,8 +97,6 @@ class HitungGajiController extends Controller
         
         $tunjanganPrestasi = 0;
         if ($nki && $pengaturan->tunjangan_operasional > 0) {
-            // NKI Formula: NKI ≥ 8.5 → 100% | NKI ≥ 8.0 → 80% | NKI < 8.0 → 70%
-            // Tunjangan Prestasi = Nilai Acuan Prestasi × Persentase NKI
             $tunjanganPrestasi = $pengaturan->tunjangan_operasional * ($nki->persentase_tunjangan / 100);
         }
 
@@ -119,73 +107,64 @@ class HitungGajiController extends Controller
         
         $potonganAbsensi = 0;
         if ($absensi) {
-            // Potongan Absensi Formula:
-            // (Absence + Tanpa Keterangan) ÷ Jumlah Hari Bulan × (Gaji Pokok + Tunjangan Prestasi + Operasional)
-            // Note: BPJS tidak ikut dihitung
             $totalAbsence = $absensi->absence + $absensi->tanpa_keterangan;
             $baseAmount = $pengaturan->gaji_pokok + $tunjanganPrestasi + $pengaturan->tunjangan_operasional;
             $potonganAbsensi = ($totalAbsence / $absensi->jumlah_hari_bulan) * $baseAmount;
         }
 
-        // Prepare pendapatan acuan (from Acuan Gaji + Calculated NKI)
-        $pendapatanAcuan = [
-            'gaji_pokok' => $acuanGaji->gaji_pokok,
-            'tunjangan_prestasi' => $tunjanganPrestasi, // CALCULATED from NKI
-            'benefit_operasional' => $acuanGaji->benefit_operasional,
-            'bpjs_kesehatan' => $acuanGaji->bpjs_kesehatan_pendapatan,
-            'bpjs_ketenagakerjaan' => $acuanGaji->bpjs_kematian_pendapatan,
-            'bpjs_kecelakaan_kerja' => $acuanGaji->bpjs_kecelakaan_kerja_pendapatan,
-        ];
-
-        // Prepare pengeluaran acuan (from Acuan Gaji + Calculated Absensi)
-        $pengeluaranAcuan = [
-            'potongan_koperasi' => $acuanGaji->koperasi,
-            'potongan_absensi' => $potonganAbsensi, // CALCULATED from Absensi
-            'potongan_kasbon' => $acuanGaji->kasbon,
-        ];
-
-        // Calculate totals
-        $totalPendapatanAcuan = array_sum($pendapatanAcuan);
-        $totalPengeluaranAcuan = array_sum($pengeluaranAcuan);
-
-        // Calculate penyesuaian
-        $penyesuaianPendapatan = $request->penyesuaian_pendapatan ?? [];
-        $penyesuaianPengeluaran = $request->penyesuaian_pengeluaran ?? [];
-
-        $totalPenyesuaianPendapatan = 0;
-        foreach ($penyesuaianPendapatan as $item) {
-            $totalPenyesuaianPendapatan += $item['tipe'] === '+' ? $item['nominal'] : -$item['nominal'];
+        // Process adjustments from request
+        $adjustments = [];
+        if ($request->has('adjustments')) {
+            foreach ($request->adjustments as $field => $adj) {
+                if (!empty($adj['nominal']) && !empty($adj['description'])) {
+                    $adjustments[$field] = [
+                        'nominal' => (float) $adj['nominal'],
+                        'type' => $adj['type'],
+                        'description' => $adj['description']
+                    ];
+                }
+            }
         }
 
-        $totalPenyesuaianPengeluaran = 0;
-        foreach ($penyesuaianPengeluaran as $item) {
-            $totalPenyesuaianPengeluaran += $item['tipe'] === '+' ? $item['nominal'] : -$item['nominal'];
-        }
-
-        $totalPendapatanAkhir = $totalPendapatanAcuan + $totalPenyesuaianPendapatan;
-        $totalPengeluaranAkhir = $totalPengeluaranAcuan + $totalPenyesuaianPengeluaran;
-        $takeHomePay = $totalPendapatanAkhir - $totalPengeluaranAkhir;
-
-        HitungGaji::create([
+        // Create Hitung Gaji - Copy ALL fields from Acuan Gaji + Calculated values
+        $hitungGaji = HitungGaji::create([
             'acuan_gaji_id' => $acuanGaji->id_acuan,
             'karyawan_id' => $acuanGaji->id_karyawan,
             'periode' => $acuanGaji->periode,
-            'pendapatan_acuan' => json_encode($pendapatanAcuan),
-            'pengeluaran_acuan' => json_encode($pengeluaranAcuan),
-            'penyesuaian_pendapatan' => !empty($penyesuaianPendapatan) ? json_encode($penyesuaianPendapatan) : null,
-            'penyesuaian_pengeluaran' => !empty($penyesuaianPengeluaran) ? json_encode($penyesuaianPengeluaran) : null,
-            'total_pendapatan_acuan' => $totalPendapatanAcuan,
-            'total_penyesuaian_pendapatan' => $totalPenyesuaianPendapatan,
-            'total_pendapatan_akhir' => $totalPendapatanAkhir,
-            'total_pengeluaran_acuan' => $totalPengeluaranAcuan,
-            'total_penyesuaian_pengeluaran' => $totalPenyesuaianPengeluaran,
-            'total_pengeluaran_akhir' => $totalPengeluaranAkhir,
-            'take_home_pay' => $takeHomePay,
+            // PENDAPATAN - Copy from Acuan Gaji + NKI
+            'gaji_pokok' => $acuanGaji->gaji_pokok,
+            'bpjs_kesehatan_pendapatan' => $acuanGaji->bpjs_kesehatan_pendapatan,
+            'bpjs_kecelakaan_kerja_pendapatan' => $acuanGaji->bpjs_kecelakaan_kerja_pendapatan,
+            'bpjs_kematian_pendapatan' => $acuanGaji->bpjs_kematian_pendapatan,
+            'bpjs_jht_pendapatan' => $acuanGaji->bpjs_jht_pendapatan,
+            'bpjs_jp_pendapatan' => $acuanGaji->bpjs_jp_pendapatan,
+            'tunjangan_prestasi' => $tunjanganPrestasi, // CALCULATED from NKI
+            'tunjangan_konjungtur' => $acuanGaji->tunjangan_konjungtur,
+            'benefit_ibadah' => $acuanGaji->benefit_ibadah,
+            'benefit_komunikasi' => $acuanGaji->benefit_komunikasi,
+            'benefit_operasional' => $acuanGaji->benefit_operasional,
+            'reward' => $acuanGaji->reward,
+            // PENGELUARAN - Copy from Acuan Gaji + Absensi
+            'bpjs_kesehatan_pengeluaran' => $acuanGaji->bpjs_kesehatan_pengeluaran,
+            'bpjs_kecelakaan_kerja_pengeluaran' => $acuanGaji->bpjs_kecelakaan_kerja_pengeluaran,
+            'bpjs_kematian_pengeluaran' => $acuanGaji->bpjs_kematian_pengeluaran,
+            'bpjs_jht_pengeluaran' => $acuanGaji->bpjs_jht_pengeluaran,
+            'bpjs_jp_pengeluaran' => $acuanGaji->bpjs_jp_pengeluaran,
+            'tabungan_koperasi' => $acuanGaji->tabungan_koperasi,
+            'koperasi' => $acuanGaji->koperasi,
+            'kasbon' => $acuanGaji->kasbon,
+            'umroh' => $acuanGaji->umroh,
+            'kurban' => $acuanGaji->kurban,
+            'mutabaah' => $acuanGaji->mutabaah,
+            'potongan_absensi' => $potonganAbsensi, // CALCULATED from Absensi
+            'potongan_kehadiran' => $acuanGaji->potongan_kehadiran,
+            // Adjustments
+            'adjustments' => $adjustments,
             'status' => 'draft',
-            'catatan_umum' => $request->catatan_umum,
+            'keterangan' => $request->keterangan,
         ]);
 
-        return redirect()->route('payroll.hitung-gaji.index')
+        return redirect()->route('payroll.hitung-gaji.show', $hitungGaji)
                         ->with('success', 'Hitung gaji berhasil dibuat dengan status Draft.');
     }
 
@@ -215,46 +194,26 @@ class HitungGajiController extends Controller
         }
 
         $request->validate([
-            'penyesuaian_pendapatan' => 'nullable|array',
-            'penyesuaian_pendapatan.*.komponen' => 'required|string',
-            'penyesuaian_pendapatan.*.nominal' => 'required|numeric|min:0',
-            'penyesuaian_pendapatan.*.tipe' => 'required|in:+,-',
-            'penyesuaian_pendapatan.*.deskripsi' => 'required|string',
-            'penyesuaian_pengeluaran' => 'nullable|array',
-            'penyesuaian_pengeluaran.*.komponen' => 'required|string',
-            'penyesuaian_pengeluaran.*.nominal' => 'required|numeric|min:0',
-            'penyesuaian_pengeluaran.*.tipe' => 'required|in:+,-',
-            'penyesuaian_pengeluaran.*.deskripsi' => 'required|string',
-            'catatan_umum' => 'nullable|string',
+            'keterangan' => 'nullable|string',
         ]);
 
-        // Recalculate penyesuaian
-        $penyesuaianPendapatan = $request->penyesuaian_pendapatan ?? [];
-        $penyesuaianPengeluaran = $request->penyesuaian_pengeluaran ?? [];
-
-        $totalPenyesuaianPendapatan = 0;
-        foreach ($penyesuaianPendapatan as $item) {
-            $totalPenyesuaianPendapatan += $item['tipe'] === '+' ? $item['nominal'] : -$item['nominal'];
+        // Process adjustments from request
+        $adjustments = [];
+        if ($request->has('adjustments')) {
+            foreach ($request->adjustments as $field => $adj) {
+                if (!empty($adj['nominal']) && !empty($adj['description'])) {
+                    $adjustments[$field] = [
+                        'nominal' => (float) $adj['nominal'],
+                        'type' => $adj['type'],
+                        'description' => $adj['description']
+                    ];
+                }
+            }
         }
-
-        $totalPenyesuaianPengeluaran = 0;
-        foreach ($penyesuaianPengeluaran as $item) {
-            $totalPenyesuaianPengeluaran += $item['tipe'] === '+' ? $item['nominal'] : -$item['nominal'];
-        }
-
-        $totalPendapatanAkhir = $hitungGaji->total_pendapatan_acuan + $totalPenyesuaianPendapatan;
-        $totalPengeluaranAkhir = $hitungGaji->total_pengeluaran_acuan + $totalPenyesuaianPengeluaran;
-        $takeHomePay = $totalPendapatanAkhir - $totalPengeluaranAkhir;
 
         $hitungGaji->update([
-            'penyesuaian_pendapatan' => !empty($penyesuaianPendapatan) ? json_encode($penyesuaianPendapatan) : null,
-            'penyesuaian_pengeluaran' => !empty($penyesuaianPengeluaran) ? json_encode($penyesuaianPengeluaran) : null,
-            'total_penyesuaian_pendapatan' => $totalPenyesuaianPendapatan,
-            'total_pendapatan_akhir' => $totalPendapatanAkhir,
-            'total_penyesuaian_pengeluaran' => $totalPenyesuaianPengeluaran,
-            'total_pengeluaran_akhir' => $totalPengeluaranAkhir,
-            'take_home_pay' => $takeHomePay,
-            'catatan_umum' => $request->catatan_umum,
+            'adjustments' => $adjustments,
+            'keterangan' => $request->keterangan,
         ]);
 
         return redirect()->route('payroll.hitung-gaji.show', $hitungGaji)
@@ -312,5 +271,48 @@ class HitungGajiController extends Controller
 
         return redirect()->route('payroll.hitung-gaji.edit', $hitungGaji)
                         ->with('success', 'Status dikembalikan ke Draft. Silakan edit kembali.');
+    }
+    
+    public function export(Request $request)
+    {
+        $periode = $request->get('periode');
+        $filename = 'hitung_gaji_' . ($periode ?? 'all') . '_' . date('YmdHis') . '.xlsx';
+        
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\HitungGajiExport($periode),
+            $filename
+        );
+    }
+
+    public function import()
+    {
+        return view('payroll.hitung-gaji.import');
+    }
+
+    public function importStore(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+        ]);
+
+        try {
+            \Maatwebsite\Excel\Facades\Excel::import(
+                new \App\Imports\HitungGajiImport,
+                $request->file('file')
+            );
+
+            return redirect()->route('payroll.hitung-gaji.index')
+                           ->with('success', 'Data hitung gaji berhasil diimport.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['file' => 'Import failed: ' . $e->getMessage()]);
+        }
+    }
+
+    public function downloadTemplate()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\HitungGajiTemplateExport,
+            'template_hitung_gaji.xlsx'
+        );
     }
 }
