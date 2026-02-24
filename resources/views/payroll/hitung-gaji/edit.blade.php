@@ -9,7 +9,7 @@
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Edit Hitung Gaji</h1>
-            <p class="mt-1 text-sm text-gray-600">{{ $hitungGaji->karyawan->nama_karyawan }} - {{ \Carbon\Carbon::createFromFormat('Y-m', $hitungGaji->periode)->format('F Y') }}</p>
+            <p class="mt-1 text-sm text-gray-600">Update salary calculation adjustments</p>
         </div>
         <a href="{{ route('payroll.hitung-gaji.show', $hitungGaji) }}" 
            class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
@@ -18,268 +18,172 @@
     </div>
 
     <!-- Info Alert -->
-    <div class="card p-4 bg-yellow-50 border-yellow-200">
+    <div class="card p-4 bg-blue-50 border-blue-200">
         <div class="flex items-start">
-            <i class="fas fa-info-circle text-yellow-600 mt-0.5 mr-3"></i>
-            <div class="text-sm text-yellow-800">
-                <p class="font-medium mb-1">Edit Mode - Draft Status</p>
-                <p>Data from Acuan Gaji is READ-ONLY. You can only edit adjustments (penyesuaian).</p>
+            <i class="fas fa-info-circle text-blue-600 mt-0.5 mr-3"></i>
+            <div class="text-sm text-blue-800">
+                <p class="font-medium mb-1">Edit Mode:</p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li>Base values from Acuan Gaji cannot be changed (READ-ONLY)</li>
+                    <li>You can only modify adjustments for each field</li>
+                    <li>If you add adjustment, description is REQUIRED</li>
+                    <li>Leave adjustment empty if no changes needed</li>
+                </ul>
             </div>
         </div>
     </div>
 
-    <form method="POST" action="{{ route('payroll.hitung-gaji.update', $hitungGaji) }}">
-        @csrf
-        @method('PUT')
-
-        <!-- Pendapatan Acuan (Read-Only) -->
-        <div class="card p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                <i class="fas fa-lock text-gray-400 mr-2"></i>
-                Pendapatan Acuan (Read-Only)
-            </h3>
-            <div class="bg-gray-50 rounded-lg p-4 space-y-2">
-                @foreach($hitungGaji->pendapatan_acuan as $key => $value)
-                    @if($value > 0)
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-600">{{ ucwords(str_replace('_', ' ', $key)) }}</span>
-                        <span class="font-medium text-gray-900">Rp {{ number_format($value, 0, ',', '.') }}</span>
+    <!-- Form -->
+    <div class="card p-6">
+        <form method="POST" action="{{ route('payroll.hitung-gaji.update', $hitungGaji) }}">
+            @csrf
+            @method('PUT')
+            
+            @php
+            $data = [
+                'acuan_gaji_id' => $hitungGaji->acuan_gaji_id,
+                'karyawan' => [
+                    'nama' => $hitungGaji->karyawan->nama_karyawan,
+                    'jabatan' => $hitungGaji->karyawan->jabatan,
+                    'jenis' => $hitungGaji->karyawan->jenis_karyawan
+                ],
+                'periode' => $hitungGaji->periode,
+                'fields' => [
+                    'gaji_pokok' => $hitungGaji->gaji_pokok,
+                    'bpjs_kesehatan_pendapatan' => $hitungGaji->bpjs_kesehatan_pendapatan,
+                    'bpjs_kecelakaan_kerja_pendapatan' => $hitungGaji->bpjs_kecelakaan_kerja_pendapatan,
+                    'bpjs_kematian_pendapatan' => $hitungGaji->bpjs_kematian_pendapatan,
+                    'bpjs_jht_pendapatan' => $hitungGaji->bpjs_jht_pendapatan,
+                    'bpjs_jp_pendapatan' => $hitungGaji->bpjs_jp_pendapatan,
+                    'tunjangan_prestasi' => $hitungGaji->tunjangan_prestasi,
+                    'tunjangan_konjungtur' => $hitungGaji->tunjangan_konjungtur,
+                    'benefit_ibadah' => $hitungGaji->benefit_ibadah,
+                    'benefit_komunikasi' => $hitungGaji->benefit_komunikasi,
+                    'benefit_operasional' => $hitungGaji->benefit_operasional,
+                    'reward' => $hitungGaji->reward,
+                    'bpjs_kesehatan_pengeluaran' => $hitungGaji->bpjs_kesehatan_pengeluaran,
+                    'bpjs_kecelakaan_kerja_pengeluaran' => $hitungGaji->bpjs_kecelakaan_kerja_pengeluaran,
+                    'bpjs_kematian_pengeluaran' => $hitungGaji->bpjs_kematian_pengeluaran,
+                    'bpjs_jht_pengeluaran' => $hitungGaji->bpjs_jht_pengeluaran,
+                    'bpjs_jp_pengeluaran' => $hitungGaji->bpjs_jp_pengeluaran,
+                    'tabungan_koperasi' => $hitungGaji->tabungan_koperasi,
+                    'koperasi' => $hitungGaji->koperasi,
+                    'kasbon' => $hitungGaji->kasbon,
+                    'umroh' => $hitungGaji->umroh,
+                    'kurban' => $hitungGaji->kurban,
+                    'mutabaah' => $hitungGaji->mutabaah,
+                    'potongan_absensi' => $hitungGaji->potongan_absensi,
+                    'potongan_kehadiran' => $hitungGaji->potongan_kehadiran,
+                ],
+                'nki_info' => null,
+                'absensi_info' => null
+            ];
+            @endphp
+            
+            <!-- Employee Info -->
+            <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-lg mb-6 border border-indigo-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">{{ $data['karyawan']['nama'] }}</h3>
+                        <p class="text-sm text-gray-600">{{ $data['karyawan']['jabatan'] }} - {{ $data['karyawan']['jenis'] }}</p>
                     </div>
-                    @endif
-                @endforeach
-                <div class="border-t border-gray-300 pt-2 mt-2">
-                    <div class="flex justify-between text-sm font-medium">
-                        <span class="text-gray-700">Total</span>
-                        <span class="text-green-600">Rp {{ number_format($hitungGaji->total_pendapatan_acuan, 0, ',', '.') }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Penyesuaian Pendapatan (Editable) -->
-        <div class="card p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-medium text-gray-900">Penyesuaian Pendapatan</h3>
-                <button type="button" onclick="addPendapatan()" class="text-sm text-indigo-600 hover:text-indigo-800">
-                    <i class="fas fa-plus mr-1"></i>Add Adjustment
-                </button>
-            </div>
-            <div id="pendapatanContainer" class="space-y-3">
-                @if($hitungGaji->penyesuaian_pendapatan)
-                    @foreach($hitungGaji->penyesuaian_pendapatan as $index => $item)
-                    <div class="grid grid-cols-12 gap-2 items-start">
-                        <div class="col-span-3">
-                            <input type="text" name="penyesuaian_pendapatan[{{ $index }}][komponen]" 
-                                   value="{{ $item['komponen'] }}"
-                                   class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                                   placeholder="Komponen" required>
-                        </div>
-                        <div class="col-span-3">
-                            <input type="number" name="penyesuaian_pendapatan[{{ $index }}][nominal]" 
-                                   value="{{ $item['nominal'] }}"
-                                   class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                                   placeholder="Nominal" min="0" required>
-                        </div>
-                        <div class="col-span-2">
-                            <select name="penyesuaian_pendapatan[{{ $index }}][tipe]" 
-                                    class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" required>
-                                <option value="+" {{ $item['tipe'] === '+' ? 'selected' : '' }}>+ Tambah</option>
-                                <option value="-" {{ $item['tipe'] === '-' ? 'selected' : '' }}>- Kurang</option>
-                            </select>
-                        </div>
-                        <div class="col-span-3">
-                            <input type="text" name="penyesuaian_pendapatan[{{ $index }}][deskripsi]" 
-                                   value="{{ $item['deskripsi'] }}"
-                                   class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                                   placeholder="Deskripsi" required>
-                        </div>
-                        <div class="col-span-1">
-                            <button type="button" onclick="this.parentElement.parentElement.remove()" 
-                                    class="w-full px-3 py-2 text-sm text-red-600 hover:text-red-800">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    @endforeach
-                @endif
-            </div>
-        </div>
-
-        <!-- Pengeluaran Acuan (Read-Only) -->
-        <div class="card p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                <i class="fas fa-lock text-gray-400 mr-2"></i>
-                Pengeluaran Acuan (Read-Only)
-            </h3>
-            <div class="bg-gray-50 rounded-lg p-4 space-y-2">
-                @foreach($hitungGaji->pengeluaran_acuan as $key => $value)
-                    @if($value > 0)
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-600">{{ ucwords(str_replace('_', ' ', $key)) }}</span>
-                        <span class="font-medium text-gray-900">Rp {{ number_format($value, 0, ',', '.') }}</span>
-                    </div>
-                    @endif
-                @endforeach
-                <div class="border-t border-gray-300 pt-2 mt-2">
-                    <div class="flex justify-between text-sm font-medium">
-                        <span class="text-gray-700">Total</span>
-                        <span class="text-red-600">Rp {{ number_format($hitungGaji->total_pengeluaran_acuan, 0, ',', '.') }}</span>
+                    <div class="text-right">
+                        <p class="text-sm text-gray-600">Periode</p>
+                        <p class="text-lg font-bold text-indigo-600">{{ \Carbon\Carbon::createFromFormat('Y-m', $data['periode'])->format('F Y') }}</p>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Penyesuaian Pengeluaran (Editable) -->
-        <div class="card p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-medium text-gray-900">Penyesuaian Pengeluaran</h3>
-                <button type="button" onclick="addPengeluaran()" class="text-sm text-indigo-600 hover:text-indigo-800">
-                    <i class="fas fa-plus mr-1"></i>Add Adjustment
+            <!-- PENDAPATAN Section -->
+            <div class="border-t-4 border-green-500 bg-green-50 p-6 rounded-lg mb-6">
+                <h3 class="text-lg font-bold text-green-800 mb-4 flex items-center">
+                    <i class="fas fa-arrow-up mr-2"></i>PENDAPATAN (Income)
+                </h3>
+                <div class="space-y-4">
+                    @php
+                    $pendapatanFields = [
+                        'gaji_pokok' => 'Gaji Pokok',
+                        'bpjs_kesehatan_pendapatan' => 'BPJS Kesehatan (Pendapatan)',
+                        'bpjs_kecelakaan_kerja_pendapatan' => 'BPJS Kecelakaan Kerja (Pendapatan)',
+                        'bpjs_kematian_pendapatan' => 'BPJS Kematian (Pendapatan)',
+                        'bpjs_jht_pendapatan' => 'BPJS JHT (Pendapatan)',
+                        'bpjs_jp_pendapatan' => 'BPJS JP (Pendapatan)',
+                        'tunjangan_prestasi' => 'Tunjangan Prestasi (from NKI)',
+                        'tunjangan_konjungtur' => 'Tunjangan Konjungtur',
+                        'benefit_ibadah' => 'Benefit Ibadah',
+                        'benefit_komunikasi' => 'Benefit Komunikasi',
+                        'benefit_operasional' => 'Benefit Operasional',
+                        'reward' => 'Reward'
+                    ];
+                    @endphp
+                    
+                    @foreach($pendapatanFields as $field => $label)
+                    <x-hitung-gaji.field-with-adjustment 
+                        :field="$field" 
+                        :label="$label" 
+                        :value="$data['fields'][$field]"
+                        :adjustment="$hitungGaji->getAdjustment($field)"
+                    />
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- PENGELUARAN Section -->
+            <div class="border-t-4 border-red-500 bg-red-50 p-6 rounded-lg mb-6">
+                <h3 class="text-lg font-bold text-red-800 mb-4 flex items-center">
+                    <i class="fas fa-arrow-down mr-2"></i>PENGELUARAN (Deductions)
+                </h3>
+                <div class="space-y-4">
+                    @php
+                    $pengeluaranFields = [
+                        'bpjs_kesehatan_pengeluaran' => 'BPJS Kesehatan (Pengeluaran)',
+                        'bpjs_kecelakaan_kerja_pengeluaran' => 'BPJS Kecelakaan Kerja (Pengeluaran)',
+                        'bpjs_kematian_pengeluaran' => 'BPJS Kematian (Pengeluaran)',
+                        'bpjs_jht_pengeluaran' => 'BPJS JHT (Pengeluaran)',
+                        'bpjs_jp_pengeluaran' => 'BPJS JP (Pengeluaran)',
+                        'tabungan_koperasi' => 'Tabungan Koperasi',
+                        'koperasi' => 'Koperasi',
+                        'kasbon' => 'Kasbon',
+                        'umroh' => 'Umroh',
+                        'kurban' => 'Kurban',
+                        'mutabaah' => 'Mutabaah',
+                        'potongan_absensi' => 'Potongan Absensi (from Absensi)',
+                        'potongan_kehadiran' => 'Potongan Kehadiran'
+                    ];
+                    @endphp
+                    
+                    @foreach($pengeluaranFields as $field => $label)
+                    <x-hitung-gaji.field-with-adjustment 
+                        :field="$field" 
+                        :label="$label" 
+                        :value="$data['fields'][$field]"
+                        :adjustment="$hitungGaji->getAdjustment($field)"
+                    />
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Keterangan -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Keterangan (Optional)</label>
+                <textarea name="keterangan" 
+                          rows="3"
+                          class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                          placeholder="Additional notes...">{{ old('keterangan', $hitungGaji->keterangan) }}</textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end space-x-3 pt-6 border-t">
+                <a href="{{ route('payroll.hitung-gaji.show', $hitungGaji) }}" 
+                   class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    Cancel
+                </a>
+                <button type="submit" 
+                        class="px-6 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700">
+                    <i class="fas fa-save mr-2"></i>Update
                 </button>
             </div>
-            <div id="pengeluaranContainer" class="space-y-3">
-                @if($hitungGaji->penyesuaian_pengeluaran)
-                    @foreach($hitungGaji->penyesuaian_pengeluaran as $index => $item)
-                    <div class="grid grid-cols-12 gap-2 items-start">
-                        <div class="col-span-3">
-                            <input type="text" name="penyesuaian_pengeluaran[{{ $index }}][komponen]" 
-                                   value="{{ $item['komponen'] }}"
-                                   class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                                   placeholder="Komponen" required>
-                        </div>
-                        <div class="col-span-3">
-                            <input type="number" name="penyesuaian_pengeluaran[{{ $index }}][nominal]" 
-                                   value="{{ $item['nominal'] }}"
-                                   class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                                   placeholder="Nominal" min="0" required>
-                        </div>
-                        <div class="col-span-2">
-                            <select name="penyesuaian_pengeluaran[{{ $index }}][tipe]" 
-                                    class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" required>
-                                <option value="+" {{ $item['tipe'] === '+' ? 'selected' : '' }}>+ Tambah</option>
-                                <option value="-" {{ $item['tipe'] === '-' ? 'selected' : '' }}>- Kurang</option>
-                            </select>
-                        </div>
-                        <div class="col-span-3">
-                            <input type="text" name="penyesuaian_pengeluaran[{{ $index }}][deskripsi]" 
-                                   value="{{ $item['deskripsi'] }}"
-                                   class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                                   placeholder="Deskripsi" required>
-                        </div>
-                        <div class="col-span-1">
-                            <button type="button" onclick="this.parentElement.parentElement.remove()" 
-                                    class="w-full px-3 py-2 text-sm text-red-600 hover:text-red-800">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    @endforeach
-                @endif
-            </div>
-        </div>
-
-        <!-- Catatan Umum -->
-        <div class="card p-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Catatan Umum (Optional)</label>
-            <textarea name="catatan_umum" rows="3" 
-                      class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                      placeholder="Additional notes...">{{ $hitungGaji->catatan_umum }}</textarea>
-        </div>
-
-        <!-- Actions -->
-        <div class="flex justify-end space-x-3">
-            <a href="{{ route('payroll.hitung-gaji.show', $hitungGaji) }}" 
-               class="px-6 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
-                Cancel
-            </a>
-            <button type="submit" 
-                    class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                <i class="fas fa-save mr-2"></i>Update
-            </button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
-
-@push('scripts')
-<script>
-let pendapatanIndex = {{ $hitungGaji->penyesuaian_pendapatan ? count($hitungGaji->penyesuaian_pendapatan) : 0 }};
-let pengeluaranIndex = {{ $hitungGaji->penyesuaian_pengeluaran ? count($hitungGaji->penyesuaian_pengeluaran) : 0 }};
-
-function addPendapatan() {
-    const container = document.getElementById('pendapatanContainer');
-    const row = document.createElement('div');
-    row.className = 'grid grid-cols-12 gap-2 items-start';
-    row.innerHTML = `
-        <div class="col-span-3">
-            <input type="text" name="penyesuaian_pendapatan[${pendapatanIndex}][komponen]" 
-                   class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                   placeholder="Komponen" required>
-        </div>
-        <div class="col-span-3">
-            <input type="number" name="penyesuaian_pendapatan[${pendapatanIndex}][nominal]" 
-                   class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                   placeholder="Nominal" min="0" required>
-        </div>
-        <div class="col-span-2">
-            <select name="penyesuaian_pendapatan[${pendapatanIndex}][tipe]" 
-                    class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" required>
-                <option value="+">+ Tambah</option>
-                <option value="-">- Kurang</option>
-            </select>
-        </div>
-        <div class="col-span-3">
-            <input type="text" name="penyesuaian_pendapatan[${pendapatanIndex}][deskripsi]" 
-                   class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                   placeholder="Deskripsi" required>
-        </div>
-        <div class="col-span-1">
-            <button type="button" onclick="this.parentElement.parentElement.remove()" 
-                    class="w-full px-3 py-2 text-sm text-red-600 hover:text-red-800">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>
-    `;
-    container.appendChild(row);
-    pendapatanIndex++;
-}
-
-function addPengeluaran() {
-    const container = document.getElementById('pengeluaranContainer');
-    const row = document.createElement('div');
-    row.className = 'grid grid-cols-12 gap-2 items-start';
-    row.innerHTML = `
-        <div class="col-span-3">
-            <input type="text" name="penyesuaian_pengeluaran[${pengeluaranIndex}][komponen]" 
-                   class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                   placeholder="Komponen" required>
-        </div>
-        <div class="col-span-3">
-            <input type="number" name="penyesuaian_pengeluaran[${pengeluaranIndex}][nominal]" 
-                   class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                   placeholder="Nominal" min="0" required>
-        </div>
-        <div class="col-span-2">
-            <select name="penyesuaian_pengeluaran[${pengeluaranIndex}][tipe]" 
-                    class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" required>
-                <option value="+">+ Tambah</option>
-                <option value="-">- Kurang</option>
-            </select>
-        </div>
-        <div class="col-span-3">
-            <input type="text" name="penyesuaian_pengeluaran[${pengeluaranIndex}][deskripsi]" 
-                   class="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                   placeholder="Deskripsi" required>
-        </div>
-        <div class="col-span-1">
-            <button type="button" onclick="this.parentElement.parentElement.remove()" 
-                    class="w-full px-3 py-2 text-sm text-red-600 hover:text-red-800">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>
-    `;
-    container.appendChild(row);
-    pengeluaranIndex++;
-}
-</script>
-@endpush
 @endsection

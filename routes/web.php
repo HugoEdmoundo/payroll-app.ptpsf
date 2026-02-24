@@ -125,6 +125,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('hitung-gaji')->name('hitung-gaji.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'index'])->name('index');
             Route::get('/create', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'create'])->name('create');
+            Route::get('/form/{acuanGajiId}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'getFormData'])->name('form');
             Route::post('/', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'store'])->name('store');
             Route::get('/{hitungGaji}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'show'])->name('show');
             Route::get('/{hitungGaji}/edit', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'edit'])->name('edit');

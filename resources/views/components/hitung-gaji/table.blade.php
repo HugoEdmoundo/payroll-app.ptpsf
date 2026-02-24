@@ -34,13 +34,13 @@
                     {{ \Carbon\Carbon::createFromFormat('Y-m', $hitungGaji->periode)->format('F Y') }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">
-                    Rp {{ number_format($hitungGaji->total_pendapatan_akhir, 0, ',', '.') }}
+                    Rp {{ number_format($hitungGaji->total_pendapatan, 0, ',', '.') }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">
-                    Rp {{ number_format($hitungGaji->total_pengeluaran_akhir, 0, ',', '.') }}
+                    Rp {{ number_format($hitungGaji->total_pengeluaran, 0, ',', '.') }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-indigo-600 font-bold">
-                    Rp {{ number_format($hitungGaji->take_home_pay, 0, ',', '.') }}
+                    Rp {{ number_format($hitungGaji->gaji_bersih, 0, ',', '.') }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-center">
                     @if($hitungGaji->status === 'draft')

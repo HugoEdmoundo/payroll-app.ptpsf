@@ -315,4 +315,100 @@ class HitungGajiController extends Controller
             'template_hitung_gaji.xlsx'
         );
     }
+    
+    // AJAX endpoint for loading form data
+    public function getFormData($acuanGajiId)
+    {
+        $acuanGaji = AcuanGaji::with('karyawan')->findOrFail($acuanGajiId);
+        
+        // Get Pengaturan Gaji for calculations
+        $karyawan = $acuanGaji->karyawan;
+        $pengaturan = PengaturanGaji::where('jenis_karyawan', $karyawan->jenis_karyawan)
+                                   ->where('jabatan', $karyawan->jabatan)
+                                   ->where('lokasi_kerja', $karyawan->lokasi_kerja)
+                                   ->first();
+
+        if (!$pengaturan) {
+            return response()->json(['error' => 'Pengaturan gaji tidak ditemukan untuk karyawan ini.'], 404);
+        }
+
+        // Calculate NKI (Tunjangan Prestasi)
+        $nki = NKI::where('id_karyawan', $acuanGaji->id_karyawan)
+                 ->where('periode', $acuanGaji->periode)
+                 ->first();
+        
+        $tunjanganPrestasi = 0;
+        $nkiInfo = null;
+        if ($nki && $pengaturan->tunjangan_operasional > 0) {
+            $tunjanganPrestasi = $pengaturan->tunjangan_operasional * ($nki->persentase_tunjangan / 100);
+            $nkiInfo = [
+                'nilai' => $nki->nilai_nki,
+                'persentase' => $nki->persentase_tunjangan,
+                'acuan' => $pengaturan->tunjangan_operasional
+            ];
+        }
+
+        // Calculate Absensi (Potongan Absensi)
+        $absensi = Absensi::where('id_karyawan', $acuanGaji->id_karyawan)
+                         ->where('periode', $acuanGaji->periode)
+                         ->first();
+        
+        $potonganAbsensi = 0;
+        $absensiInfo = null;
+        if ($absensi) {
+            $totalAbsence = $absensi->absence + $absensi->tanpa_keterangan;
+            $baseAmount = $pengaturan->gaji_pokok + $tunjanganPrestasi + $pengaturan->tunjangan_operasional;
+            $potonganAbsensi = ($totalAbsence / $absensi->jumlah_hari_bulan) * $baseAmount;
+            $absensiInfo = [
+                'absence' => $absensi->absence,
+                'tanpa_keterangan' => $absensi->tanpa_keterangan,
+                'jumlah_hari' => $absensi->jumlah_hari_bulan,
+                'base_amount' => $baseAmount
+            ];
+        }
+
+        // Prepare data
+        $data = [
+            'acuan_gaji_id' => $acuanGaji->id_acuan,
+            'karyawan' => [
+                'nama' => $karyawan->nama_karyawan,
+                'jabatan' => $karyawan->jabatan,
+                'jenis' => $karyawan->jenis_karyawan
+            ],
+            'periode' => $acuanGaji->periode,
+            'fields' => [
+                // Pendapatan
+                'gaji_pokok' => $acuanGaji->gaji_pokok,
+                'bpjs_kesehatan_pendapatan' => $acuanGaji->bpjs_kesehatan_pendapatan,
+                'bpjs_kecelakaan_kerja_pendapatan' => $acuanGaji->bpjs_kecelakaan_kerja_pendapatan,
+                'bpjs_kematian_pendapatan' => $acuanGaji->bpjs_kematian_pendapatan,
+                'bpjs_jht_pendapatan' => $acuanGaji->bpjs_jht_pendapatan,
+                'bpjs_jp_pendapatan' => $acuanGaji->bpjs_jp_pendapatan,
+                'tunjangan_prestasi' => $tunjanganPrestasi,
+                'tunjangan_konjungtur' => $acuanGaji->tunjangan_konjungtur,
+                'benefit_ibadah' => $acuanGaji->benefit_ibadah,
+                'benefit_komunikasi' => $acuanGaji->benefit_komunikasi,
+                'benefit_operasional' => $acuanGaji->benefit_operasional,
+                'reward' => $acuanGaji->reward,
+                // Pengeluaran
+                'bpjs_kesehatan_pengeluaran' => $acuanGaji->bpjs_kesehatan_pengeluaran,
+                'bpjs_kecelakaan_kerja_pengeluaran' => $acuanGaji->bpjs_kecelakaan_kerja_pengeluaran,
+                'bpjs_kematian_pengeluaran' => $acuanGaji->bpjs_kematian_pengeluaran,
+                'bpjs_jht_pengeluaran' => $acuanGaji->bpjs_jht_pengeluaran,
+                'bpjs_jp_pengeluaran' => $acuanGaji->bpjs_jp_pengeluaran,
+                'tabungan_koperasi' => $acuanGaji->tabungan_koperasi,
+                'koperasi' => $acuanGaji->koperasi,
+                'kasbon' => $acuanGaji->kasbon,
+                'umroh' => $acuanGaji->umroh,
+                'kurban' => $acuanGaji->kurban,
+                'mutabaah' => $acuanGaji->mutabaah,
+                'potongan_absensi' => $potonganAbsensi,
+                'potongan_kehadiran' => $acuanGaji->potongan_kehadiran,
+            ],
+            'nki_info' => $nkiInfo,
+            'absensi_info' => $absensiInfo
+        ];
+
+        return view('components.hitung-gaji.form', compact('data'))->render();
+    }
 }
