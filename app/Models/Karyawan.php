@@ -63,11 +63,11 @@ class Karyawan extends Model
         });
     }
 
-    // Masa Kerja dalam format readable (X tahun Y bulan Z hari)
+    // Masa Kerja dalam format readable (X bulan Y hari)
     public function getMasaKerjaReadableAttribute()
     {
         if (!$this->join_date) {
-            return '0 hari';
+            return '0 Hari';
         }
 
         $now = Carbon::now();
@@ -75,25 +75,20 @@ class Karyawan extends Model
         
         $diff = $join->diff($now);
         
+        // Calculate total months and remaining days
+        $totalMonths = ($diff->y * 12) + $diff->m;
+        $days = $diff->d;
+        
         $parts = [];
         
-        if ($diff->y > 0) {
-            $parts[] = $diff->y . ' tahun';
+        if ($totalMonths > 0) {
+            $parts[] = $totalMonths . ' Bulan';
         }
-        if ($diff->m > 0) {
-            $parts[] = $diff->m . ' bulan';
-        }
-        if ($diff->d > 0) {
-            $parts[] = $diff->d . ' hari';
-        }
-        if (empty($parts) && $diff->h > 0) {
-            $parts[] = $diff->h . ' jam';
-        }
-        if (empty($parts) && $diff->i > 0) {
-            $parts[] = $diff->i . ' menit';
+        if ($days > 0) {
+            $parts[] = $days . ' Hari';
         }
         if (empty($parts)) {
-            $parts[] = $diff->s . ' detik';
+            $parts[] = '0 Hari';
         }
         
         return implode(' ', $parts);

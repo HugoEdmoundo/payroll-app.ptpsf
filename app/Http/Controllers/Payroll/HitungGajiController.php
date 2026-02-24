@@ -51,7 +51,17 @@ class HitungGajiController extends Controller
         $hitungGajiList = $query->orderBy('created_at', 'desc')
                                 ->paginate(50);
 
-        return view('payroll.hitung-gaji.periode', compact('hitungGajiList', 'periode'));
+        // Calculate statistics for this periode
+        $stats = HitungGaji::where('periode', $periode)
+                          ->selectRaw('
+                              COUNT(*) as total_karyawan,
+                              SUM(bpjs_kesehatan_pendapatan + bpjs_kecelakaan_kerja_pendapatan + bpjs_kematian_pendapatan + bpjs_jht_pendapatan + bpjs_jp_pendapatan) as total_bpjs,
+                              SUM(gaji_bersih) as total_gaji_bersih,
+                              SUM(total_pengeluaran) as total_pengeluaran_perusahaan
+                          ')
+                          ->first();
+
+        return view('payroll.hitung-gaji.periode', compact('hitungGajiList', 'periode', 'stats'));
     }
 
     public function create(Request $request)

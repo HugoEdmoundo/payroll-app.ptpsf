@@ -105,37 +105,12 @@
 
             <!-- Acuan Gaji with Dropdown -->
             @if(auth()->user()->hasPermission('acuan_gaji.view'))
-            <div x-data="{ open: {{ str_contains($currentRoute, 'acuan-gaji') ? 'true' : 'false' }} }">
-                <button @click="open = !open"
-                        class="w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
-                               {{ str_contains($currentRoute, 'acuan-gaji') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                    <div class="flex items-center">
-                        <i class="fas fa-file-invoice-dollar w-5 mr-3 {{ str_contains($currentRoute, 'acuan-gaji') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
-                        <span class="truncate">Acuan Gaji</span>
-                    </div>
-                    <i class="fas fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
-                </button>
-                
-                <div x-show="open" x-transition class="ml-8 mt-2 space-y-1">
-                    <a href="{{ route('payroll.acuan-gaji.index') }}"
-                       class="block px-4 py-2 text-sm rounded-lg transition-all duration-200
-                              {{ $currentRoute === 'payroll.acuan-gaji.index' && !request('jenis_karyawan') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-100' }}">
-                        Generate
-                    </a>
-                    @foreach($jenisKaryawan as $key => $value)
-                    <a href="{{ route('payroll.acuan-gaji.index', ['jenis_karyawan' => $value]) }}"
-                       class="block px-4 py-2 text-sm rounded-lg transition-all duration-200
-                              {{ request('jenis_karyawan') === $value ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-100' }}">
-                        {{ $value }}
-                    </a>
-                    @endforeach
-                    <a href="{{ route('payroll.acuan-gaji.history') }}"
-                       class="block px-4 py-2 text-sm rounded-lg transition-all duration-200 border-t border-gray-200 mt-2 pt-2
-                              {{ $currentRoute === 'payroll.acuan-gaji.history' ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-100' }}">
-                        <i class="fas fa-history mr-2"></i>History
-                    </a>
-                </div>
-            </div>
+            <a href="{{ route('payroll.Acuan-gaji.index') }}"
+               class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
+                      {{ str_contains($currentRoute, 'Acuan-gaji') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <i class="fas fa-calculator w-5 mr-3 {{ str_contains($currentRoute, 'Acuan-gaji') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                <span class="truncate">Acuan Gaji</span>
+            </a>
             @endif
 
             <!-- Hitung Gaji -->

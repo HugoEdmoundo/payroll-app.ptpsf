@@ -17,6 +17,61 @@
         </a>
     </div>
 
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Total Karyawan -->
+        <div class="card p-6 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-blue-600">Total Karyawan</p>
+                    <p class="text-3xl font-bold text-blue-900 mt-2">{{ number_format($stats->total_karyawan ?? 0) }}</p>
+                </div>
+                <div class="h-12 w-12 rounded-full bg-blue-500 flex items-center justify-center">
+                    <i class="fas fa-users text-white text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total BPJS -->
+        <div class="card p-6 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-green-600">Total BPJS</p>
+                    <p class="text-2xl font-bold text-green-900 mt-2">Rp {{ number_format($stats->total_bpjs ?? 0, 0, ',', '.') }}</p>
+                </div>
+                <div class="h-12 w-12 rounded-full bg-green-500 flex items-center justify-center">
+                    <i class="fas fa-shield-alt text-white text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Gaji Bersih -->
+        <div class="card p-6 bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-indigo-600">Total Gaji Bersih</p>
+                    <p class="text-2xl font-bold text-indigo-900 mt-2">Rp {{ number_format($stats->total_gaji_bersih ?? 0, 0, ',', '.') }}</p>
+                </div>
+                <div class="h-12 w-12 rounded-full bg-indigo-500 flex items-center justify-center">
+                    <i class="fas fa-money-bill-wave text-white text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Pengeluaran Perusahaan -->
+        <div class="card p-6 bg-gradient-to-br from-red-50 to-red-100 border-red-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-red-600">Pengeluaran Perusahaan</p>
+                    <p class="text-2xl font-bold text-red-900 mt-2">Rp {{ number_format($stats->total_pengeluaran_perusahaan ?? 0, 0, ',', '.') }}</p>
+                </div>
+                <div class="h-12 w-12 rounded-full bg-red-500 flex items-center justify-center">
+                    <i class="fas fa-building text-white text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Search -->
     <div class="card p-4">
         <form method="GET" action="{{ route('payroll.hitung-gaji.periode', $periode) }}">

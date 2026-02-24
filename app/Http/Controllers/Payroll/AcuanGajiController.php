@@ -65,6 +65,16 @@ class AcuanGajiController extends Controller
         $acuanGajiList = $query->orderBy('id_acuan', 'desc')
                               ->paginate(50);
 
+        // Calculate statistics for this periode
+        $stats = AcuanGaji::where('periode', $periode)
+                         ->selectRaw('
+                             COUNT(*) as total_karyawan,
+                             SUM(bpjs_kesehatan_pendapatan + bpjs_kecelakaan_kerja_pendapatan + bpjs_kematian_pendapatan + bpjs_jht_pendapatan + bpjs_jp_pendapatan) as total_bpjs,
+                             SUM(gaji_bersih) as total_gaji_bersih,
+                             SUM(total_pengeluaran) as total_pengeluaran_perusahaan
+                         ')
+                         ->first();
+
         // Get unique lokasi kerja and jabatan for filters
         $lokasiKerjaList = Karyawan::select('lokasi_kerja')
                                   ->distinct()
@@ -76,7 +86,7 @@ class AcuanGajiController extends Controller
                               ->orderBy('jabatan')
                               ->pluck('jabatan');
 
-        return view('payroll.acuan-gaji.periode', compact('acuanGajiList', 'periode', 'lokasiKerjaList', 'jabatanList'));
+        return view('payroll.acuan-gaji.periode', compact('acuanGajiList', 'periode', 'lokasiKerjaList', 'jabatanList', 'stats'));
     }
 
     // Generate Acuan Gaji for all employees in a periode
