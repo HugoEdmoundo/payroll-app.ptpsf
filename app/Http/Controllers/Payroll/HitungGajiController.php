@@ -15,50 +15,63 @@ class HitungGajiController extends Controller
 {
     public function index(Request $request)
     {
-        $query = HitungGaji::with(['karyawan', 'acuanGaji']);
+        // Get all unique periodes from Acuan Gaji
+        $periodes = AcuanGaji::select('periode')
+                            ->distinct()
+                            ->orderBy('periode', 'desc')
+                            ->get()
+                            ->map(function($item) {
+                                // Count acuan gaji for this periode
+                                $totalAcuan = AcuanGaji::where('periode', $item->periode)->count();
+                                
+                                // Count hitung gaji for this periode
+                                $totalHitung = HitungGaji::where('periode', $item->periode)->count();
+                                
+                                // Count by status
+                                $draft = HitungGaji::where('periode', $item->periode)->where('status', 'draft')->count();
+                                $preview = HitungGaji::where('periode', $item->periode)->where('status', 'preview')->count();
+                                $approved = HitungGaji::where('periode', $item->periode)->where('status', 'approved')->count();
+                                
+                                return [
+                                    'periode' => $item->periode,
+                                    'total_acuan' => $totalAcuan,
+                                    'total_hitung' => $totalHitung,
+                                    'pending' => $totalAcuan - $totalHitung,
+                                    'draft' => $draft,
+                                    'preview' => $preview,
+                                    'approved' => $approved,
+                                ];
+                            });
 
-        // Filter by periode
-        if ($request->has('periode') && $request->periode != '') {
-            $query->where('periode', $request->periode);
-        }
-
-        // Filter by status
-        if ($request->has('status') && $request->status != '') {
-            $query->where('status', $request->status);
-        }
-
-        // Search
-        if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->whereHas('karyawan', function($q) use ($search) {
-                $q->where('nama_karyawan', 'like', "%{$search}%");
-            });
-        }
-
-        $hitungGajiList = $query->orderBy('periode', 'desc')
-                                ->orderBy('created_at', 'desc')
-                                ->paginate(15);
-
-        return view('payroll.hitung-gaji.index', compact('hitungGajiList'));
+        return view('payroll.hitung-gaji.index', compact('periodes'));
     }
 
     public function create(Request $request)
     {
-        // Get periode from request or default to current month
-        $periode = $request->get('periode', date('Y-m'));
+        // Periode is required
+        if (!$request->has('periode')) {
+            return redirect()->route('payroll.hitung-gaji.index')
+                           ->with('error', 'Silakan pilih periode terlebih dahulu.');
+        }
         
-        // Get acuan gaji for this periode that don't have hitung gaji yet
+        $periode = $request->get('periode');
+        
+        // Get all acuan gaji for this periode
         $acuanGajiList = AcuanGaji::with('karyawan')
                                   ->where('periode', $periode)
-                                  ->whereDoesntHave('hitungGaji')
                                   ->get();
         
         if ($acuanGajiList->isEmpty()) {
             return redirect()->route('payroll.hitung-gaji.index')
-                           ->with('error', 'Tidak ada acuan gaji untuk periode ini atau semua sudah diproses.');
+                           ->with('error', 'Tidak ada acuan gaji untuk periode ini.');
         }
 
-        return view('payroll.hitung-gaji.create', compact('acuanGajiList', 'periode'));
+        // Get existing hitung gaji for this periode
+        $existingHitungGaji = HitungGaji::where('periode', $periode)
+                                       ->pluck('karyawan_id')
+                                       ->toArray();
+
+        return view('payroll.hitung-gaji.create', compact('acuanGajiList', 'periode', 'existingHitungGaji'));
     }
 
     public function store(Request $request)
