@@ -55,12 +55,14 @@ class PermissionSeeder extends Seeder
             ['name' => 'Create Acuan Gaji', 'key' => 'acuan_gaji.create', 'group' => 'Payroll', 'module' => 'acuan_gaji', 'action_type' => 'create', 'description' => 'Create new acuan gaji'],
             ['name' => 'Edit Acuan Gaji', 'key' => 'acuan_gaji.edit', 'group' => 'Payroll', 'module' => 'acuan_gaji', 'action_type' => 'edit', 'description' => 'Edit acuan gaji data'],
             ['name' => 'Delete Acuan Gaji', 'key' => 'acuan_gaji.delete', 'group' => 'Payroll', 'module' => 'acuan_gaji', 'action_type' => 'delete', 'description' => 'Delete acuan gaji'],
+            ['name' => 'Generate Acuan Gaji', 'key' => 'acuan_gaji.generate', 'group' => 'Payroll', 'module' => 'acuan_gaji', 'action_type' => 'generate', 'description' => 'Generate acuan gaji for all employees'],
             ['name' => 'Import Acuan Gaji', 'key' => 'acuan_gaji.import', 'group' => 'Payroll', 'module' => 'acuan_gaji', 'action_type' => 'import', 'description' => 'Import acuan gaji from Excel'],
             ['name' => 'Export Acuan Gaji', 'key' => 'acuan_gaji.export', 'group' => 'Payroll', 'module' => 'acuan_gaji', 'action_type' => 'export', 'description' => 'Export acuan gaji to Excel'],
 
             // Hitung Gaji Module
             ['name' => 'View Hitung Gaji', 'key' => 'hitung_gaji.view', 'group' => 'Payroll', 'module' => 'hitung_gaji', 'action_type' => 'view', 'description' => 'View hitung gaji data'],
             ['name' => 'Create Hitung Gaji', 'key' => 'hitung_gaji.create', 'group' => 'Payroll', 'module' => 'hitung_gaji', 'action_type' => 'create', 'description' => 'Calculate salary'],
+            ['name' => 'Edit Hitung Gaji', 'key' => 'hitung_gaji.edit', 'group' => 'Payroll', 'module' => 'hitung_gaji', 'action_type' => 'edit', 'description' => 'Edit hitung gaji adjustments'],
             ['name' => 'Delete Hitung Gaji', 'key' => 'hitung_gaji.delete', 'group' => 'Payroll', 'module' => 'hitung_gaji', 'action_type' => 'delete', 'description' => 'Delete hitung gaji'],
             ['name' => 'Export Hitung Gaji', 'key' => 'hitung_gaji.export', 'group' => 'Payroll', 'module' => 'hitung_gaji', 'action_type' => 'export', 'description' => 'Export hitung gaji to Excel'],
 

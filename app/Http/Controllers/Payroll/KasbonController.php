@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Payroll;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kasbon;
+use App\Models\KasbonCicilan;
 use App\Models\Karyawan;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class KasbonController extends Controller
 {
@@ -63,7 +65,25 @@ class KasbonController extends Controller
             'keterangan' => 'nullable|string',
         ]);
 
-        Kasbon::create($request->all());
+        $kasbon = Kasbon::create($request->all());
+
+        // If Cicilan method, create cicilan records
+        if ($kasbon->metode_pembayaran === 'Cicilan' && $kasbon->jumlah_cicilan > 0) {
+            $nominalPerCicilan = $kasbon->nominal / $kasbon->jumlah_cicilan;
+            $startPeriode = Carbon::createFromFormat('Y-m', $kasbon->periode);
+            
+            for ($i = 1; $i <= $kasbon->jumlah_cicilan; $i++) {
+                $cicilanPeriode = $startPeriode->copy()->addMonths($i - 1)->format('Y-m');
+                
+                KasbonCicilan::create([
+                    'id_kasbon' => $kasbon->id_kasbon,
+                    'cicilan_ke' => $i,
+                    'periode' => $cicilanPeriode,
+                    'nominal_cicilan' => $nominalPerCicilan,
+                    'status' => 'Pending',
+                ]);
+            }
+        }
 
         return redirect()->route('payroll.kasbon.index')
                         ->with('success', 'Data kasbon berhasil ditambahkan.');

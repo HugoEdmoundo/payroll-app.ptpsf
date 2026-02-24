@@ -123,4 +123,10 @@ class AcuanGaji extends Model
     {
         return $this->belongsTo(Karyawan::class, 'id_karyawan', 'id_karyawan');
     }
+
+    public function hitungGaji()
+    {
+        return $this->hasOne(HitungGaji::class, 'acuan_gaji_id', 'id_acuan');
+    }
+
 }

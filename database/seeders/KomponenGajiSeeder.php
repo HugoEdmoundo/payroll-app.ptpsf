@@ -7,6 +7,7 @@ use App\Models\Karyawan;
 use App\Models\NKI;
 use App\Models\Absensi;
 use App\Models\Kasbon;
+use App\Models\KasbonCicilan;
 use Carbon\Carbon;
 
 class KomponenGajiSeeder extends Seeder
@@ -126,6 +127,7 @@ class KomponenGajiSeeder extends Seeder
         foreach ($karyawansWithKasbon as $karyawan) {
             $metodePembayaran = rand(0, 1) ? 'Langsung' : 'Cicilan';
             $nominal = rand(500000, 5000000); // 500rb - 5jt
+            $jumlahCicilan = $metodePembayaran === 'Cicilan' ? rand(3, 12) : null;
             
             $kasbon = Kasbon::create([
                 'id_karyawan' => $karyawan->id_karyawan,
@@ -134,10 +136,30 @@ class KomponenGajiSeeder extends Seeder
                 'nominal' => $nominal,
                 'deskripsi' => $deskripsiOptions[array_rand($deskripsiOptions)],
                 'metode_pembayaran' => $metodePembayaran,
-                'jumlah_cicilan' => $metodePembayaran === 'Cicilan' ? rand(3, 12) : 1,
+                'jumlah_cicilan' => $jumlahCicilan,
                 'cicilan_terbayar' => 0,
                 'status_pembayaran' => 'Pending',
             ]);
+            
+            // Create cicilan records if method is Cicilan
+            if ($metodePembayaran === 'Cicilan' && $jumlahCicilan > 0) {
+                $nominalPerCicilan = $nominal / $jumlahCicilan;
+                $startPeriode = Carbon::createFromFormat('Y-m', $periode);
+                
+                for ($i = 1; $i <= $jumlahCicilan; $i++) {
+                    $cicilanPeriode = $startPeriode->copy()->addMonths($i - 1)->format('Y-m');
+                    
+                    KasbonCicilan::create([
+                        'id_kasbon' => $kasbon->id_kasbon,
+                        'cicilan_ke' => $i,
+                        'periode' => $cicilanPeriode,
+                        'nominal_cicilan' => $nominalPerCicilan,
+                        'status' => 'Pending',
+                    ]);
+                }
+                
+                $this->command->info("    → Created {$jumlahCicilan} cicilan for kasbon #{$kasbon->id_kasbon}");
+            }
         }
         
         $this->command->info("  ✓ Created Kasbon for {$karyawansWithKasbon->count()} karyawan");

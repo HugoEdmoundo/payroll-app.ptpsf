@@ -159,37 +159,19 @@ class AcuanGajiController extends Controller
                 continue; // Skip if no salary configuration
             }
 
-            // Get NKI
-            $nki = NKI::where('id_karyawan', $karyawan->id_karyawan)
-                     ->where('periode', $periode)
-                     ->first();
+            // Get Kasbon - handle both Langsung and Cicilan
+            $kasbonTotal = 0;
             
-            // Calculate Tunjangan Prestasi
-            $tunjanganPrestasi = 0;
-            if ($nki && $pengaturan->tunjangan_operasional > 0) {
-                $tunjanganPrestasi = $pengaturan->tunjangan_operasional * ($nki->persentase_tunjangan / 100);
+            // Get all pending kasbon for this employee
+            $kasbonList = Kasbon::where('id_karyawan', $karyawan->id_karyawan)
+                               ->where('status_pembayaran', '!=', 'Lunas')
+                               ->get();
+            
+            foreach ($kasbonList as $kasbon) {
+                $kasbonTotal += $kasbon->getPotonganForPeriode($periode);
             }
 
-            // Get Absensi
-            $absensi = Absensi::where('id_karyawan', $karyawan->id_karyawan)
-                             ->where('periode', $periode)
-                             ->first();
-            
-            // Calculate Potongan Absensi
-            $potonganAbsensi = 0;
-            if ($absensi) {
-                $totalAbsence = $absensi->absence + $absensi->tanpa_keterangan;
-                $baseAmount = $pengaturan->gaji_pokok + $tunjanganPrestasi + $pengaturan->tunjangan_operasional;
-                $potonganAbsensi = ($totalAbsence / $absensi->jumlah_hari_bulan) * $baseAmount;
-            }
-
-            // Get Kasbon
-            $kasbonTotal = Kasbon::where('id_karyawan', $karyawan->id_karyawan)
-                                ->where('periode', $periode)
-                                ->where('status_pembayaran', 'Pending')
-                                ->sum('nominal');
-
-            // Create Acuan Gaji - Sync all data from Pengaturan Gaji and Komponen
+            // Create Acuan Gaji - ONLY Kasbon from Komponen, NKI & Absensi will be in Hitung Gaji
             AcuanGaji::create([
                 'id_karyawan' => $karyawan->id_karyawan,
                 'periode' => $periode,
@@ -198,15 +180,16 @@ class AcuanGajiController extends Controller
                 'bpjs_kesehatan_pendapatan' => $pengaturan->bpjs_kesehatan,
                 'bpjs_kecelakaan_kerja_pendapatan' => $pengaturan->bpjs_kecelakaan_kerja,
                 'bpjs_kematian_pendapatan' => $pengaturan->bpjs_ketenagakerjaan,
-                'tunjangan_prestasi' => $tunjanganPrestasi, // From NKI
                 'benefit_operasional' => $pengaturan->tunjangan_operasional,
-                // Pengeluaran (from Komponen + Manual)
+                // Pengeluaran (ONLY Kasbon from Komponen)
                 'bpjs_kesehatan_pengeluaran' => $pengaturan->bpjs_kesehatan,
                 'bpjs_kecelakaan_kerja_pengeluaran' => $pengaturan->bpjs_kecelakaan_kerja,
                 'bpjs_kematian_pengeluaran' => $pengaturan->bpjs_ketenagakerjaan,
                 'koperasi' => $pengaturan->potongan_koperasi,
-                'kasbon' => $kasbonTotal, // From Kasbon
-                'potongan_absensi' => $potonganAbsensi, // From Absensi
+                'kasbon' => $kasbonTotal, // From Kasbon (Langsung/Cicilan)
+                // Empty fields - NKI & Absensi will be calculated in Hitung Gaji
+                'tunjangan_prestasi' => 0,
+                'potongan_absensi' => 0,
                 // Empty fields will be filled manually by user
                 'bpjs_jht_pendapatan' => 0,
                 'bpjs_jp_pendapatan' => 0,

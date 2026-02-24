@@ -65,6 +65,11 @@ class Kasbon extends Model
     {
         return $this->belongsTo(Karyawan::class, 'id_karyawan', 'id_karyawan');
     }
+    
+    public function cicilan()
+    {
+        return $this->hasMany(KasbonCicilan::class, 'id_kasbon', 'id_kasbon')->orderBy('cicilan_ke');
+    }
 
     // Get nominal per cicilan
     public function getNominalPerCicilanAttribute()
@@ -73,5 +78,24 @@ class Kasbon extends Model
             return $this->nominal / $this->jumlah_cicilan;
         }
         return 0;
+    }
+    
+    // Get cicilan untuk periode tertentu
+    public function getCicilanForPeriode($periode)
+    {
+        return $this->cicilan()->where('periode', $periode)->first();
+    }
+    
+    // Get potongan kasbon untuk periode tertentu (untuk acuan gaji)
+    public function getPotonganForPeriode($periode)
+    {
+        if ($this->metode_pembayaran === 'Langsung') {
+            // Jika langsung, potong di periode kasbon dibuat
+            return $this->periode === $periode ? $this->nominal : 0;
+        } else {
+            // Jika cicilan, ambil nominal cicilan untuk periode tersebut
+            $cicilan = $this->getCicilanForPeriode($periode);
+            return $cicilan ? $cicilan->nominal_cicilan : 0;
+        }
     }
 }

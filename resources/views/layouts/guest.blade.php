@@ -12,6 +12,8 @@
     
     <!-- Tailwind CSS CDN -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <link rel="icon" href="{{ asset('images/LOGOPSF_v4fq0w.jpg') }}" type="image/x-icon">
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     @yield('content')

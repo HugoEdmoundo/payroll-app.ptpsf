@@ -15,7 +15,7 @@
             <div class="flex items-center space-x-3">
                 
                 <div class="h-12 w-12 rounded-xl overflow-hidden shadow-sm">
-                    <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1768808187/LOGOPSF_v4fq0w.jpg"
+                    <img src="{{ asset('images/LOGOPSF_v4fq0w.jpg') }}"
                          alt="Logo PSF"
                          class="h-full w-full object-cover"
                          onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\'h-9 w-9 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold\'>P</div>';">
@@ -136,6 +136,16 @@
                     </a>
                 </div>
             </div>
+            @endif
+
+            <!-- Hitung Gaji -->
+            @if(auth()->user()->hasPermission('hitung_gaji.view'))
+            <a href="{{ route('payroll.hitung-gaji.index') }}"
+               class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
+                      {{ str_contains($currentRoute, 'hitung-gaji') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <i class="fas fa-calculator w-5 mr-3 {{ str_contains($currentRoute, 'hitung-gaji') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                <span class="truncate">Hitung Gaji</span>
+            </a>
             @endif
 
             <!-- System Settings -->
