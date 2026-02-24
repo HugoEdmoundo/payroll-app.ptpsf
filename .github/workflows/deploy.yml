@@ -6,17 +6,48 @@ on:
       - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to VPS
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+
+      - name: Install Composer Dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install NPM Dependencies
+        run: npm ci
+
+      - name: Build Assets
+        run: npm run build
+
+      - name: Upload Build to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "public/build"
+          target: "/opt/just-atesting/public"
+          overwrite: true
+
+      - name: Run Deploy Commands
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          port: 22
           command_timeout: 20m
           script: |
             cd /opt/just-atesting
@@ -26,9 +57,6 @@ jobs:
 
             composer install --no-dev --optimize-autoloader --no-interaction
 
-            npm ci
-            npm run build
-
             php artisan migrate --force
             php artisan db:seed --force
 
@@ -36,3 +64,5 @@ jobs:
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
+
+            chown -R www-data:www-data storage bootstrap/cache
