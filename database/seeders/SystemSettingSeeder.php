@@ -36,7 +36,7 @@ class SystemSettingSeeder extends Seeder
             
             // Status Karyawan
             ['group' => 'status_karyawan', 'key' => 'active', 'value' => 'Active', 'order' => 1],
-            ['group' => 'status_karyawan', 'key' => 'nonactive', 'value' => 'Non-Active', 'order' => 2],
+            ['group' => 'status_karyawan', 'key' => 'non_active', 'value' => 'Non-Active', 'order' => 2],
             ['group' => 'status_karyawan', 'key' => 'resign', 'value' => 'Resign', 'order' => 3],
             
             // Lokasi Kerja

@@ -148,6 +148,50 @@ class KaryawanSeeder extends Seeder
                 'no_telp_istri' => null,
                 'status_karyawan' => 'Active',
             ],
+            [
+                'nama_karyawan' => 'Hendra Kusuma',
+                'email' => 'hendra.kusuma@ptpsf.com',
+                'no_telp' => '081234567897',
+                'join_date' => Carbon::now()->subYears(1)->subMonths(3),
+                'masa_kerja' => 15,
+                'jabatan' => 'Senior Leader',
+                'lokasi_kerja' => 'West Java',
+                'jenis_karyawan' => 'Organik',
+                'status_pegawai' => 'Kontrak',
+                'npwp' => '12.345.678.9-015.000',
+                'bpjs_kesehatan_no' => '0001234567895',
+                'bpjs_kecelakaan_kerja_no' => '0001234567895',
+                'bpjs_tk_no' => '0001234567895',
+                'no_rekening' => '7234567890',
+                'bank' => 'BCA',
+                'status_perkawinan' => 'Kawin',
+                'nama_istri' => 'Rina Wati',
+                'jumlah_anak' => 1,
+                'no_telp_istri' => '081234567898',
+                'status_karyawan' => 'Non-Active',
+            ],
+            [
+                'nama_karyawan' => 'Indra Permana',
+                'email' => 'indra.permana@ptpsf.com',
+                'no_telp' => '081234567899',
+                'join_date' => Carbon::now()->subYears(2)->subMonths(6),
+                'masa_kerja' => 30,
+                'jabatan' => 'Project Manager',
+                'lokasi_kerja' => 'Central Java',
+                'jenis_karyawan' => 'Konsultan',
+                'status_pegawai' => 'Kontrak',
+                'npwp' => '12.345.678.9-016.000',
+                'bpjs_kesehatan_no' => '0001234567896',
+                'bpjs_kecelakaan_kerja_no' => '0001234567896',
+                'bpjs_tk_no' => '0001234567896',
+                'no_rekening' => '8234567890',
+                'bank' => 'Mandiri',
+                'status_perkawinan' => 'Kawin',
+                'nama_istri' => 'Lina Marlina',
+                'jumlah_anak' => 2,
+                'no_telp_istri' => '081234567900',
+                'status_karyawan' => 'Resign',
+            ],
         ];
 
         foreach ($karyawans as $data) {
@@ -155,5 +199,8 @@ class KaryawanSeeder extends Seeder
         }
 
         $this->command->info('Karyawan seeded successfully! Created ' . count($karyawans) . ' karyawan.');
+        $this->command->info('  - Active: 6 karyawan');
+        $this->command->info('  - Non-Active: 1 karyawan');
+        $this->command->info('  - Resign: 1 karyawan');
     }
 }

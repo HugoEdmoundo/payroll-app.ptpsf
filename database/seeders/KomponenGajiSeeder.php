@@ -19,7 +19,7 @@ class KomponenGajiSeeder extends Seeder
     {
         $this->command->info('Seeding Komponen Gaji (NKI, Absensi, Kasbon)...');
         
-        // Ambil semua karyawan aktif
+        // Ambil HANYA karyawan ACTIVE
         $karyawans = Karyawan::where('status_karyawan', 'Active')->get();
         
         if ($karyawans->count() === 0) {
@@ -27,18 +27,20 @@ class KomponenGajiSeeder extends Seeder
             return;
         }
         
+        $this->command->info("Found {$karyawans->count()} active karyawan");
+        
         $periode = Carbon::now()->format('Y-m'); // Periode bulan ini
         $jumlahHariBulan = Carbon::now()->daysInMonth;
         
         $this->command->info("Creating data for periode: {$periode}");
         
-        // Seed NKI untuk setiap karyawan
+        // Seed NKI untuk setiap karyawan ACTIVE
         $this->seedNKI($karyawans, $periode);
         
-        // Seed Absensi untuk setiap karyawan
+        // Seed Absensi untuk setiap karyawan ACTIVE
         $this->seedAbsensi($karyawans, $periode, $jumlahHariBulan);
         
-        // Seed Kasbon untuk beberapa karyawan (random)
+        // Seed Kasbon untuk beberapa karyawan ACTIVE (random)
         $this->seedKasbon($karyawans, $periode);
         
         $this->command->info('Komponen Gaji seeded successfully!');

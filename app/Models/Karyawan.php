@@ -63,7 +63,43 @@ class Karyawan extends Model
         });
     }
 
-    // Masa Kerja dalam format DD:HH:MM:SS
+    // Masa Kerja dalam format readable (X tahun Y bulan Z hari)
+    public function getMasaKerjaReadableAttribute()
+    {
+        if (!$this->join_date) {
+            return '0 hari';
+        }
+
+        $now = Carbon::now();
+        $join = Carbon::parse($this->join_date);
+        
+        $diff = $join->diff($now);
+        
+        $parts = [];
+        
+        if ($diff->y > 0) {
+            $parts[] = $diff->y . ' tahun';
+        }
+        if ($diff->m > 0) {
+            $parts[] = $diff->m . ' bulan';
+        }
+        if ($diff->d > 0) {
+            $parts[] = $diff->d . ' hari';
+        }
+        if (empty($parts) && $diff->h > 0) {
+            $parts[] = $diff->h . ' jam';
+        }
+        if (empty($parts) && $diff->i > 0) {
+            $parts[] = $diff->i . ' menit';
+        }
+        if (empty($parts)) {
+            $parts[] = $diff->s . ' detik';
+        }
+        
+        return implode(' ', $parts);
+    }
+    
+    // Masa Kerja dalam format DD:HH:MM:SS (untuk backward compatibility)
     public function getMasaKerjaAttribute()
     {
         if (!$this->join_date) {

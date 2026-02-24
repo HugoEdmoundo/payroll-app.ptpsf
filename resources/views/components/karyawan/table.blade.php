@@ -54,21 +54,26 @@
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 font-mono">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                         <i class="far fa-hourglass-half mr-1"></i>
-                        {{ $k->masa_kerja }}
+                        {{ $k->masa_kerja_readable }}
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    @if($k->status_pegawai == 'Aktif')
+                    @if($k->status_karyawan == 'Active')
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                         <i class="fas fa-circle mr-1 text-[6px] text-green-400"></i>
-                        {{ $k->status_pegawai }}
+                        Active
+                    </span>
+                    @elseif($k->status_karyawan == 'Non-Active')
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        <i class="fas fa-circle mr-1 text-[6px] text-yellow-400"></i>
+                        Non-Active
                     </span>
                     @else
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                         <i class="fas fa-circle mr-1 text-[6px] text-red-400"></i>
-                        {{ $k->status_pegawai }}
+                        Resign
                     </span>
                     @endif
                 </td>
