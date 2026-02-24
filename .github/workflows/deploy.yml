@@ -17,15 +17,16 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
+          command_timeout: 20m
           script: |
             cd /opt/just-atesting
 
             git fetch origin
             git reset --hard origin/main
 
-            composer install --no-dev --optimize-autoloader
+            composer install --no-dev --optimize-autoloader --no-interaction
 
-            npm install
+            npm ci
             npm run build
 
             php artisan migrate --force
