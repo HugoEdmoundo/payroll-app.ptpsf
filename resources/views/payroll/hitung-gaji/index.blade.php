@@ -9,103 +9,150 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Hitung Gaji</h1>
-            <p class="mt-1 text-sm text-gray-600">Pilih periode untuk memproses perhitungan gaji</p>
+            <p class="mt-1 text-sm text-gray-600">Kelola perhitungan gaji karyawan dengan adjustment</p>
         </div>
     </div>
 
-    <!-- Info Alert -->
-    <div class="card p-4 bg-blue-50 border-blue-200">
-        <div class="flex items-start">
-            <i class="fas fa-info-circle text-blue-600 mt-0.5 mr-3"></i>
-            <div class="text-sm text-blue-800">
-                <p class="font-medium mb-1">Cara Kerja:</p>
-                <ul class="list-disc list-inside space-y-1">
-                    <li>Pilih periode yang ingin diproses</li>
-                    <li>Sistem akan menampilkan semua karyawan untuk periode tersebut</li>
-                    <li>Data dari Acuan Gaji + perhitungan NKI & Absensi sudah otomatis terisi</li>
-                    <li>Anda tinggal tambahkan adjustment jika diperlukan (optional)</li>
-                    <li>Setelah selesai, approve untuk generate slip gaji</li>
-                </ul>
+    <!-- Search -->
+    <div class="card p-4">
+        <form method="GET" action="{{ route('payroll.hitung-gaji.index') }}" id="searchForm">
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <input type="text" 
+                       name="search" 
+                       value="{{ request('search') }}"
+                       placeholder="Cari berdasarkan nama, jenis karyawan, lokasi kerja, jabatan..."
+                       class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                       onkeyup="if(event.key === 'Enter') this.form.submit()">
             </div>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Karyawan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Periode</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Gaji Pokok</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pendapatan</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pengeluaran</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Gaji Bersih</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($hitungGajiList as $hitung)
+                    <tr class="hover:bg-gray-50 cursor-pointer transition" 
+                        onclick="openModal({{ $hitung->karyawan_id }}, '{{ $hitung->periode }}', '{{ $hitung->karyawan->nama_karyawan }}')">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <div class="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-semibold">
+                                        {{ strtoupper(substr($hitung->karyawan->nama_karyawan, 0, 2)) }}
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">{{ $hitung->karyawan->nama_karyawan }}</div>
+                                    <div class="text-sm text-gray-500">{{ $hitung->karyawan->jabatan }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ \Carbon\Carbon::createFromFormat('Y-m', $hitung->periode)->format('F Y') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                            Rp {{ number_format($hitung->gaji_pokok, 0, ',', '.') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">
+                            Rp {{ number_format($hitung->total_pendapatan, 0, ',', '.') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">
+                            Rp {{ number_format($hitung->total_pengeluaran, 0, ',', '.') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-indigo-600 font-bold">
+                            Rp {{ number_format($hitung->gaji_bersih, 0, ',', '.') }}
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center">
+                            <i class="fas fa-calculator text-gray-400 text-5xl mb-4"></i>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Data</h3>
+                            <p class="text-gray-500">Silakan generate Acuan Gaji terlebih dahulu.</p>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- Periode List -->
-    <div class="card p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Daftar Periode</h3>
+    <!-- Pagination -->
+    @if($hitungGajiList->hasPages())
+    <div class="flex justify-center">
+        {{ $hitungGajiList->links() }}
+    </div>
+    @endif
+</div>
+
+<!-- Modal -->
+<div id="hitungGajiModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-5 mx-auto p-5 border w-full max-w-6xl shadow-lg rounded-md bg-white mb-10">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h3 class="text-lg font-medium text-gray-900">Hitung Gaji</h3>
+                <p class="text-sm text-gray-600" id="modalEmployeeInfo"></p>
+            </div>
+            <button type="button" onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
         
-        @if($periodes->count() > 0)
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            @foreach($periodes as $item)
-            <div class="border border-gray-200 rounded-lg p-5 hover:border-indigo-500 hover:shadow-lg transition">
-                <div class="flex items-center justify-between mb-4">
-                    <div>
-                        <h4 class="text-xl font-bold text-gray-900">
-                            {{ \Carbon\Carbon::createFromFormat('Y-m', $item['periode'])->format('F Y') }}
-                        </h4>
-                        <p class="text-sm text-gray-500">{{ $item['periode'] }}</p>
-                    </div>
-                    <div class="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
-                        <i class="fas fa-calendar-alt text-white text-xl"></i>
-                    </div>
-                </div>
-
-                <!-- Statistics -->
-                <div class="space-y-2 mb-4">
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="text-gray-600">Total Karyawan:</span>
-                        <span class="font-semibold text-gray-900">{{ $item['total_acuan'] }}</span>
-                    </div>
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="text-gray-600">Sudah Diproses:</span>
-                        <span class="font-semibold text-green-600">{{ $item['total_hitung'] }}</span>
-                    </div>
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="text-gray-600">Belum Diproses:</span>
-                        <span class="font-semibold text-orange-600">{{ $item['pending'] }}</span>
-                    </div>
-                </div>
-
-                <!-- Status Badges -->
-                @if($item['total_hitung'] > 0)
-                <div class="flex flex-wrap gap-2 mb-4">
-                    @if($item['draft'] > 0)
-                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                        {{ $item['draft'] }} Draft
-                    </span>
-                    @endif
-                    @if($item['preview'] > 0)
-                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                        {{ $item['preview'] }} Preview
-                    </span>
-                    @endif
-                    @if($item['approved'] > 0)
-                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                        {{ $item['approved'] }} Approved
-                    </span>
-                    @endif
-                </div>
-                @endif
-
-                <!-- Action Button -->
-                <a href="{{ route('payroll.hitung-gaji.create', ['periode' => $item['periode']]) }}" 
-                   class="block w-full px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-center font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700 transition">
-                    <i class="fas fa-arrow-right mr-2"></i>Proses Periode Ini
-                </a>
-            </div>
-            @endforeach
+        <div id="modalContent" class="text-center py-8">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+            <p class="mt-4 text-gray-600">Loading...</p>
         </div>
-        @else
-        <div class="text-center py-12">
-            <i class="fas fa-calendar-times text-gray-400 text-5xl mb-4"></i>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Periode</h3>
-            <p class="text-gray-500 mb-4">Silakan generate Acuan Gaji terlebih dahulu.</p>
-            <a href="{{ route('payroll.acuan-gaji.index') }}" 
-               class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                <i class="fas fa-arrow-left mr-2"></i>Ke Acuan Gaji
-            </a>
-        </div>
-        @endif
     </div>
 </div>
+
+@push('scripts')
+<script>
+function openModal(karyawanId, periode, namaKaryawan) {
+    document.getElementById('modalEmployeeInfo').textContent = namaKaryawan + ' - ' + periode;
+    document.getElementById('hitungGajiModal').classList.remove('hidden');
+    
+    // Load form via AJAX
+    fetch(`/payroll/hitung-gaji/modal/${karyawanId}/${periode}`)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('modalContent').innerHTML = html;
+        })
+        .catch(error => {
+            document.getElementById('modalContent').innerHTML = `
+                <div class="text-red-600">
+                    <i class="fas fa-exclamation-circle text-4xl mb-2"></i>
+                    <p>Error loading data: ${error}</p>
+                </div>
+            `;
+        });
+}
+
+function closeModal() {
+    document.getElementById('hitungGajiModal').classList.add('hidden');
+    // Reload page to show updated data
+    window.location.reload();
+}
+
+// Close modal when clicking outside
+document.getElementById('hitungGajiModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+</script>
+@endpush
 @endsection

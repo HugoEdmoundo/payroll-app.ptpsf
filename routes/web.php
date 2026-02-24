@@ -124,16 +124,10 @@ Route::middleware(['auth'])->group(function () {
         // Hitung Gaji
         Route::prefix('hitung-gaji')->name('hitung-gaji.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'index'])->name('index');
-            Route::get('/create', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'create'])->name('create');
-            Route::get('/form/{acuanGajiId}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'getFormData'])->name('form');
+            Route::get('/modal/{karyawanId}/{periode}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'getModalData'])->name('modal');
             Route::post('/', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'store'])->name('store');
             Route::get('/{hitungGaji}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'show'])->name('show');
-            Route::get('/{hitungGaji}/edit', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'edit'])->name('edit');
-            Route::put('/{hitungGaji}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'update'])->name('update');
             Route::delete('/{hitungGaji}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'destroy'])->name('destroy');
-            Route::post('/{hitungGaji}/preview', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'preview'])->name('preview');
-            Route::post('/{hitungGaji}/approve', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'approve'])->name('approve');
-            Route::post('/{hitungGaji}/back-to-draft', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'backToDraft'])->name('back-to-draft');
         });
     });
     
