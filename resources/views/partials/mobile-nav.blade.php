@@ -1,23 +1,13 @@
-<!-- Mobile Bottom Navigation - Slim Liquid Glass -->
-<div class="lg:hidden fixed inset-x-0 bottom-3 z-50 flex justify-center pointer-events-none">
-
-    <div class="pointer-events-auto
-                w-[96%] max-w-xs
-                bg-white/5
-                backdrop-blur-3xl
-                border border-white/15
-                shadow-lg
-                rounded-[28px]
-                px-2 py-1">
-
+<!-- Mobile Bottom Navigation - Modern Floating -->
+<div class="lg:hidden fixed inset-x-0 bottom-0 z-50 pb-safe">
+    <div class="bg-white border-t border-gray-200 shadow-2xl">
         @php
-            $role = auth()->user()->role ? auth()->user()->role->name : 'No Role';
             $currentRoute = request()->route()->getName();
             $navItems = [];
 
-            // Dashboard - selalu tampil jika ada permission
+            // Dashboard
             if(auth()->user()->hasPermission('dashboard.view')) {
-                $navItems[] = ['label' => 'Home', 'route' => 'dashboard', 'icon' => 'fas fa-chart-line'];
+                $navItems[] = ['label' => 'Dashboard', 'route' => 'dashboard', 'icon' => 'fas fa-home'];
             }
 
             // Karyawan
@@ -25,55 +15,47 @@
                 $navItems[] = ['label' => 'Karyawan', 'route' => 'karyawan.index', 'icon' => 'fas fa-users'];
             }
 
-            // Payroll - prioritas untuk non-admin
+            // Payroll
             if(auth()->user()->hasPermission('acuan_gaji.view')) {
-                $navItems[] = ['label' => 'Acuan', 'route' => 'payroll.acuan-gaji.index', 'icon' => 'fas fa-file-invoice-dollar'];
+                $navItems[] = ['label' => 'Payroll', 'route' => 'payroll.acuan-gaji.index', 'icon' => 'fas fa-money-bill-wave'];
             } elseif(auth()->user()->hasPermission('hitung_gaji.view')) {
-                $navItems[] = ['label' => 'Hitung', 'route' => 'payroll.hitung-gaji.index', 'icon' => 'fas fa-calculator'];
+                $navItems[] = ['label' => 'Payroll', 'route' => 'payroll.hitung-gaji.index', 'icon' => 'fas fa-calculator'];
             } elseif(auth()->user()->hasPermission('slip_gaji.view')) {
-                $navItems[] = ['label' => 'Slip', 'route' => 'payroll.slip-gaji.index', 'icon' => 'fas fa-receipt'];
+                $navItems[] = ['label' => 'Payroll', 'route' => 'payroll.slip-gaji.index', 'icon' => 'fas fa-receipt'];
             }
 
-            // Admin menu - hanya untuk yang punya permission
-            if(auth()->user()->hasPermission('users.view')) {
-                $navItems[] = ['label' => 'Users', 'route' => 'admin.users.index', 'icon' => 'fas fa-user-shield'];
-            } elseif(auth()->user()->hasPermission('roles.view')) {
-                $navItems[] = ['label' => 'Roles', 'route' => 'admin.roles.index', 'icon' => 'fas fa-user-tag'];
-            } elseif(auth()->user()->hasPermission('settings.view')) {
-                $navItems[] = ['label' => 'Settings', 'route' => 'admin.settings.index', 'icon' => 'fas fa-sliders-h'];
+            // Admin
+            if(auth()->user()->hasPermission('users.view') || auth()->user()->hasPermission('roles.view')) {
+                $navItems[] = ['label' => 'Admin', 'route' => 'admin.users.index', 'icon' => 'fas fa-cog'];
             }
 
-            // Jika masih kurang dari 5, tambahkan profile
-            if(count($navItems) < 5) {
-                $navItems[] = ['label' => 'Profile', 'route' => 'profile', 'icon' => 'fas fa-user-circle'];
-            }
+            // Profile
+            $navItems[] = ['label' => 'Profile', 'route' => 'profile', 'icon' => 'fas fa-user'];
 
             // Max 5 items
             $navItems = array_slice($navItems, 0, 5);
         @endphp
 
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-around px-2 py-3">
             @foreach($navItems as $item)
                 @php
-                    $active = str_contains($currentRoute, $item['route']);
+                    $active = str_starts_with($currentRoute, str_replace('.index', '', $item['route']));
                 @endphp
 
                 <a href="{{ route($item['route']) }}"
-                   class="flex flex-col items-center justify-center
-                          flex-1 py-1 rounded-xl
-                          transition-all duration-200">
-
-                    <i class="{{ $item['icon'] }}
-                              text-[15px]
-                              transition-all duration-200
-                              {{ $active
-                                 ? 'text-indigo-500 scale-110'
-                                 : 'text-gray-400' }}"></i>
-
-                    <span class="text-[9px] mt-[2px]
-                                 {{ $active
-                                    ? 'text-indigo-500 font-medium'
-                                    : 'text-gray-400' }}">
+                   class="flex flex-col items-center justify-center min-w-[60px] py-2 px-3 rounded-xl transition-all duration-200
+                          {{ $active ? 'bg-indigo-50' : 'hover:bg-gray-50' }}">
+                    
+                    <div class="relative">
+                        <i class="{{ $item['icon'] }} text-xl mb-1
+                                  {{ $active ? 'text-indigo-600' : 'text-gray-500' }}"></i>
+                        @if($active)
+                        <span class="absolute -top-1 -right-1 h-2 w-2 bg-indigo-600 rounded-full"></span>
+                        @endif
+                    </div>
+                    
+                    <span class="text-xs font-medium
+                                {{ $active ? 'text-indigo-600' : 'text-gray-600' }}">
                         {{ $item['label'] }}
                     </span>
                 </a>
