@@ -69,41 +69,44 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Recent Activities -->
-        <div class="card p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <i class="fas fa-history text-indigo-600 mr-2"></i>
-                User Activities
-            </h3>
+        <div class="card p-6" x-data="activityWidget()">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class="fas fa-history text-indigo-600 mr-2"></i>
+                    Recent Activities
+                </h3>
+                <a href="{{ route('admin.activity-logs.index') }}" 
+                   class="text-sm text-indigo-600 hover:text-indigo-800 transition">
+                    View All <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
             
-            @if($recentActivities->count() > 0)
-            <div class="space-y-3">
-                @foreach($recentActivities as $activity)
-                <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition">
-                    <div class="flex-shrink-0">
-                        <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                            <i class="fas fa-{{ $activity->action === 'login' ? 'sign-in-alt' : ($activity->action === 'logout' ? 'sign-out-alt' : 'edit') }} text-indigo-600"></i>
+            <div x-show="activities.length > 0" class="space-y-3">
+                <template x-for="activity in activities" :key="activity.id">
+                    <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition">
+                        <div class="flex-shrink-0">
+                            <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <i class="fas text-indigo-600 text-sm"
+                                   :class="{
+                                       'fa-sign-in-alt': activity.action === 'login',
+                                       'fa-sign-out-alt': activity.action === 'logout',
+                                       'fa-edit': !['login', 'logout'].includes(activity.action)
+                                   }"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-900" x-text="activity.user_name"></p>
+                            <p class="text-sm text-gray-600" x-text="activity.description"></p>
+                            <p class="text-xs text-gray-400 mt-1" x-text="activity.time"></p>
                         </div>
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-900">
-                            {{ $activity->user->name ?? 'Unknown' }}
-                        </p>
-                        <p class="text-sm text-gray-600">
-                            {{ $activity->description ?? ucfirst($activity->action) . ' ' . ($activity->module ?? '') }}
-                        </p>
-                        <p class="text-xs text-gray-400 mt-1">
-                            {{ $activity->created_at->diffForHumans() }}
-                        </p>
-                    </div>
-                </div>
-                @endforeach
+                </template>
             </div>
-            @else
-            <div class="text-center py-8 text-gray-500">
+            
+            <div x-show="activities.length === 0" class="text-center py-8 text-gray-500">
                 <i class="fas fa-inbox text-4xl mb-2"></i>
                 <p>No recent activities</p>
             </div>
-            @endif
         </div>
 
         <!-- Managed Users -->
@@ -142,3 +145,39 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function activityWidget() {
+    return {
+        activities: @json($recentActivities->map(function($activity) {
+            return [
+                'id' => $activity->id,
+                'user_name' => $activity->user->name ?? 'Unknown',
+                'action' => $activity->action,
+                'module' => $activity->module,
+                'description' => $activity->description ?? ucfirst($activity->action) . ' ' . ($activity->module ?? ''),
+                'time' => $activity->created_at->diffForHumans(),
+            ];
+        })),
+        
+        init() {
+            // Auto-refresh every 30 seconds
+            setInterval(() => {
+                this.fetchLatestActivities();
+            }, 30000);
+        },
+        
+        async fetchLatestActivities() {
+            try {
+                const response = await fetch('{{ route("admin.activity-logs.latest") }}');
+                const data = await response.json();
+                this.activities = data.activities;
+            } catch (error) {
+                console.error('Failed to fetch activities:', error);
+            }
+        }
+    }
+}
+</script>
+@endpush

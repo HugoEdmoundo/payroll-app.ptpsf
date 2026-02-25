@@ -184,5 +184,11 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/{group}', [SettingController::class, 'update'])->name('update');
             Route::delete('/{group}/{id}', [SettingController::class, 'destroy'])->name('destroy');
         });
+        
+        // Activity Logs
+        Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('index');
+            Route::get('/latest', [\App\Http\Controllers\Admin\ActivityLogController::class, 'latest'])->name('latest');
+        });
     });
 });
