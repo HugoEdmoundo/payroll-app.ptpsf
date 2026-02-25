@@ -16,9 +16,9 @@ class NKI extends Model
         'id_karyawan',
         'periode',
         'kemampuan',
-        'kontribusi',
+        'kontribusi_1',
+        'kontribusi_2',
         'kedisiplinan',
-        'lainnya',
         'nilai_nki',
         'persentase_tunjangan',
         'keterangan',
@@ -26,9 +26,9 @@ class NKI extends Model
 
     protected $casts = [
         'kemampuan' => 'decimal:2',
-        'kontribusi' => 'decimal:2',
+        'kontribusi_1' => 'decimal:2',
+        'kontribusi_2' => 'decimal:2',
         'kedisiplinan' => 'decimal:2',
-        'lainnya' => 'decimal:2',
         'nilai_nki' => 'decimal:2',
         'persentase_tunjangan' => 'integer',
     ];
@@ -39,11 +39,11 @@ class NKI extends Model
         parent::boot();
 
         static::saving(function ($model) {
-            // Calculate NKI: Kemampuan(20%) + Kontribusi(20%) + Kedisiplinan(40%) + Lainnya(20%)
+            // Calculate NKI: Kemampuan(20%) + Kontribusi_1(20%) + Kontribusi_2(40%) + Kedisiplinan(20%)
             $model->nilai_nki = ($model->kemampuan * 0.20) + 
-                               ($model->kontribusi * 0.20) + 
-                               ($model->kedisiplinan * 0.40) + 
-                               ($model->lainnya * 0.20);
+                               ($model->kontribusi_1 * 0.20) + 
+                               ($model->kontribusi_2 * 0.40) + 
+                               ($model->kedisiplinan * 0.20);
             
             // Determine percentage based on NKI value
             if ($model->nilai_nki >= 8.5) {

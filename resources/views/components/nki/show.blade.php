@@ -26,25 +26,25 @@
         <p class="text-xs text-blue-600 mt-1">Kontribusi: {{ number_format($nki->kemampuan * 0.20, 2) }}</p>
     </div>
 
-    <!-- Kontribusi (20%) -->
+    <!-- Kontribusi 1 (20%) -->
     <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-        <label class="block text-sm font-medium text-green-700 mb-1">Kontribusi (20%)</label>
-        <p class="text-2xl font-bold text-green-900">{{ number_format($nki->kontribusi, 2) }}</p>
-        <p class="text-xs text-green-600 mt-1">Kontribusi: {{ number_format($nki->kontribusi * 0.20, 2) }}</p>
+        <label class="block text-sm font-medium text-green-700 mb-1">Kontribusi 1 (20%)</label>
+        <p class="text-2xl font-bold text-green-900">{{ number_format($nki->kontribusi_1, 2) }}</p>
+        <p class="text-xs text-green-600 mt-1">Kontribusi: {{ number_format($nki->kontribusi_1 * 0.20, 2) }}</p>
     </div>
 
-    <!-- Kedisiplinan (40%) -->
+    <!-- Kontribusi 2 (40%) -->
+    <div class="bg-teal-50 p-4 rounded-lg border border-teal-200">
+        <label class="block text-sm font-medium text-teal-700 mb-1">Kontribusi 2 (40%)</label>
+        <p class="text-2xl font-bold text-teal-900">{{ number_format($nki->kontribusi_2, 2) }}</p>
+        <p class="text-xs text-teal-600 mt-1">Kontribusi: {{ number_format($nki->kontribusi_2 * 0.40, 2) }}</p>
+    </div>
+
+    <!-- Kedisiplinan (20%) -->
     <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
-        <label class="block text-sm font-medium text-purple-700 mb-1">Kedisiplinan (40%)</label>
+        <label class="block text-sm font-medium text-purple-700 mb-1">Kedisiplinan (20%)</label>
         <p class="text-2xl font-bold text-purple-900">{{ number_format($nki->kedisiplinan, 2) }}</p>
-        <p class="text-xs text-purple-600 mt-1">Kontribusi: {{ number_format($nki->kedisiplinan * 0.40, 2) }}</p>
-    </div>
-
-    <!-- Lainnya (20%) -->
-    <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-        <label class="block text-sm font-medium text-yellow-700 mb-1">Lainnya (20%)</label>
-        <p class="text-2xl font-bold text-yellow-900">{{ number_format($nki->lainnya, 2) }}</p>
-        <p class="text-xs text-yellow-600 mt-1">Kontribusi: {{ number_format($nki->lainnya * 0.20, 2) }}</p>
+        <p class="text-xs text-purple-600 mt-1">Kontribusi: {{ number_format($nki->kedisiplinan * 0.20, 2) }}</p>
     </div>
 
     <!-- Nilai NKI -->
@@ -52,8 +52,8 @@
         <label class="block text-sm font-medium text-indigo-700 mb-1">Nilai NKI (Auto-Calculated)</label>
         <p class="text-4xl font-bold text-indigo-900">{{ number_format($nki->nilai_nki, 2) }}</p>
         <p class="text-xs text-indigo-600 mt-2">
-            Formula: ({{ number_format($nki->kemampuan, 2) }} × 20%) + ({{ number_format($nki->kontribusi, 2) }} × 20%) + 
-            ({{ number_format($nki->kedisiplinan, 2) }} × 40%) + ({{ number_format($nki->lainnya, 2) }} × 20%)
+            Formula: ({{ number_format($nki->kemampuan, 2) }} × 20%) + ({{ number_format($nki->kontribusi_1, 2) }} × 20%) + 
+            ({{ number_format($nki->kontribusi_2, 2) }} × 40%) + ({{ number_format($nki->kedisiplinan, 2) }} × 20%)
         </p>
     </div>
 

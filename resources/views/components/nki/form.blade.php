@@ -43,44 +43,44 @@
         @enderror
     </div>
 
-    <!-- Kontribusi (20%) -->
+    <!-- Kontribusi 1 (20%) -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">
-            Kontribusi (20%) *
+            Kontribusi 1 (20%) *
             <span class="text-xs text-gray-500">Max: 10</span>
         </label>
-        <input type="number" name="kontribusi" step="0.01" min="0" max="10"
-               value="{{ old('kontribusi', $nki->kontribusi ?? 0) }}" required
+        <input type="number" name="kontribusi_1" step="0.01" min="0" max="10"
+               value="{{ old('kontribusi_1', $nki->kontribusi_1 ?? 0) }}" required
                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-        @error('kontribusi')
+        @error('kontribusi_1')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
     </div>
 
-    <!-- Kedisiplinan (40%) -->
+    <!-- Kontribusi 2 (40%) -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">
-            Kedisiplinan (40%) *
+            Kontribusi 2 (40%) *
+            <span class="text-xs text-gray-500">Max: 10</span>
+        </label>
+        <input type="number" name="kontribusi_2" step="0.01" min="0" max="10"
+               value="{{ old('kontribusi_2', $nki->kontribusi_2 ?? 0) }}" required
+               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+        @error('kontribusi_2')
+        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <!-- Kedisiplinan (20%) -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            Kedisiplinan (20%) *
             <span class="text-xs text-gray-500">Max: 10</span>
         </label>
         <input type="number" name="kedisiplinan" step="0.01" min="0" max="10"
                value="{{ old('kedisiplinan', $nki->kedisiplinan ?? 0) }}" required
                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
         @error('kedisiplinan')
-        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-        @enderror
-    </div>
-
-    <!-- Lainnya (20%) -->
-    <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">
-            Lainnya (20%) *
-            <span class="text-xs text-gray-500">Max: 10</span>
-        </label>
-        <input type="number" name="lainnya" step="0.01" min="0" max="10"
-               value="{{ old('lainnya', $nki->lainnya ?? 0) }}" required
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-        @error('lainnya')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
     </div>
@@ -100,7 +100,7 @@
 <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
     <p class="text-sm text-blue-800">
         <i class="fas fa-info-circle mr-2"></i>
-        <strong>Rumus NKI:</strong> Kemampuan(20%) + Kontribusi(20%) + Kedisiplinan(40%) + Lainnya(20%)
+        <strong>Rumus NKI:</strong> Kemampuan(20%) + Kontribusi 1(20%) + Kontribusi 2(40%) + Kedisiplinan(20%)
     </p>
     <p class="text-sm text-blue-800 mt-2">
         <strong>Persentase Tunjangan:</strong> NKI ≥ 8.5 → 100% | NKI ≥ 8.0 → 80% | NKI < 8.0 → 70%

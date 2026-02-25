@@ -49,9 +49,9 @@ class NKIController extends Controller
             'id_karyawan' => 'required|exists:karyawan,id_karyawan',
             'periode' => 'required|string|regex:/^\d{4}-\d{2}$/',
             'kemampuan' => 'required|numeric|min:0|max:10',
-            'kontribusi' => 'required|numeric|min:0|max:10',
+            'kontribusi_1' => 'required|numeric|min:0|max:10',
+            'kontribusi_2' => 'required|numeric|min:0|max:10',
             'kedisiplinan' => 'required|numeric|min:0|max:10',
-            'lainnya' => 'required|numeric|min:0|max:10',
             'keterangan' => 'nullable|string',
         ]);
 
@@ -91,9 +91,9 @@ class NKIController extends Controller
             'id_karyawan' => 'required|exists:karyawan,id_karyawan',
             'periode' => 'required|string|regex:/^\d{4}-\d{2}$/',
             'kemampuan' => 'required|numeric|min:0|max:10',
-            'kontribusi' => 'required|numeric|min:0|max:10',
+            'kontribusi_1' => 'required|numeric|min:0|max:10',
+            'kontribusi_2' => 'required|numeric|min:0|max:10',
             'kedisiplinan' => 'required|numeric|min:0|max:10',
-            'lainnya' => 'required|numeric|min:0|max:10',
             'keterangan' => 'nullable|string',
         ]);
 
