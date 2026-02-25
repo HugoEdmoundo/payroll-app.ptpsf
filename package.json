@@ -73,6 +73,9 @@
         "type": "git",
         "url": "git+https://github.com/HugoEdmoundo/payroll-app.ptpsf.git"
     },
+    "engines": {
+    "node": ">=18"
+    },
     "keywords": [],
     "author": "",
     "license": "ISC",
