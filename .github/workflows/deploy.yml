@@ -6,56 +6,59 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.3
 
       - name: Install Composer Dependencies
         run: composer install --no-dev --optimize-autoloader
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      - name: Install NPM Dependencies
+      - name: Install NPM
         run: npm ci
 
       - name: Build Assets
         run: npm run build
 
-      - name: Upload Build to VPS
+      - name: Zip Project
+        run: zip -r release.zip . -x "node_modules/*" ".git/*"
+
+      - name: Upload to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
+          username: root
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: "public/build"
-          target: "/opt/just-atesting/public"
-          overwrite: true
+          source: "release.zip"
+          target: "/opt/"
 
-      - name: Run Deploy Commands
-        uses: appleboy/ssh-action@v0.1.10
+      - name: Unzip on VPS
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
+          username: root
           key: ${{ secrets.VPS_SSH_KEY }}
-          command_timeout: 20m
           script: |
+            rm -rf /opt/just-atesting
+            mkdir /opt/just-atesting
+            unzip /opt/release.zip -d /opt/just-atesting
+            rm /opt/release.zip
             cd /opt/just-atesting
 
             git fetch origin
             git reset --hard origin/main
-
-            composer install --no-dev --optimize-autoloader --no-interaction
 
             php artisan migrate --force
             php artisan db:seed --force

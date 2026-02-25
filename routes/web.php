@@ -107,7 +107,9 @@ Route::middleware(['auth'])->group(function () {
         // Acuan Gaji
         Route::prefix('acuan-gaji')->name('acuan-gaji.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'index'])->name('index');
+            Route::get('/manage-periode', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'managePeriode'])->name('manage-periode');
             Route::get('/periode/{periode}', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'showPeriode'])->name('periode');
+            Route::delete('/periode/{periode}/delete', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'deletePeriode'])->name('periode.delete');
             Route::post('/generate', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'generate'])->name('generate');
             Route::get('/create', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'create'])->name('create');
             Route::post('/', [\App\Http\Controllers\Payroll\AcuanGajiController::class, 'store'])->name('store');
@@ -125,10 +127,24 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('hitung-gaji')->name('hitung-gaji.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'index'])->name('index');
             Route::get('/periode/{periode}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'showPeriode'])->name('periode');
+            Route::delete('/periode/{periode}/delete', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'deletePeriode'])->name('periode.delete');
             Route::get('/modal/{karyawanId}/{periode}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'getModalData'])->name('modal');
             Route::post('/', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'store'])->name('store');
             Route::get('/{hitungGaji}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'show'])->name('show');
             Route::delete('/{hitungGaji}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'destroy'])->name('destroy');
+        });
+
+        // Slip Gaji
+        Route::prefix('slip-gaji')->name('slip-gaji.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Payroll\SlipGajiController::class, 'index'])->name('index');
+            Route::get('/periode/{periode}', [\App\Http\Controllers\Payroll\SlipGajiController::class, 'showPeriode'])->name('periode');
+            Route::get('/slip/{hitungGajiId}', [\App\Http\Controllers\Payroll\SlipGajiController::class, 'getSlipData'])->name('slip');
+            
+            // Download individual slip
+            Route::get('/download-pdf/{hitungGajiId}', [\App\Http\Controllers\Payroll\SlipGajiController::class, 'downloadPDF'])->name('download-pdf');
+            
+            // Export all periode
+            Route::get('/export-excel/{periode}', [\App\Http\Controllers\Payroll\SlipGajiController::class, 'exportExcel'])->name('export-excel');
         });
     });
     

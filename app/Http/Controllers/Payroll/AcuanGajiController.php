@@ -32,6 +32,29 @@ class AcuanGajiController extends Controller
         return view('payroll.acuan-gaji.index', compact('periodes'));
     }
 
+    public function managePeriode()
+    {
+        // Get all unique periodes with stats
+        $periodes = AcuanGaji::select('periode')
+                            ->distinct()
+                            ->orderBy('periode', 'desc')
+                            ->get()
+                            ->map(function($item) {
+                                $stats = AcuanGaji::where('periode', $item->periode)
+                                                 ->selectRaw('COUNT(*) as total_karyawan, SUM(gaji_bersih) as total_gaji_bersih')
+                                                 ->first();
+
+                                return [
+                                    'periode' => $item->periode,
+                                    'total_karyawan' => $stats->total_karyawan,
+                                    'total_gaji_bersih' => $stats->total_gaji_bersih ?? 0,
+                                ];
+                            });
+
+        return view('payroll.acuan-gaji.manage-periode', compact('periodes'));
+    }
+
+
     public function showPeriode(Request $request, $periode)
     {
         $query = AcuanGaji::with('karyawan')
@@ -306,5 +329,15 @@ class AcuanGajiController extends Controller
             'template_acuan_gaji.xlsx'
         );
     }
+
+    public function deletePeriode($periode)
+    {
+        // Delete all acuan gaji for this periode
+        $deleted = AcuanGaji::where('periode', $periode)->delete();
+
+        return redirect()->route('payroll.acuan-gaji.index')
+                        ->with('success', "Berhasil menghapus periode {$periode} dengan {$deleted} data acuan gaji.");
+    }
+
 
 }

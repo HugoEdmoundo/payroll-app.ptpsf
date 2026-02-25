@@ -6,15 +6,20 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Hitung Gaji</h1>
-            <p class="mt-1 text-sm text-gray-600">Periode: {{ \Carbon\Carbon::createFromFormat('Y-m', $periode)->format('F Y') }}</p>
+    <div class="card p-6">
+        <div class="flex items-center gap-4">
+            <a href="{{ route('payroll.hitung-gaji.index') }}" 
+               class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Hitung Gaji</h1>
+                <div class="flex items-center gap-2 mt-1">
+                    <i class="fas fa-calendar-alt text-indigo-600 text-sm"></i>
+                    <p class="text-sm font-medium text-gray-600">{{ \Carbon\Carbon::createFromFormat('Y-m', $periode)->format('F Y') }}</p>
+                </div>
+            </div>
         </div>
-        <a href="{{ route('payroll.hitung-gaji.index') }}" 
-           class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
-            <i class="fas fa-arrow-left mr-2"></i>Kembali
-        </a>
     </div>
 
     <!-- Stats Grid -->
@@ -95,19 +100,19 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Karyawan</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Karyawan</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Gaji Pokok</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pendapatan</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pengeluaran</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Gaji Bersih</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-64">Nama Karyawan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40">Jenis Karyawan</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-36">Gaji Pokok</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-36">Total Pendapatan</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-36">Total Pengeluaran</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-36">Gaji Bersih</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($hitungGajiList as $hitung)
                     <tr class="hover:bg-gray-50 cursor-pointer transition" 
                         onclick="openModal({{ $hitung->karyawan_id }}, '{{ $hitung->periode }}', '{{ $hitung->karyawan->nama_karyawan }}')">
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-6 py-4">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 h-10 w-10">
                                     <div class="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-semibold">
@@ -120,19 +125,19 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td class="px-6 py-4 text-sm text-gray-900">
                             {{ $hitung->karyawan->jenis_karyawan }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                        <td class="px-6 py-4 text-sm text-right text-gray-900">
                             Rp {{ number_format($hitung->gaji_pokok, 0, ',', '.') }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">
+                        <td class="px-6 py-4 text-sm text-right text-green-600 font-medium">
                             Rp {{ number_format($hitung->total_pendapatan, 0, ',', '.') }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">
+                        <td class="px-6 py-4 text-sm text-right text-red-600 font-medium">
                             Rp {{ number_format($hitung->total_pengeluaran, 0, ',', '.') }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-indigo-600 font-bold">
+                        <td class="px-6 py-4 text-sm text-right text-indigo-600 font-bold">
                             Rp {{ number_format($hitung->gaji_bersih, 0, ',', '.') }}
                         </td>
                     </tr>

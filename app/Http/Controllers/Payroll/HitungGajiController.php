@@ -15,12 +15,14 @@ class HitungGajiController extends Controller
 {
     public function index(Request $request)
     {
-        // Get all unique periodes from Hitung Gaji
-        $periodes = HitungGaji::select('periode')
+        // Get all unique periodes from Acuan Gaji (not Hitung Gaji)
+        // This ensures Hitung Gaji only shows periodes that exist in Acuan Gaji
+        $periodes = AcuanGaji::select('periode')
                             ->distinct()
                             ->orderBy('periode', 'desc')
                             ->get()
                             ->map(function($item) {
+                                // Count from Hitung Gaji for this periode
                                 $totalKaryawan = HitungGaji::where('periode', $item->periode)->count();
                                 
                                 return [
@@ -387,4 +389,14 @@ class HitungGajiController extends Controller
         // This is not used anymore, kept for backward compatibility
         return response()->json(['error' => 'Method not used'], 404);
     }
+
+    public function deletePeriode($periode)
+    {
+        // Delete all hitung gaji for this periode
+        $deleted = HitungGaji::where('periode', $periode)->delete();
+
+        return redirect()->route('payroll.hitung-gaji.index')
+                        ->with('success', "Berhasil menghapus periode {$periode} dengan {$deleted} data hitung gaji.");
+    }
+
 }

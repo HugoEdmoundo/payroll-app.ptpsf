@@ -6,25 +6,32 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Acuan Gaji</h1>
-            <p class="mt-1 text-sm text-gray-600">Pilih periode untuk melihat data acuan gaji</p>
-        </div>
-        <div class="mt-4 md:mt-0 flex flex-wrap gap-3">
-            @if(auth()->user()->hasPermission('acuan_gaji.create'))
-            <button onclick="document.getElementById('generateModal').classList.remove('hidden')" 
-                    class="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-medium rounded-lg hover:from-green-600 hover:to-emerald-700">
-                <i class="fas fa-cog mr-2"></i>Generate
-            </button>
-            @endif
-            
-            @if(auth()->user()->hasPermission('acuan_gaji.import'))
-            <a href="{{ route('payroll.acuan-gaji.import') }}" 
-               class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
-                <i class="fas fa-upload mr-2"></i>Import
-            </a>
-            @endif
+    <div class="card p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Acuan Gaji</h1>
+                <p class="mt-1 text-sm text-gray-600">Pilih periode untuk melihat data acuan gaji</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('payroll.acuan-gaji.manage-periode') }}" 
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition">
+                    <i class="fas fa-cog mr-2"></i>Kelola Periode
+                </a>
+                
+                @if(auth()->user()->hasPermission('acuan_gaji.import'))
+                <a href="{{ route('payroll.acuan-gaji.import') }}" 
+                class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition">
+                    <i class="fas fa-upload mr-2"></i>Import
+                </a>
+                @endif
+                
+                @if(auth()->user()->hasPermission('acuan_gaji.create'))
+                <button onclick="document.getElementById('generateModal').classList.remove('hidden')" 
+                        class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700 shadow-sm transition">
+                    <i class="fas fa-magic mr-2"></i>Generate
+                </button>
+                @endif
+            </div>
         </div>
     </div>
 

@@ -6,30 +6,37 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Acuan Gaji</h1>
-            <p class="mt-1 text-sm text-gray-600">Periode: {{ \Carbon\Carbon::createFromFormat('Y-m', $periode)->format('F Y') }}</p>
-        </div>
-        <div class="mt-4 md:mt-0 flex flex-wrap gap-3">
-            <a href="{{ route('payroll.acuan-gaji.index') }}" 
-               class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
-            </a>
+    <div class="card p-6">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="{{ route('payroll.acuan-gaji.index') }}" 
+                class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Acuan Gaji</h1>
+                    <div class="flex items-center gap-2 mt-1">
+                        <i class="fas fa-calendar-alt text-indigo-600 text-sm"></i>
+                        <p class="text-sm font-medium text-gray-600">{{ \Carbon\Carbon::createFromFormat('Y-m', $periode)->format('F Y') }}</p>
+                    </div>
+                </div>
+            </div>
             
-            @if(auth()->user()->hasPermission('acuan_gaji.export'))
-            <a href="{{ route('payroll.acuan-gaji.export', ['periode' => $periode]) }}" 
-               class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
-                <i class="fas fa-download mr-2"></i>Export
-            </a>
-            @endif
-            
-            @if(auth()->user()->hasPermission('acuan_gaji.create'))
-            <a href="{{ route('payroll.acuan-gaji.create') }}" 
-               class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700">
-                <i class="fas fa-plus mr-2"></i>Tambah
-            </a>
-            @endif
+            <div class="flex items-center gap-2">
+                @if(auth()->user()->hasPermission('acuan_gaji.export'))
+                <a href="{{ route('payroll.acuan-gaji.export', ['periode' => $periode]) }}" 
+                class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition">
+                    <i class="fas fa-download mr-2"></i>Export
+                </a>
+                @endif
+                
+                @if(auth()->user()->hasPermission('acuan_gaji.create'))
+                <a href="{{ route('payroll.acuan-gaji.create') }}" 
+                class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700 shadow-sm transition">
+                    <i class="fas fa-plus mr-2"></i>Tambah Data
+                </a>
+                @endif
+            </div>
         </div>
     </div>
 
@@ -153,19 +160,19 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Karyawan</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Karyawan</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Gaji Pokok</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pendapatan</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pengeluaran</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Gaji Bersih</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-64">Nama Karyawan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40">Jenis Karyawan</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-36">Gaji Pokok</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-36">Total Pendapatan</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-36">Total Pengeluaran</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-36">Gaji Bersih</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-28">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($acuanGajiList as $acuan)
                     <tr class="hover:bg-gray-50 transition">
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-6 py-4">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 h-10 w-10">
                                     <div class="h-10 w-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white font-semibold">
@@ -178,22 +185,22 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td class="px-6 py-4 text-sm text-gray-900">
                             {{ $acuan->karyawan->jenis_karyawan }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                        <td class="px-6 py-4 text-sm text-right text-gray-900">
                             Rp {{ number_format($acuan->gaji_pokok, 0, ',', '.') }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium">
+                        <td class="px-6 py-4 text-sm text-right text-green-600 font-medium">
                             Rp {{ number_format($acuan->total_pendapatan, 0, ',', '.') }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">
+                        <td class="px-6 py-4 text-sm text-right text-red-600 font-medium">
                             Rp {{ number_format($acuan->total_pengeluaran, 0, ',', '.') }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-indigo-600 font-bold">
+                        <td class="px-6 py-4 text-sm text-right text-indigo-600 font-bold">
                             Rp {{ number_format($acuan->gaji_bersih, 0, ',', '.') }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                        <td class="px-6 py-4 text-center text-sm font-medium">
                             <div class="flex items-center justify-center space-x-2">
                                 <a href="{{ route('payroll.acuan-gaji.show', $acuan) }}" 
                                    class="text-indigo-600 hover:text-indigo-900" title="View">

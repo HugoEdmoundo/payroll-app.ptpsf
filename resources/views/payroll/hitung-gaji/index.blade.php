@@ -6,7 +6,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+    <div class="card p-6">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Hitung Gaji</h1>
             <p class="mt-1 text-sm text-gray-600">Pilih periode untuk melihat data hitung gaji</p>
@@ -20,25 +20,41 @@
         @if($periodes->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             @foreach($periodes as $item)
-            <a href="{{ route('payroll.hitung-gaji.periode', $item['periode']) }}" 
-               class="block border border-gray-200 rounded-lg p-5 hover:border-indigo-500 hover:shadow-lg transition">
-                <div class="flex items-center justify-between mb-3">
-                    <div>
-                        <h4 class="text-lg font-bold text-gray-900">
-                            {{ \Carbon\Carbon::createFromFormat('Y-m', $item['periode'])->format('F Y') }}
-                        </h4>
-                        <p class="text-xs text-gray-500">{{ $item['periode'] }}</p>
+            <div class="relative block border border-gray-200 rounded-lg p-5 hover:border-indigo-500 hover:shadow-lg transition group">
+                <a href="{{ route('payroll.hitung-gaji.periode', $item['periode']) }}" class="block">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h4 class="text-lg font-bold text-gray-900">
+                                {{ \Carbon\Carbon::createFromFormat('Y-m', $item['periode'])->format('F Y') }}
+                            </h4>
+                            <p class="text-xs text-gray-500">{{ $item['periode'] }}</p>
+                        </div>
+                        <div class="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
+                            <i class="fas fa-calculator text-white text-xl"></i>
+                        </div>
                     </div>
-                    <div class="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
-                        <i class="fas fa-calculator text-white text-xl"></i>
-                    </div>
-                </div>
 
-                <div class="flex items-center justify-between pt-3 border-t border-gray-200">
-                    <span class="text-sm text-gray-600">Total Karyawan</span>
-                    <span class="text-lg font-bold text-indigo-600">{{ $item['total_karyawan'] }}</span>
-                </div>
-            </a>
+                    <div class="flex items-center justify-between pt-3 border-t border-gray-200">
+                        <span class="text-sm text-gray-600">Total Karyawan</span>
+                        <span class="text-lg font-bold text-indigo-600">{{ $item['total_karyawan'] }}</span>
+                    </div>
+                </a>
+                
+                @if(auth()->user()->hasPermission('hitung_gaji.delete'))
+                <form action="{{ route('payroll.hitung-gaji.periode.delete', $item['periode']) }}" 
+                      method="POST" 
+                      onsubmit="return confirm('Yakin ingin menghapus semua data hitung gaji periode {{ \Carbon\Carbon::createFromFormat('Y-m', $item['periode'])->format('F Y') }}? Total {{ $item['total_karyawan'] }} data akan dihapus!')"
+                      class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" 
+                            class="w-8 h-8 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg"
+                            title="Hapus Periode">
+                        <i class="fas fa-trash text-sm"></i>
+                    </button>
+                </form>
+                @endif
+            </div>
             @endforeach
         </div>
         @else
