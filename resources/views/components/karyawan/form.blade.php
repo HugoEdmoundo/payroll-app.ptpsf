@@ -11,6 +11,31 @@
         @enderror
     </div>
 
+    <!-- Email -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+        <input type="email" name="email" value="{{ old('email', $karyawan->email ?? '') }}" required
+               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+               placeholder="email@example.com">
+        @error('email')
+        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <!-- No Telp -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">No Telp *</label>
+        <input type="tel" name="no_telp" value="{{ old('no_telp', $karyawan->no_telp ?? '') }}" required
+               onkeypress="return hanyaAngka(event)"
+               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 15)"
+               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+               placeholder="08xxxxxxxxxx"
+               maxlength="15">
+        @error('no_telp')
+        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
     <!-- Join Date -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Join Date *</label>

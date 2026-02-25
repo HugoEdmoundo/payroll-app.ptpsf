@@ -39,21 +39,6 @@
                         <span class="text-lg font-bold text-indigo-600">{{ $item['total_karyawan'] }}</span>
                     </div>
                 </a>
-                
-                @if(auth()->user()->hasPermission('hitung_gaji.delete'))
-                <form action="{{ route('payroll.hitung-gaji.periode.delete', $item['periode']) }}" 
-                      method="POST" 
-                      onsubmit="return confirm('Yakin ingin menghapus semua data hitung gaji periode {{ \Carbon\Carbon::createFromFormat('Y-m', $item['periode'])->format('F Y') }}? Total {{ $item['total_karyawan'] }} data akan dihapus!')"
-                      class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" 
-                            class="w-8 h-8 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg"
-                            title="Hapus Periode">
-                        <i class="fas fa-trash text-sm"></i>
-                    </button>
-                </form>
-                @endif
             </div>
             @endforeach
         </div>

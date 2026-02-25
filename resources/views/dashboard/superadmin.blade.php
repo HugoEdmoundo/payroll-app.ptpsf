@@ -9,6 +9,7 @@
     <div class="card p-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
         <h1 class="text-2xl font-bold">Welcome back, {{ auth()->user()->name }}!</h1>
         <p class="mt-1 text-indigo-100">Here's what's happening with your system today.</p>
+        <p class="mt-1 text-indigo-100">Periode: {{ \Carbon\Carbon::createFromFormat('Y-m', $periode)->format('F Y') }}</p>
     </div>
 
     <!-- Stats Grid -->
@@ -16,11 +17,11 @@
         <!-- Total Karyawan -->
         <div class="card p-6">
             <div class="flex items-center justify-between">
-                <div>
+                <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-gray-600">Total Karyawan</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['total_karyawan']) }}</p>
+                    <p class="text-2xl md:text-3xl font-bold text-gray-900 mt-2 truncate">{{ number_format($stats['total_karyawan']) }}</p>
                 </div>
-                <div class="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-indigo-100 flex items-center justify-center ml-3">
                     <i class="fas fa-users text-indigo-600 text-xl"></i>
                 </div>
             </div>
@@ -29,11 +30,11 @@
         <!-- Active Karyawan -->
         <div class="card p-6">
             <div class="flex items-center justify-between">
-                <div>
+                <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-gray-600">Active Karyawan</p>
-                    <p class="text-3xl font-bold text-green-600 mt-2">{{ number_format($stats['active_karyawan']) }}</p>
+                    <p class="text-2xl md:text-3xl font-bold text-green-600 mt-2 truncate">{{ number_format($stats['active_karyawan']) }}</p>
                 </div>
-                <div class="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
+                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-green-100 flex items-center justify-center ml-3">
                     <i class="fas fa-user-check text-green-600 text-xl"></i>
                 </div>
             </div>
@@ -42,11 +43,11 @@
         <!-- Total Users -->
         <div class="card p-6">
             <div class="flex items-center justify-between">
-                <div>
+                <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-gray-600">Total Users</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['total_users']) }}</p>
+                    <p class="text-2xl md:text-3xl font-bold text-gray-900 mt-2 truncate">{{ number_format($stats['total_users']) }}</p>
                 </div>
-                <div class="h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center">
+                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-purple-100 flex items-center justify-center ml-3">
                     <i class="fas fa-user-shield text-purple-600 text-xl"></i>
                 </div>
             </div>
@@ -55,11 +56,11 @@
         <!-- Total Roles -->
         <div class="card p-6">
             <div class="flex items-center justify-between">
-                <div>
+                <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-gray-600">Total Roles</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['total_roles']) }}</p>
+                    <p class="text-2xl md:text-3xl font-bold text-gray-900 mt-2 truncate">{{ number_format($stats['total_roles']) }}</p>
                 </div>
-                <div class="h-12 w-12 rounded-full bg-pink-100 flex items-center justify-center">
+                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-pink-100 flex items-center justify-center ml-3">
                     <i class="fas fa-user-tag text-pink-600 text-xl"></i>
                 </div>
             </div>

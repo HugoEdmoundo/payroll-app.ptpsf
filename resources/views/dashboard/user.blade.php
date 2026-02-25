@@ -7,7 +7,8 @@
 <div class="space-y-6">
     <!-- Welcome Header -->
     <div class="card p-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
-        <h1 class="text-2xl font-bold">Welcome, {{ auth()->user()->name }}!</h1>
+        <h1 class="text-2xl font-bold">Welcome back, {{ auth()->user()->name }}!</h1>
+        <p class="mt-1 text-indigo-100">Here's what's happening with your system today.</p>
         <p class="mt-1 text-indigo-100">Periode: {{ \Carbon\Carbon::createFromFormat('Y-m', $periode)->format('F Y') }}</p>
     </div>
 
@@ -16,12 +17,12 @@
         <!-- Total Karyawan -->
         <div class="card p-6">
             <div class="flex items-center justify-between">
-                <div>
+                <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-gray-600">Total Karyawan</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['total_karyawan']) }}</p>
+                    <p class="text-2xl md:text-3xl font-bold text-gray-900 mt-2 truncate">{{ number_format($stats['total_karyawan']) }}</p>
                     <p class="text-xs text-gray-500 mt-1">Active employees</p>
                 </div>
-                <div class="h-14 w-14 rounded-full bg-indigo-100 flex items-center justify-center">
+                <div class="h-14 w-14 flex-shrink-0 rounded-full bg-indigo-100 flex items-center justify-center ml-4">
                     <i class="fas fa-users text-indigo-600 text-2xl"></i>
                 </div>
             </div>
@@ -30,12 +31,12 @@
         <!-- Total Pengeluaran -->
         <div class="card p-6 bg-gradient-to-br from-red-50 to-pink-50">
             <div class="flex items-center justify-between">
-                <div>
+                <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-red-600">Total Pengeluaran</p>
-                    <p class="text-3xl font-bold text-red-700 mt-2">Rp {{ number_format($stats['total_pengeluaran'], 0, ',', '.') }}</p>
+                    <p class="text-xl md:text-2xl font-bold text-red-700 mt-2 break-words">Rp {{ number_format($stats['total_pengeluaran'], 0, ',', '.') }}</p>
                     <p class="text-xs text-red-500 mt-1">All expenses</p>
                 </div>
-                <div class="h-14 w-14 rounded-full bg-red-200 flex items-center justify-center">
+                <div class="h-14 w-14 flex-shrink-0 rounded-full bg-red-200 flex items-center justify-center ml-4">
                     <i class="fas fa-money-bill-wave text-red-600 text-2xl"></i>
                 </div>
             </div>
@@ -52,7 +53,7 @@
                 </div>
             </div>
             <p class="text-sm font-medium text-gray-600 mb-1">Teknisi & Borongan</p>
-            <p class="text-xl font-bold text-gray-900">Rp {{ number_format($pengeluaran['teknisi_borongan'], 0, ',', '.') }}</p>
+            <p class="text-lg md:text-xl font-bold text-gray-900 break-words">Rp {{ number_format($pengeluaran['teknisi_borongan'], 0, ',', '.') }}</p>
             <p class="text-xs text-gray-500 mt-1">Gaji bersih</p>
         </div>
 
@@ -64,7 +65,7 @@
                 </div>
             </div>
             <p class="text-sm font-medium text-gray-600 mb-1">Konsultan & Organik</p>
-            <p class="text-xl font-bold text-gray-900">Rp {{ number_format($pengeluaran['konsultan_organik'], 0, ',', '.') }}</p>
+            <p class="text-lg md:text-xl font-bold text-gray-900 break-words">Rp {{ number_format($pengeluaran['konsultan_organik'], 0, ',', '.') }}</p>
             <p class="text-xs text-gray-500 mt-1">Gaji bersih</p>
         </div>
 
@@ -76,7 +77,7 @@
                 </div>
             </div>
             <p class="text-sm font-medium text-gray-600 mb-1">Pengeluaran BPJS</p>
-            <p class="text-xl font-bold text-gray-900">Rp {{ number_format($pengeluaran['bpjs'], 0, ',', '.') }}</p>
+            <p class="text-lg md:text-xl font-bold text-gray-900 break-words">Rp {{ number_format($pengeluaran['bpjs'], 0, ',', '.') }}</p>
             <p class="text-xs text-gray-500 mt-1">Total nett BPJS</p>
         </div>
 
@@ -88,7 +89,7 @@
                 </div>
             </div>
             <p class="text-sm font-medium text-gray-600 mb-1">Tagihan Koperasi</p>
-            <p class="text-xl font-bold text-gray-900">Rp {{ number_format($pengeluaran['koperasi'], 0, ',', '.') }}</p>
+            <p class="text-lg md:text-xl font-bold text-gray-900 break-words">Rp {{ number_format($pengeluaran['koperasi'], 0, ',', '.') }}</p>
             <p class="text-xs text-gray-500 mt-1">Total koperasi</p>
         </div>
     </div>
