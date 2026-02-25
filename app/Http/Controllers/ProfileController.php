@@ -22,6 +22,7 @@ class ProfileController extends Controller
         // VALIDASI SEDERHANA DULU
         $rules = [
             'name' => 'required|string|max:255',
+            'email_valid' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:20',
             'position' => 'nullable|string|max:100',
             'profile_photo' => 'nullable|image',
@@ -40,11 +41,11 @@ class ProfileController extends Controller
         try {
             // UPDATE DATA DASAR
             $user->name = $request->name;
+            $user->email_valid = $request->email_valid;
             $user->phone = $request->phone;
             $user->position = $request->position;
             
-            // EMAIL TIDAK DIUPDATE - HAPUS BARIS INI
-            // $user->email = $request->email; // JANGAN PAKAI INI!
+            // EMAIL LOGIN TIDAK DIUPDATE - Hanya superadmin yang bisa edit
 
             // HANDLE FOTO
             if ($request->hasFile('profile_photo')) {

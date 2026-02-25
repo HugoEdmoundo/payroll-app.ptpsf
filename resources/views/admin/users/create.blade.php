@@ -34,10 +34,31 @@
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Email Login *
+                                <span class="text-xs text-gray-500">(untuk login)</span>
+                            </label>
                             <input type="email" name="email" value="{{ old('email') }}" required
                                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                            <p class="mt-1 text-xs text-gray-500">
+                                <i class="fas fa-info-circle"></i> Hanya superadmin yang bisa edit email login
+                            </p>
                             @error('email')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Email Verifikasi
+                                <span class="text-xs text-gray-500">(untuk forgot password)</span>
+                            </label>
+                            <input type="email" name="email_valid" value="{{ old('email_valid') }}"
+                                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                            <p class="mt-1 text-xs text-gray-500">
+                                <i class="fas fa-info-circle"></i> User bisa edit email verifikasi sendiri
+                            </p>
+                            @error('email_valid')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>

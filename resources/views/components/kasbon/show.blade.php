@@ -19,7 +19,7 @@
     <!-- Tanggal Pengajuan -->
     <div class="bg-gray-50 p-4 rounded-lg">
         <label class="block text-sm font-medium text-gray-500 mb-1">Tanggal Pengajuan</label>
-        <p class="text-base font-semibold text-gray-900">{{ $kasbon->tanggal_pengajuan->format('d F Y') }}</p>
+        <p class="text-base font-semibold text-gray-900">{{ $kasbon->tanggal_pengajuan ? $kasbon->tanggal_pengajuan->format('d F Y') : '-' }}</p>
     </div>
 
     <!-- Nominal -->

@@ -26,7 +26,7 @@
                     {{ \Carbon\Carbon::createFromFormat('Y-m', $kasbon->periode)->format('M Y') }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {{ $kasbon->tanggal_pengajuan->format('d/m/Y') }}
+                    {{ $kasbon->tanggal_pengajuan ? $kasbon->tanggal_pengajuan->format('d/m/Y') : '-' }}
                 </td>
                 <td class="px-6 py-4">
                     <div class="text-sm text-gray-900 max-w-xs truncate">{{ $kasbon->deskripsi }}</div>

@@ -41,6 +41,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'email_valid' => 'nullable|string|email|max:255',
             'password' => 'required|string|min:8|confirmed',
             'role_id' => 'required|exists:roles,id',
             'phone' => 'nullable|string|max:20',
@@ -51,6 +52,7 @@ class UserController extends Controller
         $data = [
             'name' => $request->name,
             'email' => $request->email,
+            'email_valid' => $request->email_valid,
             'password' => Hash::make($request->password),
             'role_id' => $request->role_id,
             'phone' => $request->phone,
@@ -83,6 +85,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'email_valid' => 'nullable|string|email|max:255',
             'role_id' => 'required|exists:roles,id',
             'phone' => 'nullable|string|max:20',
             'position' => 'nullable|string|max:100',
@@ -92,6 +95,7 @@ class UserController extends Controller
 
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->email_valid = $request->email_valid;
         $user->role_id = $request->role_id;
         $user->phone = $request->phone;
         $user->position = $request->position;

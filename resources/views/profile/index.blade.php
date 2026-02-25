@@ -64,14 +64,38 @@
                                         @enderror
                                     </div>
 
-                                    <!-- Email (Readonly) -->
+                                    <!-- Email Login (Readonly) -->
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                                            Email Login
+                                            <span class="text-xs text-gray-500">(untuk login)</span>
+                                        </label>
                                         <input type="email" 
                                                value="{{ auth()->user()->email }}" 
                                                readonly
                                                class="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-600 cursor-not-allowed">
-                                        <p class="mt-1 text-xs text-gray-500">Email cannot be changed</p>
+                                        <p class="mt-1 text-xs text-gray-500">
+                                            <i class="fas fa-lock"></i> Hanya superadmin yang bisa edit email login
+                                        </p>
+                                    </div>
+
+                                    <!-- Email Verifikasi (Editable) -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                                            Email Verifikasi
+                                            <span class="text-xs text-gray-500">(untuk forgot password)</span>
+                                        </label>
+                                        <input type="email" 
+                                               name="email_valid" 
+                                               value="{{ old('email_valid', auth()->user()->email_valid) }}"
+                                               placeholder="email@example.com"
+                                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 @error('email_valid') border-red-500 @enderror">
+                                        <p class="mt-1 text-xs text-gray-500">
+                                            <i class="fas fa-info-circle"></i> Anda bisa edit email verifikasi sendiri
+                                        </p>
+                                        @error('email_valid')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
                                     </div>
 
                                     <!-- Phone -->
