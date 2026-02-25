@@ -1,4 +1,4 @@
-name: Deploy Laravel 11
+name: Deploy Laravel 11 - Production Safe
 
 on:
   push:
@@ -10,32 +10,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout repo
       - name: Checkout Repo
         uses: actions/checkout@v4
 
+      # 2️⃣ Setup PHP 8.3 dengan ekstensi penting
       - name: Setup PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
           extensions: mbstring, bcmath, pdo_mysql, openssl, tokenizer, xml
 
+      # 3️⃣ Install Composer dependencies
       - name: Install Composer Dependencies
         run: composer install --no-dev --optimize-autoloader
 
+      # 4️⃣ Setup Node.js & build assets
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
       - name: Install NPM
         run: npm ci
-
       - name: Build Assets
         run: npm run build
 
+      # 5️⃣ Zip project, kecuali .env, node_modules, .git
       - name: Zip Project
         run: zip -r release.zip . -x "node_modules/*" ".git/*" ".env"
 
+      # 6️⃣ Upload zip ke VPS
       - name: Upload to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -45,6 +49,7 @@ jobs:
           source: "release.zip"
           target: "/opt/"
 
+      # 7️⃣ Deploy & setup di VPS (production safe)
       - name: Deploy & Setup on VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -52,35 +57,35 @@ jobs:
           username: root
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            # Pastikan unzip ada
+            # Pastikan unzip & PHP driver ada
             apt update && apt install unzip -y
 
-            # Remove old folder
-            rm -rf /opt/just-atesting
-            mkdir /opt/just-atesting
+            cd /opt/just-atesting || mkdir /opt/just-atesting && cd /opt/just-atesting
 
-            # Unzip project
-            unzip /opt/release.zip -d /opt/just-atesting
+            # Backup .env
+            if [ -f .env ]; then
+              cp .env ../.env.backup
+            fi
+
+            # Unzip project (overwrite file tapi .env aman)
+            unzip -o /opt/release.zip -d /opt/just-atesting
             rm /opt/release.zip
 
-            cd /opt/just-atesting
+            # Restore .env
+            if [ -f ../.env.backup ]; then
+              mv ../.env.backup .env
+            fi
 
             # Fix permissions
             chown -R www-data:www-data storage bootstrap/cache
             chmod -R 775 storage bootstrap/cache
 
-            # Pastikan .env ada
-            if [ ! -f .env ]; then
-              cp .env.example .env
-            fi
-
-            # Generate key (kalau perlu)
+            # Generate APP_KEY jika belum ada
             php artisan key:generate --force
 
-            # Run migrations
+            # Run migrations only, DB tidak di-reset
             php artisan migrate --force
-            php artisan db:seed --force
-            
+
             # Clear cache
             php artisan config:clear
             php artisan route:clear
