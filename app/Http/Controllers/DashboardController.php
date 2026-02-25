@@ -19,23 +19,19 @@ class DashboardController extends Controller
             return redirect()->route('login')->with('error', 'Your account is inactive.');
         }
         
-        // Superadmin dashboard
-        if ($user->role && $user->role->is_superadmin) {
-            $stats = [
-                'total_users' => User::count(),
-                'total_karyawan' => Karyawan::count(),
-                'active_karyawan' => Karyawan::where('status_pegawai', 'Aktif')->count(),
-                'total_roles' => Role::count(),
-            ];
-            return view('dashboard.superadmin', compact('stats'));
-        }
-        
-        // Regular user dashboard
+        // Stats untuk semua user (permission-based, bukan role-based)
         $stats = [
             'total_karyawan' => Karyawan::count(),
-            'active_karyawan' => Karyawan::where('status_pegawai', 'Aktif')->count(),
+            'active_karyawan' => Karyawan::where('status_karyawan', 'Aktif')->count(),
             'recent_karyawan' => Karyawan::latest()->take(5)->get(),
         ];
-        return view('dashboard.user', compact('stats'));
+        
+        // Tambahan stats untuk user dengan permission admin
+        if ($user->hasPermission('users.view')) {
+            $stats['total_users'] = User::count();
+            $stats['total_roles'] = Role::count();
+        }
+        
+        return view('dashboard.index', compact('stats'));
     }
 }
