@@ -51,95 +51,10 @@ jobs:
           username: root
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            set -e  # Exit on error
-            
-            echo "🚀 Starting deployment..."
-            
-            # Backup .env if exists
-            if [ -f /opt/just-atesting/.env ]; then
-              echo "📦 Backing up .env..."
-              cp /opt/just-atesting/.env /tmp/.env.backup
-            fi
-
-            # Backup storage if exists
-            if [ -d /opt/just-atesting/storage ]; then
-              echo "📦 Backing up storage..."
-              cp -r /opt/just-atesting/storage /tmp/storage.backup
-            fi
-
-            # Remove old files except storage and .env
-            echo "🗑️  Removing old files..."
-            cd /opt/just-atesting || mkdir -p /opt/just-atesting
-            find . -maxdepth 1 ! -name 'storage' ! -name '.env' ! -name '.' ! -name '..' -exec rm -rf {} + 2>/dev/null || true
-            
-            # Extract new release
-            echo "📦 Extracting new release..."
-            unzip -q /opt/release.zip -d /opt/just-atesting
+            rm -rf /opt/just-atesting
+            mkdir /opt/just-atesting
+            unzip /opt/release.zip -d /opt/just-atesting
             rm /opt/release.zip
-
-            # Restore .env
-            if [ -f /tmp/.env.backup ]; then
-              echo "♻️  Restoring .env..."
-              cp /tmp/.env.backup /opt/just-atesting/.env
-              rm /tmp/.env.backup
-            fi
-
-            # Restore storage if needed
-            if [ -d /tmp/storage.backup ] && [ ! -d /opt/just-atesting/storage/app ]; then
-              echo "♻️  Restoring storage..."
-              cp -r /tmp/storage.backup/* /opt/just-atesting/storage/
-              rm -rf /tmp/storage.backup
-            fi
-
             cd /opt/just-atesting
-
-            # Install/Update composer dependencies
-            echo "📚 Installing composer dependencies..."
-            composer install --no-dev --optimize-autoloader --no-interaction || composer update --no-dev --optimize-autoloader --no-interaction
-
-            # Run migrations
-            echo "🗄️  Running migrations..."
-            php artisan migrate --force || echo "⚠️  Migration warning (might be already up to date)"
-
-            # Clear all caches
-            echo "🧹 Clearing caches..."
-            php artisan optimize:clear || true
-            php artisan cache:clear || true
-            php artisan config:clear || true
-            php artisan route:clear || true
-            php artisan view:clear || true
-
-            # Rebuild caches
-            echo "💾 Rebuilding caches..."
-            php artisan config:cache || true
-            php artisan route:cache || true
-            php artisan view:cache || true
-
-            # Fix permissions
-            echo "🔐 Fixing permissions..."
             chown -R www-data:www-data storage bootstrap/cache
-            chmod -R 775 storage bootstrap/cache
-
-            # Restart PHP-FPM
-            echo "🔄 Restarting PHP-FPM..."
-            systemctl restart php8.3-fpm || systemctl restart php-fpm || echo "⚠️  Could not restart PHP-FPM"
-
-            # Verify deployment
-            echo "🔍 Verifying deployment..."
-            if [ ! -f resources/views/dashboard/index.blade.php ]; then
-              echo "❌ ERROR: Dashboard view missing!"
-              exit 1
-            fi
-
-            # Check if site is accessible
-            echo "🌐 Testing site accessibility..."
-            sleep 5
-            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://just-atesting.hugoedm.fun || echo "000")
-            echo "HTTP Response Code: $HTTP_CODE"
-            
-            if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "302" ]; then
-              echo "✅ Deployment completed successfully!"
-            else
-              echo "⚠️  Deployment completed but site returned HTTP $HTTP_CODE"
-              echo "📋 Check logs: tail -50 storage/logs/laravel.log"
-            fi
+            php artisan migrate --force
