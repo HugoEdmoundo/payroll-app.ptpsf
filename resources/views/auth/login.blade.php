@@ -92,12 +92,13 @@
                 </label>
                 <div class="mt-1 relative" x-data="{ showPassword: false }">
                     <input id="password" name="password" :type="showPassword ? 'text' : 'password'" autocomplete="current-password" required
-                           class="appearance-none relative block w-full px-3 py-3 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                           class="appearance-none relative block w-full px-3 py-3 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                            placeholder="Enter your password">
                     <button type="button" 
-                            @click="showPassword = !showPassword"
-                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition">
-                        <i class="fas" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                            @click.prevent="showPassword = !showPassword"
+                            tabindex="-1"
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition z-10">
+                        <i class="fas text-sm" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
                     </button>
                 </div>
             </div>

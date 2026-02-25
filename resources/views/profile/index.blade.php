@@ -170,9 +170,10 @@
                                                    name="current_password"
                                                    class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 @error('current_password') border-red-500 @enderror">
                                             <button type="button" 
-                                                    @click="showCurrent = !showCurrent"
-                                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition">
-                                                <i class="fas" :class="showCurrent ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                                    @click.prevent="showCurrent = !showCurrent"
+                                                    tabindex="-1"
+                                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition z-10">
+                                                <i class="fas text-sm" :class="showCurrent ? 'fa-eye-slash' : 'fa-eye'"></i>
                                             </button>
                                         </div>
                                         @error('current_password')
@@ -186,9 +187,10 @@
                                                    name="new_password"
                                                    class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 @error('new_password') border-red-500 @enderror">
                                             <button type="button" 
-                                                    @click="showNew = !showNew"
-                                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition">
-                                                <i class="fas" :class="showNew ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                                    @click.prevent="showNew = !showNew"
+                                                    tabindex="-1"
+                                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition z-10">
+                                                <i class="fas text-sm" :class="showNew ? 'fa-eye-slash' : 'fa-eye'"></i>
                                             </button>
                                         </div>
                                         @error('new_password')
@@ -202,9 +204,10 @@
                                                    name="new_password_confirmation"
                                                    class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                             <button type="button" 
-                                                    @click="showConfirm = !showConfirm"
-                                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition">
-                                                <i class="fas" :class="showConfirm ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                                    @click.prevent="showConfirm = !showConfirm"
+                                                    tabindex="-1"
+                                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition z-10">
+                                                <i class="fas text-sm" :class="showConfirm ? 'fa-eye-slash' : 'fa-eye'"></i>
                                             </button>
                                         </div>
                                     </div>

@@ -70,9 +70,10 @@
                                     <input :type="showPassword ? 'text' : 'password'" name="password" required
                                            class="w-full px-4 py-2 pr-10 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
                                     <button type="button" 
-                                            @click="showPassword = !showPassword"
-                                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition">
-                                        <i class="fas" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                            @click.prevent="showPassword = !showPassword"
+                                            tabindex="-1"
+                                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition z-10">
+                                        <i class="fas text-sm" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
                                     </button>
                                 </div>
                                 @error('password')
@@ -86,9 +87,10 @@
                                     <input :type="showConfirm ? 'text' : 'password'" name="password_confirmation" required
                                            class="w-full px-4 py-2 pr-10 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
                                     <button type="button" 
-                                            @click="showConfirm = !showConfirm"
-                                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition">
-                                        <i class="fas" :class="showConfirm ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                            @click.prevent="showConfirm = !showConfirm"
+                                            tabindex="-1"
+                                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition z-10">
+                                        <i class="fas text-sm" :class="showConfirm ? 'fa-eye-slash' : 'fa-eye'"></i>
                                     </button>
                                 </div>
                             </div>
