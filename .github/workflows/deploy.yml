@@ -27,8 +27,8 @@ jobs:
           node-version: 20
 
       - name: Install NPM
-        run: npm install
-        
+        run: npm ci
+
       - name: Build Assets
         run: npm run build
 
