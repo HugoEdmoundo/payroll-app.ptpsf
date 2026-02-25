@@ -162,9 +162,16 @@ class PengaturanGajiSeeder extends Seeder
         ];
 
         foreach ($pengaturanGaji as $data) {
-            PengaturanGaji::create($data);
+            PengaturanGaji::updateOrCreate(
+                [
+                    'jenis_karyawan' => $data['jenis_karyawan'],
+                    'jabatan' => $data['jabatan'],
+                    'lokasi_kerja' => $data['lokasi_kerja'],
+                ],
+                $data
+            );
         }
 
-        $this->command->info('Pengaturan Gaji seeded successfully! Created ' . count($pengaturanGaji) . ' configurations.');
+        $this->command->info('Pengaturan Gaji seeded successfully! Processed ' . count($pengaturanGaji) . ' configurations.');
     }
 }
