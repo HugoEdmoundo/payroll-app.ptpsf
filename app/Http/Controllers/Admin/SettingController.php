@@ -24,6 +24,7 @@ class SettingController extends Controller
             'lokasi_kerja' => 'Lokasi Kerja',
             'bank_options' => 'Bank Options',
             'jabatan_options' => 'Jabatan Options',
+            'komponen_gaji_labels' => 'Komponen Gaji Labels (Field Names)',
         ];
 
         return view('admin.settings.index', compact('settings', 'groups'));
@@ -51,6 +52,11 @@ class SettingController extends Controller
                             ]
                         );
                     }
+                }
+                
+                // Clear cache if komponen_gaji_labels updated
+                if ($group === 'komponen_gaji_labels') {
+                    \App\Helpers\KomponenGajiHelper::clearCache();
                 }
             }
             
