@@ -101,21 +101,6 @@
             </div>
         </div>
     </div>
-            <p class="text-xs text-gray-500 mt-1">Total nett BPJS</p>
-        </div>
-
-        <!-- Koperasi -->
-        <div class="card p-6 border-l-4 border-orange-500">
-            <div class="flex items-center justify-between mb-3">
-                <div class="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center">
-                    <i class="fas fa-store text-orange-600"></i>
-                </div>
-            </div>
-            <p class="text-sm font-medium text-gray-600 mb-1">Tagihan Koperasi</p>
-            <p class="text-lg md:text-xl font-bold text-gray-900 break-words">Rp {{ number_format($pengeluaran['koperasi'], 0, ',', '.') }}</p>
-            <p class="text-xs text-gray-500 mt-1">Total koperasi</p>
-        </div>
-    </div>
 
     <!-- Info Card -->
     <div class="card p-6 bg-blue-50 border-blue-200">

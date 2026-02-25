@@ -40,12 +40,17 @@ class DashboardController extends Controller
             'total_roles' => \App\Models\Role::count(),
         ];
         
-        // Recent activities (last 10)
-        $recentActivities = ActivityLog::with('user')
-                                      ->where('user_id', '!=', auth()->id())
-                                      ->latest()
-                                      ->take(10)
-                                      ->get();
+        // Recent activities (last 10) - with error handling
+        try {
+            $recentActivities = ActivityLog::with('user')
+                                          ->where('user_id', '!=', auth()->id())
+                                          ->latest()
+                                          ->take(10)
+                                          ->get();
+        } catch (\Exception $e) {
+            // If activity_logs table doesn't exist yet, return empty collection
+            $recentActivities = collect();
+        }
         
         // Managed users (users created by this superadmin or all users)
         $managedUsers = User::with('role')
