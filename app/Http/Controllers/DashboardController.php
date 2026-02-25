@@ -44,11 +44,22 @@ class DashboardController extends Controller
         
         // Recent activities (last 10) - with error handling
         try {
-            $recentActivities = ActivityLog::with('user')
-                                          ->where('user_id', '!=', auth()->id())
-                                          ->latest()
-                                          ->take(10)
-                                          ->get();
+            $activities = ActivityLog::with('user')
+                                    ->where('user_id', '!=', auth()->id())
+                                    ->latest()
+                                    ->take(10)
+                                    ->get();
+            
+            $recentActivities = $activities->map(function($activity) {
+                return [
+                    'id' => $activity->id,
+                    'user_name' => $activity->user->name ?? 'Unknown',
+                    'action' => $activity->action,
+                    'module' => $activity->module,
+                    'description' => $activity->description ?? ucfirst($activity->action) . ' ' . ($activity->module ?? ''),
+                    'time' => $activity->created_at->diffForHumans(),
+                ];
+            });
         } catch (\Exception $e) {
             // If activity_logs table doesn't exist yet or any error, return empty collection
             \Log::error('Failed to fetch activity logs: ' . $e->getMessage());
@@ -57,11 +68,21 @@ class DashboardController extends Controller
         
         // Managed users (users created by this superadmin or all users)
         try {
-            $managedUsers = User::with('role')
-                               ->where('id', '!=', auth()->id())
-                               ->latest()
-                               ->take(5)
-                               ->get();
+            $users = User::with('role')
+                        ->where('id', '!=', auth()->id())
+                        ->latest()
+                        ->take(5)
+                        ->get();
+            
+            $managedUsers = $users->map(function($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role->name ?? 'No Role',
+                    'avatar' => strtoupper(substr($user->name, 0, 1)),
+                ];
+            });
         } catch (\Exception $e) {
             \Log::error('Failed to fetch managed users: ' . $e->getMessage());
             $managedUsers = collect();

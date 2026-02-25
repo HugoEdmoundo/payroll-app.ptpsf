@@ -77,16 +77,7 @@
         <div class="card p-6" x-data="activityWidget()">
             <!-- Hidden data for initial load -->
             <script type="application/json" id="activities-data">
-                @json($recentActivities->map(function($activity) {
-                    return [
-                        'id' => $activity->id,
-                        'user_name' => $activity->user->name ?? 'Unknown',
-                        'action' => $activity->action,
-                        'module' => $activity->module,
-                        'description' => $activity->description ?? ucfirst($activity->action) . ' ' . ($activity->module ?? ''),
-                        'time' => $activity->created_at->diffForHumans(),
-                    ];
-                })->toArray())
+                @json($recentActivities)
             </script>
             
             <div class="flex items-center justify-between mb-4">
@@ -132,15 +123,7 @@
         <div class="card p-6" x-data="managedUsersWidget()">
             <!-- Hidden data for initial load -->
             <script type="application/json" id="managed-users-data">
-                @json($managedUsers->map(function($user) {
-                    return [
-                        'id' => $user->id,
-                        'name' => $user->name,
-                        'email' => $user->email,
-                        'role' => $user->role->name ?? 'No Role',
-                        'avatar' => strtoupper(substr($user->name, 0, 1)),
-                    ];
-                })->toArray())
+                @json($managedUsers)
             </script>
             
             <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
