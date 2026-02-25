@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 
 class HitungGajiController extends Controller
 {
-    use GlobalSearchable;
+    use GlobalSearchable, \App\Traits\LogsActivity;
     public function index(Request $request)
     {
         // Get all unique periodes from Acuan Gaji (not Hitung Gaji)

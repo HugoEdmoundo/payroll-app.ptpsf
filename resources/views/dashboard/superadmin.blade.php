@@ -13,12 +13,7 @@
     </div>
 
     <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6" x-data="dashboardStatsWidget()">
-        <!-- Hidden data for initial load -->
-        <script type="application/json" id="stats-data">
-            @json($stats)
-        </script>
-        
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
         <!-- Total Karyawan -->
         <div class="card p-4 lg:p-6">
             <div class="flex items-center gap-3">
@@ -27,7 +22,7 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-medium text-gray-600">Total Karyawan</p>
-                    <p class="text-xl lg:text-2xl font-bold text-gray-900 truncate" x-text="stats.total_karyawan ? stats.total_karyawan.toLocaleString() : '0'"></p>
+                    <p class="text-xl lg:text-2xl font-bold text-gray-900 truncate">{{ number_format($stats['total_karyawan']) }}</p>
                 </div>
             </div>
         </div>
@@ -40,7 +35,7 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-medium text-gray-600">Active Karyawan</p>
-                    <p class="text-xl lg:text-2xl font-bold text-green-600 truncate" x-text="stats.active_karyawan ? stats.active_karyawan.toLocaleString() : '0'"></p>
+                    <p class="text-xl lg:text-2xl font-bold text-green-600 truncate">{{ number_format($stats['active_karyawan']) }}</p>
                 </div>
             </div>
         </div>
@@ -53,7 +48,7 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-medium text-gray-600">Total Users</p>
-                    <p class="text-xl lg:text-2xl font-bold text-gray-900 truncate" x-text="stats.total_users ? stats.total_users.toLocaleString() : '0'"></p>
+                    <p class="text-xl lg:text-2xl font-bold text-gray-900 truncate">{{ number_format($stats['total_users']) }}</p>
                 </div>
             </div>
         </div>
@@ -66,7 +61,7 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-medium text-gray-600">Total Roles</p>
-                    <p class="text-xl lg:text-2xl font-bold text-gray-900 truncate" x-text="stats.total_roles ? stats.total_roles.toLocaleString() : '0'"></p>
+                    <p class="text-xl lg:text-2xl font-bold text-gray-900 truncate">{{ number_format($stats['total_roles']) }}</p>
                 </div>
             </div>
         </div>

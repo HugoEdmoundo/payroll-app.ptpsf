@@ -7,6 +7,7 @@ use App\Models\SystemSetting;
 use App\Imports\KaryawanImport;
 use App\Exports\KaryawanExport;
 use App\Traits\GlobalSearchable;
+use App\Traits\LogsActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -14,7 +15,7 @@ use Carbon\Carbon;
 
 class KaryawanController extends Controller
 {
-    use GlobalSearchable;
+    use GlobalSearchable, LogsActivity;
 
     public function index(Request $request)
     {
@@ -72,7 +73,9 @@ class KaryawanController extends Controller
         ]);
 
         // HAPUS semua logic join_date, biarkan boot method yang handle
-        Karyawan::create($request->all());
+        $karyawan = Karyawan::create($request->all());
+        
+        $this->logCreate('Karyawan', $karyawan->nama_karyawan);
 
         return redirect()->route('karyawan.index')->with('success', 'Karyawan created successfully.');
     }
@@ -98,6 +101,8 @@ class KaryawanController extends Controller
         ]);
 
         $karyawan->update($request->all());
+        
+        $this->logUpdate('Karyawan', $karyawan->nama_karyawan);
 
         return redirect()->route('karyawan.index')->with('success', 'Karyawan updated successfully.');
     }
@@ -123,7 +128,11 @@ class KaryawanController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        $namaKaryawan = $karyawan->nama_karyawan;
         $karyawan->delete();
+        
+        $this->logDelete('Karyawan', $namaKaryawan);
+        
         return redirect()->route('karyawan.index')->with('success', 'Karyawan deleted successfully.');
     }
 
@@ -154,6 +163,8 @@ class KaryawanController extends Controller
 
         $filename = 'karyawan_' . date('YmdHis') . '.xlsx';
         
+        $this->logExport('Karyawan');
+        
         return \Maatwebsite\Excel\Facades\Excel::download(
             new \App\Exports\KaryawanExport(),
             $filename
@@ -175,6 +186,8 @@ class KaryawanController extends Controller
                 new \App\Imports\KaryawanImport,
                 $request->file('file')
             );
+            
+            $this->logImport('Karyawan');
 
             return redirect()->route('karyawan.index')
                             ->with('success', 'Data karyawan berhasil diimport.');

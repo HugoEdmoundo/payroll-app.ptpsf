@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\NKI;
 use App\Models\Karyawan;
 use App\Traits\GlobalSearchable;
+use App\Traits\LogsActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class NKIController extends Controller
 {
-    use GlobalSearchable;
+    use GlobalSearchable, LogsActivity;
 
     public function index(Request $request)
     {
@@ -70,6 +71,8 @@ class NKIController extends Controller
         }
 
         NKI::create($request->all());
+        
+        $this->logCreate('NKI', "Periode {$request->periode}");
 
         return redirect()->route('payroll.nki.index')
                         ->with('success', 'Data NKI berhasil ditambahkan.');
@@ -113,6 +116,8 @@ class NKIController extends Controller
         }
 
         $nki->update($request->all());
+        
+        $this->logUpdate('NKI', "Periode {$request->periode}");
 
         return redirect()->route('payroll.nki.index')
                         ->with('success', 'Data NKI berhasil diupdate.');
@@ -120,7 +125,10 @@ class NKIController extends Controller
 
     public function destroy(NKI $nki)
     {
+        $periode = $nki->periode;
         $nki->delete();
+        
+        $this->logDelete('NKI', "Periode {$periode}");
 
         return redirect()->route('payroll.nki.index')
                         ->with('success', 'Data NKI berhasil dihapus.');
@@ -130,6 +138,8 @@ class NKIController extends Controller
     {
         $periode = $request->get('periode');
         $filename = 'nki_' . ($periode ?? 'all') . '_' . date('YmdHis') . '.xlsx';
+        
+        $this->logExport('NKI');
         
         return \Maatwebsite\Excel\Facades\Excel::download(
             new \App\Exports\NKIExport($periode),
@@ -163,6 +173,8 @@ class NKIController extends Controller
                 new \App\Imports\NKIImport,
                 $request->file('file')
             );
+            
+            $this->logImport('NKI');
 
             return redirect()->route('payroll.nki.index')
                             ->with('success', 'Data NKI berhasil diimport.');
