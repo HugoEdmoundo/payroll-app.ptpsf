@@ -31,7 +31,7 @@
                     <i class="fas fa-users text-white text-lg"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-medium text-blue-600 mb-0.5">Total Karyawan</p>
+                    <p class="text-xs font-medium text-blue-600">Total Karyawan</p>
                     <p class="text-xl lg:text-2xl font-bold text-blue-900 truncate">{{ number_format($stats->total_karyawan ?? 0) }}</p>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                     <i class="fas fa-shield-alt text-white text-lg"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-medium text-green-600 mb-0.5">Total BPJS</p>
+                    <p class="text-xs font-medium text-green-600">Total BPJS</p>
                     <p class="text-base lg:text-lg font-bold text-green-900 truncate">Rp {{ number_format($stats->total_bpjs ?? 0, 0, ',', '.') }}</p>
                 </div>
             </div>
@@ -57,7 +57,7 @@
                     <i class="fas fa-money-bill-wave text-white text-lg"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-medium text-indigo-600 mb-0.5">Total Gaji Bersih</p>
+                    <p class="text-xs font-medium text-indigo-600">Total Gaji Bersih</p>
                     <p class="text-base lg:text-lg font-bold text-indigo-900 truncate">Rp {{ number_format($stats->total_gaji_bersih ?? 0, 0, ',', '.') }}</p>
                 </div>
             </div>
@@ -70,7 +70,7 @@
                     <i class="fas fa-building text-white text-lg"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-medium text-red-600 mb-0.5">Pengeluaran</p>
+                    <p class="text-xs font-medium text-red-600">Pengeluaran</p>
                     <p class="text-base lg:text-lg font-bold text-red-900 truncate">Rp {{ number_format($stats->total_pengeluaran_perusahaan ?? 0, 0, ',', '.') }}</p>
                 </div>
             </div>

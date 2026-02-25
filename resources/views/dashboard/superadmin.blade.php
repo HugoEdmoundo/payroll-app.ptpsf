@@ -21,7 +21,7 @@
                     <i class="fas fa-users text-indigo-600 text-lg"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-medium text-gray-600 mb-1">Total Karyawan</p>
+                    <p class="text-xs font-medium text-gray-600">Total Karyawan</p>
                     <p class="text-xl lg:text-2xl font-bold text-gray-900 truncate">{{ number_format($stats['total_karyawan']) }}</p>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                     <i class="fas fa-user-check text-green-600 text-lg"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-medium text-gray-600 mb-1">Active Karyawan</p>
+                    <p class="text-xs font-medium text-gray-600">Active Karyawan</p>
                     <p class="text-xl lg:text-2xl font-bold text-green-600 truncate">{{ number_format($stats['active_karyawan']) }}</p>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                     <i class="fas fa-user-shield text-purple-600 text-lg"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-medium text-gray-600 mb-1">Total Users</p>
+                    <p class="text-xs font-medium text-gray-600">Total Users</p>
                     <p class="text-xl lg:text-2xl font-bold text-gray-900 truncate">{{ number_format($stats['total_users']) }}</p>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                     <i class="fas fa-user-tag text-pink-600 text-lg"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-medium text-gray-600 mb-1">Total Roles</p>
+                    <p class="text-xs font-medium text-gray-600">Total Roles</p>
                     <p class="text-xl lg:text-2xl font-bold text-gray-900 truncate">{{ number_format($stats['total_roles']) }}</p>
                 </div>
             </div>

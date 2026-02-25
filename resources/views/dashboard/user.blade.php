@@ -21,9 +21,9 @@
                     <i class="fas fa-users text-indigo-600 text-xl"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-medium text-gray-600 mb-1">Total Karyawan</p>
+                    <p class="text-xs font-medium text-gray-600">Total Karyawan</p>
                     <p class="text-xl lg:text-2xl font-bold text-gray-900 truncate">{{ number_format($stats['total_karyawan']) }}</p>
-                    <p class="text-xs text-gray-500 mt-0.5">Active employees</p>
+                    <p class="text-xs text-gray-500">Active employees</p>
                 </div>
             </div>
         </div>
@@ -35,9 +35,9 @@
                     <i class="fas fa-money-bill-wave text-red-600 text-xl"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-medium text-red-600 mb-1">Total Pengeluaran</p>
+                    <p class="text-xs font-medium text-red-600">Total Pengeluaran</p>
                     <p class="text-lg lg:text-xl font-bold text-red-700 truncate">Rp {{ number_format($stats['total_pengeluaran'], 0, ',', '.') }}</p>
-                    <p class="text-xs text-red-500 mt-0.5">All expenses</p>
+                    <p class="text-xs text-red-500">All expenses</p>
                 </div>
             </div>
         </div>
@@ -47,58 +47,58 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
         <!-- Teknisi & Borongan -->
         <div class="card p-4 lg:p-5 border-l-4 border-blue-500">
-            <div class="flex items-start gap-3 mb-2">
+            <div class="flex items-center gap-3">
                 <div class="h-10 w-10 flex-shrink-0 rounded-full bg-blue-100 flex items-center justify-center">
                     <i class="fas fa-tools text-blue-600"></i>
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-medium text-gray-600">Teknisi & Borongan</p>
+                    <p class="text-base lg:text-lg font-bold text-gray-900 truncate">Rp {{ number_format($pengeluaran['teknisi_borongan'], 0, ',', '.') }}</p>
+                    <p class="text-xs text-gray-500">Gaji bersih</p>
                 </div>
             </div>
-            <p class="text-base lg:text-lg font-bold text-gray-900 truncate">Rp {{ number_format($pengeluaran['teknisi_borongan'], 0, ',', '.') }}</p>
-            <p class="text-xs text-gray-500 mt-1">Gaji bersih</p>
         </div>
 
         <!-- Konsultan & Organik -->
         <div class="card p-4 lg:p-5 border-l-4 border-purple-500">
-            <div class="flex items-start gap-3 mb-2">
+            <div class="flex items-center gap-3">
                 <div class="h-10 w-10 flex-shrink-0 rounded-full bg-purple-100 flex items-center justify-center">
                     <i class="fas fa-user-tie text-purple-600"></i>
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-medium text-gray-600">Konsultan & Organik</p>
+                    <p class="text-base lg:text-lg font-bold text-gray-900 truncate">Rp {{ number_format($pengeluaran['konsultan_organik'], 0, ',', '.') }}</p>
+                    <p class="text-xs text-gray-500">Gaji bersih</p>
                 </div>
             </div>
-            <p class="text-base lg:text-lg font-bold text-gray-900 truncate">Rp {{ number_format($pengeluaran['konsultan_organik'], 0, ',', '.') }}</p>
-            <p class="text-xs text-gray-500 mt-1">Gaji bersih</p>
         </div>
 
         <!-- BPJS -->
         <div class="card p-4 lg:p-5 border-l-4 border-green-500">
-            <div class="flex items-start gap-3 mb-2">
+            <div class="flex items-center gap-3">
                 <div class="h-10 w-10 flex-shrink-0 rounded-full bg-green-100 flex items-center justify-center">
                     <i class="fas fa-shield-alt text-green-600"></i>
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-medium text-gray-600">Pengeluaran BPJS</p>
+                    <p class="text-base lg:text-lg font-bold text-gray-900 truncate">Rp {{ number_format($pengeluaran['bpjs'], 0, ',', '.') }}</p>
+                    <p class="text-xs text-gray-500">Total BPJS</p>
                 </div>
             </div>
-            <p class="text-base lg:text-lg font-bold text-gray-900 truncate">Rp {{ number_format($pengeluaran['bpjs'], 0, ',', '.') }}</p>
-            <p class="text-xs text-gray-500 mt-1">Total BPJS</p>
         </div>
 
         <!-- Koperasi -->
         <div class="card p-4 lg:p-5 border-l-4 border-orange-500">
-            <div class="flex items-start gap-3 mb-2">
+            <div class="flex items-center gap-3">
                 <div class="h-10 w-10 flex-shrink-0 rounded-full bg-orange-100 flex items-center justify-center">
                     <i class="fas fa-handshake text-orange-600"></i>
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-medium text-gray-600">Tagihan Koperasi</p>
+                    <p class="text-base lg:text-lg font-bold text-gray-900 truncate">Rp {{ number_format($pengeluaran['koperasi'], 0, ',', '.') }}</p>
+                    <p class="text-xs text-gray-500">Total koperasi</p>
                 </div>
             </div>
-            <p class="text-base lg:text-lg font-bold text-gray-900 truncate">Rp {{ number_format($pengeluaran['koperasi'], 0, ',', '.') }}</p>
-            <p class="text-xs text-gray-500 mt-1">Total koperasi</p>
         </div>
     </div>
             <p class="text-xs text-gray-500 mt-1">Total nett BPJS</p>
