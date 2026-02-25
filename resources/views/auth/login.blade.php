@@ -5,7 +5,7 @@
 @section('content')
 <div class="w-full max-w-md">
     <!-- Card Container -->
-    <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden">
+    <div class="bg-white backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden">
         
         <!-- Header Section -->
         <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-6 text-center">
