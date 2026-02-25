@@ -24,6 +24,13 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
+    // API Routes for Real-time Updates
+    Route::prefix('api')->name('api.')->group(function () {
+        Route::get('/dashboard/stats', [\App\Http\Controllers\Api\DashboardApiController::class, 'stats'])->name('dashboard.stats');
+        Route::get('/dashboard/managed-users', [\App\Http\Controllers\Api\DashboardApiController::class, 'managedUsers'])->name('dashboard.managed-users');
+        Route::get('/dashboard/pengeluaran', [\App\Http\Controllers\Api\DashboardApiController::class, 'pengeluaran'])->name('dashboard.pengeluaran');
+    });
+    
     // Global Search
     Route::get('/search', [App\Http\Controllers\GlobalSearchController::class, 'search'])->name('global.search');
     

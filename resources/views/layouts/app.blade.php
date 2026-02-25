@@ -15,6 +15,9 @@
 
     <link rel="icon" href="{{ asset('images/LOGOPSF_v4fq0w.jpg') }}" type="image/x-icon">
     
+    <!-- Real-time Auto-Refresh System -->
+    <script src="{{ asset('js/realtime.js') }}" defer></script>
+    
     <style>
         /* Custom styles */
         .transition-all {
