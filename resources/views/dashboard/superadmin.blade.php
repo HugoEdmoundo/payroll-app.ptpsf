@@ -86,7 +86,7 @@
                         'description' => $activity->description ?? ucfirst($activity->action) . ' ' . ($activity->module ?? ''),
                         'time' => $activity->created_at->diffForHumans(),
                     ];
-                }))
+                })->toArray())
             </script>
             
             <div class="flex items-center justify-between mb-4">
@@ -140,7 +140,7 @@
                         'role' => $user->role->name ?? 'No Role',
                         'avatar' => strtoupper(substr($user->name, 0, 1)),
                     ];
-                }))
+                })->toArray())
             </script>
             
             <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">

@@ -50,16 +50,22 @@ class DashboardController extends Controller
                                           ->take(10)
                                           ->get();
         } catch (\Exception $e) {
-            // If activity_logs table doesn't exist yet, return empty collection
+            // If activity_logs table doesn't exist yet or any error, return empty collection
+            \Log::error('Failed to fetch activity logs: ' . $e->getMessage());
             $recentActivities = collect();
         }
         
         // Managed users (users created by this superadmin or all users)
-        $managedUsers = User::with('role')
-                           ->where('id', '!=', auth()->id())
-                           ->latest()
-                           ->take(5)
-                           ->get();
+        try {
+            $managedUsers = User::with('role')
+                               ->where('id', '!=', auth()->id())
+                               ->latest()
+                               ->take(5)
+                               ->get();
+        } catch (\Exception $e) {
+            \Log::error('Failed to fetch managed users: ' . $e->getMessage());
+            $managedUsers = collect();
+        }
         
         return view('dashboard.superadmin', compact('stats', 'recentActivities', 'managedUsers', 'periode'));
     }
