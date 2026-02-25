@@ -13,24 +13,42 @@
         @php
             $role = auth()->user()->role ? auth()->user()->role->name : 'No Role';
             $currentRoute = request()->route()->getName();
+            $navItems = [];
 
-            if ($role === 'Superadmin') {
-                $navItems = [
-                    ['label' => 'Home', 'route' => 'dashboard', 'icon' => 'fas fa-chart-line'],
-                    ['label' => 'Karyawan', 'route' => 'karyawan.index', 'icon' => 'fas fa-users'],
-                    ['label' => 'Users', 'route' => 'admin.users.index', 'icon' => 'fas fa-users-cog'],
-                    ['label' => 'Roles', 'route' => 'admin.roles.index', 'icon' => 'fas fa-user-tag'],
-                    ['label' => 'Settings', 'route' => 'admin.settings.index', 'icon' => 'fas fa-cogs'],
-                ];
-            } else {
-                $navItems = [
-                    ['label' => 'Home', 'route' => 'dashboard', 'icon' => 'fas fa-chart-line'],
-                    ['label' => 'Karyawan', 'route' => 'karyawan.index', 'icon' => 'fas fa-users'],
-                    ['label' => 'Profile', 'route' => 'profile', 'icon' => 'fas fa-user-circle'],
-                ];
+            // Dashboard - selalu tampil jika ada permission
+            if(auth()->user()->hasPermission('dashboard.view')) {
+                $navItems[] = ['label' => 'Home', 'route' => 'dashboard', 'icon' => 'fas fa-chart-line'];
             }
 
-            // max 5
+            // Karyawan
+            if(auth()->user()->hasPermission('karyawan.view')) {
+                $navItems[] = ['label' => 'Karyawan', 'route' => 'karyawan.index', 'icon' => 'fas fa-users'];
+            }
+
+            // Payroll - prioritas untuk non-admin
+            if(auth()->user()->hasPermission('acuan_gaji.view')) {
+                $navItems[] = ['label' => 'Acuan', 'route' => 'payroll.acuan-gaji.index', 'icon' => 'fas fa-file-invoice-dollar'];
+            } elseif(auth()->user()->hasPermission('hitung_gaji.view')) {
+                $navItems[] = ['label' => 'Hitung', 'route' => 'payroll.hitung-gaji.index', 'icon' => 'fas fa-calculator'];
+            } elseif(auth()->user()->hasPermission('slip_gaji.view')) {
+                $navItems[] = ['label' => 'Slip', 'route' => 'payroll.slip-gaji.index', 'icon' => 'fas fa-receipt'];
+            }
+
+            // Admin menu - hanya untuk yang punya permission
+            if(auth()->user()->hasPermission('users.view')) {
+                $navItems[] = ['label' => 'Users', 'route' => 'admin.users.index', 'icon' => 'fas fa-user-shield'];
+            } elseif(auth()->user()->hasPermission('roles.view')) {
+                $navItems[] = ['label' => 'Roles', 'route' => 'admin.roles.index', 'icon' => 'fas fa-user-tag'];
+            } elseif(auth()->user()->hasPermission('settings.view')) {
+                $navItems[] = ['label' => 'Settings', 'route' => 'admin.settings.index', 'icon' => 'fas fa-sliders-h'];
+            }
+
+            // Jika masih kurang dari 5, tambahkan profile
+            if(count($navItems) < 5) {
+                $navItems[] = ['label' => 'Profile', 'route' => 'profile', 'icon' => 'fas fa-user-circle'];
+            }
+
+            // Max 5 items
             $navItems = array_slice($navItems, 0, 5);
         @endphp
 

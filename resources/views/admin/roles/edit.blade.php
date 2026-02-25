@@ -59,57 +59,83 @@
                     
                     <div class="space-y-4">
                         @php
-                            $groupedByModule = $permissions->groupBy('module');
+                            $groupedByGroup = $permissions->groupBy('group');
+                            $moduleIcons = [
+                                'dashboard' => 'chart-line',
+                                'karyawan' => 'users',
+                                'pengaturan_gaji' => 'cog',
+                                'nki' => 'star',
+                                'absensi' => 'calendar-check',
+                                'kasbon' => 'hand-holding-usd',
+                                'acuan_gaji' => 'file-invoice-dollar',
+                                'hitung_gaji' => 'calculator',
+                                'slip_gaji' => 'receipt',
+                                'users' => 'user-shield',
+                                'roles' => 'user-tag',
+                                'settings' => 'sliders-h',
+                            ];
                         @endphp
                         
-                        @foreach($groupedByModule as $module => $modulePermissions)
-                        <div class="border-2 border-gray-200 rounded-xl overflow-hidden hover:border-indigo-300 transition duration-150">
-                            <!-- Module Header -->
-                            <div class="bg-gradient-to-r from-indigo-50 to-purple-50 px-6 py-4 border-b border-gray-200">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="h-10 w-10 rounded-lg bg-indigo-600 flex items-center justify-center">
-                                            <i class="fas fa-{{ 
-                                                $module === 'dashboard' ? 'chart-line' : 
-                                                ($module === 'karyawan' ? 'users' : 
-                                                (in_array($module, ['nki', 'absensi', 'kasbon', 'acuan_gaji', 'hitung_gaji', 'slip_gaji', 'pengaturan_gaji']) ? 'money-bill-wave' : 
-                                                'cog')) 
-                                            }} text-white text-lg"></i>
-                                        </div>
-                                        <div>
-                                            <h4 class="text-base font-bold text-gray-900 capitalize">
-                                                {{ str_replace('_', ' ', $module) }}
-                                            </h4>
-                                            <p class="text-xs text-gray-600">{{ $modulePermissions->count() }} permissions available</p>
-                                        </div>
-                                    </div>
-                                    <button type="button" onclick="toggleModule('{{ $module }}')" 
-                                            class="px-3 py-1.5 text-xs bg-white border border-indigo-300 text-indigo-700 rounded-lg hover:bg-indigo-50 font-medium transition">
-                                        <i class="fas fa-check-square mr-1"></i>Select All
-                                    </button>
-                                </div>
-                            </div>
+                        @foreach($groupedByGroup as $group => $groupPermissions)
+                        <div class="mb-6">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                                <span class="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mr-3">
+                                    <i class="fas fa-{{ $group === 'Dashboard' ? 'chart-line' : ($group === 'Karyawan' ? 'users' : ($group === 'Payroll' ? 'money-bill-wave' : 'cog')) }} text-white text-sm"></i>
+                                </span>
+                                {{ $group }}
+                            </h3>
                             
-                            <!-- Module Permissions -->
-                            <div class="p-6 bg-white">
-                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-                                    @foreach($modulePermissions as $permission)
-                                    <div class="flex items-center p-3 rounded-lg border-2 {{ in_array($permission->id, $rolePermissions) ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200' }} hover:border-indigo-400 hover:bg-indigo-50 transition duration-150 cursor-pointer"
-                                         onclick="document.getElementById('permission_{{ $permission->id }}').click()">
-                                        <input type="checkbox" name="permissions[]" 
-                                               value="{{ $permission->id }}" 
-                                               id="permission_{{ $permission->id }}"
-                                               data-module="{{ $module }}"
-                                               {{ in_array($permission->id, $rolePermissions) ? 'checked' : '' }}
-                                               class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded pointer-events-none">
-                                        <label for="permission_{{ $permission->id }}" class="ml-2 flex-1 cursor-pointer pointer-events-none">
-                                            <span class="text-sm font-semibold text-gray-900 capitalize">
-                                                {{ $permission->action_type }}
-                                            </span>
-                                        </label>
+                            @php
+                                $groupedByModule = $groupPermissions->groupBy('module');
+                            @endphp
+                            
+                            <div class="space-y-3">
+                                @foreach($groupedByModule as $module => $modulePermissions)
+                                <div class="border-2 border-gray-200 rounded-xl overflow-hidden hover:border-indigo-300 transition duration-150">
+                                    <!-- Module Header -->
+                                    <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-5 py-3 border-b border-gray-200">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="h-8 w-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+                                                    <i class="fas fa-{{ $moduleIcons[$module] ?? 'cube' }} text-white text-sm"></i>
+                                                </div>
+                                                <div>
+                                                    <h4 class="text-sm font-bold text-gray-900 capitalize">
+                                                        {{ str_replace('_', ' ', $module) }}
+                                                    </h4>
+                                                    <p class="text-xs text-gray-500">{{ $modulePermissions->count() }} permissions</p>
+                                                </div>
+                                            </div>
+                                            <button type="button" onclick="toggleModule('{{ $module }}')" 
+                                                    class="px-3 py-1.5 text-xs bg-white border border-indigo-300 text-indigo-700 rounded-lg hover:bg-indigo-50 font-medium transition">
+                                                <i class="fas fa-check-square mr-1"></i>Select All
+                                            </button>
+                                        </div>
                                     </div>
-                                    @endforeach
+                                    
+                                    <!-- Module Permissions -->
+                                    <div class="p-5 bg-white">
+                                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                                            @foreach($modulePermissions as $permission)
+                                            <div class="flex items-center p-3 rounded-lg border-2 {{ in_array($permission->id, $rolePermissions) ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200' }} hover:border-indigo-400 hover:bg-indigo-50 transition duration-150 cursor-pointer"
+                                                 onclick="document.getElementById('permission_{{ $permission->id }}').click()">
+                                                <input type="checkbox" name="permissions[]" 
+                                                       value="{{ $permission->id }}" 
+                                                       id="permission_{{ $permission->id }}"
+                                                       data-module="{{ $module }}"
+                                                       {{ in_array($permission->id, $rolePermissions) ? 'checked' : '' }}
+                                                       class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded pointer-events-none">
+                                                <label for="permission_{{ $permission->id }}" class="ml-2 flex-1 cursor-pointer pointer-events-none">
+                                                    <span class="text-sm font-semibold text-gray-900 capitalize">
+                                                        {{ $permission->action_type }}
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
                                 </div>
+                                @endforeach
                             </div>
                         </div>
                         @endforeach

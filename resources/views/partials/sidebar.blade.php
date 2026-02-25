@@ -34,6 +34,9 @@
 
         <!-- Navigation -->
         <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+            
+            <!-- ========== MAIN MENU ========== -->
+            
             <!-- Dashboard -->
             @if(auth()->user()->hasPermission('dashboard.view'))
             <a href="{{ route('dashboard') }}"
@@ -48,10 +51,17 @@
             @if(auth()->user()->hasPermission('karyawan.view'))
             <a href="{{ route('karyawan.index') }}"
                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
-                      {{ str_contains($currentRoute, 'karyawan') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <i class="fas fa-users w-5 text-center mr-3 {{ str_contains($currentRoute, 'karyawan') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                      {{ str_contains($currentRoute, 'karyawan') && !str_contains($currentRoute, 'admin') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <i class="fas fa-users w-5 text-center mr-3 {{ str_contains($currentRoute, 'karyawan') && !str_contains($currentRoute, 'admin') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
                 <span class="truncate">Data Karyawan</span>
             </a>
+            @endif
+
+            <!-- ========== PAYROLL SECTION ========== -->
+            @if(auth()->user()->hasPermission('pengaturan_gaji.view') || auth()->user()->hasPermission('nki.view') || auth()->user()->hasPermission('absensi.view') || auth()->user()->hasPermission('kasbon.view') || auth()->user()->hasPermission('acuan_gaji.view') || auth()->user()->hasPermission('hitung_gaji.view') || auth()->user()->hasPermission('slip_gaji.view'))
+            <div class="pt-3 pb-2">
+                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Payroll</p>
+            </div>
             @endif
 
             <!-- Pengaturan Gaji -->
@@ -59,7 +69,7 @@
             <a href="{{ route('payroll.pengaturan-gaji.index') }}"
                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'pengaturan-gaji') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <i class="fas fa-money-bill-wave w-5 text-center mr-3 {{ str_contains($currentRoute, 'pengaturan-gaji') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                <i class="fas fa-cog w-5 text-center mr-3 {{ str_contains($currentRoute, 'pengaturan-gaji') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
                 <span class="truncate">Pengaturan Gaji</span>
             </a>
             @endif
@@ -71,7 +81,7 @@
                         class="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                                {{ str_contains($currentRoute, 'nki') || str_contains($currentRoute, 'absensi') || str_contains($currentRoute, 'kasbon') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                     <div class="flex items-center">
-                        <i class="fas fa-calculator w-5 text-center mr-3 {{ str_contains($currentRoute, 'nki') || str_contains($currentRoute, 'absensi') || str_contains($currentRoute, 'kasbon') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                        <i class="fas fa-puzzle-piece w-5 text-center mr-3 {{ str_contains($currentRoute, 'nki') || str_contains($currentRoute, 'absensi') || str_contains($currentRoute, 'kasbon') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
                         <span class="truncate">Komponen</span>
                     </div>
                     <i class="fas fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
@@ -82,21 +92,21 @@
                     <a href="{{ route('payroll.nki.index') }}"
                        class="block px-3 py-2 text-sm rounded-lg transition-all duration-200
                               {{ str_contains($currentRoute, 'nki') ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-gray-600 hover:bg-gray-100' }}">
-                        NKI (Tunjangan Prestasi)
+                        <i class="fas fa-star text-xs mr-2"></i>NKI
                     </a>
                     @endif
                     @if(auth()->user()->hasPermission('absensi.view'))
                     <a href="{{ route('payroll.absensi.index') }}"
                        class="block px-3 py-2 text-sm rounded-lg transition-all duration-200
                               {{ str_contains($currentRoute, 'absensi') ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-gray-600 hover:bg-gray-100' }}">
-                        Absensi
+                        <i class="fas fa-calendar-check text-xs mr-2"></i>Absensi
                     </a>
                     @endif
                     @if(auth()->user()->hasPermission('kasbon.view'))
                     <a href="{{ route('payroll.kasbon.index') }}"
                        class="block px-3 py-2 text-sm rounded-lg transition-all duration-200
                               {{ str_contains($currentRoute, 'kasbon') ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-gray-600 hover:bg-gray-100' }}">
-                        Kasbon
+                        <i class="fas fa-hand-holding-usd text-xs mr-2"></i>Kasbon
                     </a>
                     @endif
                 </div>
@@ -128,15 +138,15 @@
             <a href="{{ route('payroll.slip-gaji.index') }}"
                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'slip-gaji') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <i class="fas fa-file-invoice w-5 text-center mr-3 {{ str_contains($currentRoute, 'slip-gaji') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                <i class="fas fa-receipt w-5 text-center mr-3 {{ str_contains($currentRoute, 'slip-gaji') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
                 <span class="truncate">Slip Gaji</span>
             </a>
             @endif
 
-            <!-- Divider -->
+            <!-- ========== ADMIN SECTION ========== -->
             @if(auth()->user()->hasPermission('settings.view') || auth()->user()->hasPermission('users.view') || auth()->user()->hasPermission('roles.view'))
             <div class="pt-4 pb-2">
-                <div class="border-t border-gray-200"></div>
+                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Administration</p>
             </div>
             @endif
 
@@ -145,7 +155,7 @@
             <a href="{{ route('admin.settings.index') }}"
                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'settings') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <i class="fas fa-cogs w-5 text-center mr-3 {{ str_contains($currentRoute, 'settings') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                <i class="fas fa-sliders-h w-5 text-center mr-3 {{ str_contains($currentRoute, 'settings') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
                 <span class="truncate">System Settings</span>
             </a>
             @endif
@@ -155,7 +165,7 @@
             <a href="{{ route('admin.users.index') }}"
                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'admin.users') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <i class="fas fa-users-cog w-5 text-center mr-3 {{ str_contains($currentRoute, 'admin.users') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
+                <i class="fas fa-user-shield w-5 text-center mr-3 {{ str_contains($currentRoute, 'admin.users') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
                 <span class="truncate">Manage Users</span>
             </a>
             @endif
