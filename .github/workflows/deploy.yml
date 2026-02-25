@@ -45,16 +45,22 @@ jobs:
           target: "/opt/"
 
       - name: Unzip on VPS
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: root
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            rm -rf /opt/just-atesting
-            mkdir /opt/just-atesting
-            unzip /opt/release.zip -d /opt/just-atesting
-            rm /opt/release.zip
-            cd /opt/just-atesting
-            chown -R www-data:www-data storage bootstrap/cache
-            php artisan migrate --force
+          uses: appleboy/ssh-action@v1.0.3
+          with:
+            host: ${{ secrets.VPS_HOST }}
+            username: root
+            key: ${{ secrets.VPS_SSH_KEY }}
+            script: |
+              rm -rf /opt/just-atesting
+              mkdir /opt/just-atesting
+              if [ -f /opt/release.zip ]; then
+                unzip /opt/release.zip -d /opt/just-atesting
+                rm /opt/release.zip
+              else
+                echo "release.zip not found!"
+                exit 1
+              fi
+              cd /opt/just-atesting
+              chown -R www-data:www-data storage bootstrap/cache
+              php artisan migrate --force
+            port: 22
