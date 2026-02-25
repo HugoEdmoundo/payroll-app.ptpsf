@@ -6,26 +6,26 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
-    <div class="card p-6">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-4">
+    <div class="card p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+            <div class="flex items-center gap-3">
                 <a href="{{ route('payroll.slip-gaji.index') }}" 
-                   class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition">
-                    <i class="fas fa-arrow-left"></i>
+                   class="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition">
+                    <i class="fas fa-arrow-left text-sm"></i>
                 </a>
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Slip Gaji</h1>
+                <div class="min-w-0">
+                    <h1 class="text-lg sm:text-2xl font-bold text-gray-900">Slip Gaji</h1>
                     <div class="flex items-center gap-2 mt-1">
-                        <i class="fas fa-calendar-alt text-purple-600 text-sm"></i>
-                        <p class="text-sm font-medium text-gray-600">{{ \Carbon\Carbon::createFromFormat('Y-m', $periode)->format('F Y') }}</p>
+                        <i class="fas fa-calendar-alt text-purple-600 text-xs sm:text-sm"></i>
+                        <p class="text-xs sm:text-sm font-medium text-gray-600">{{ \Carbon\Carbon::createFromFormat('Y-m', $periode)->format('F Y') }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Export Button (Excel Only) -->
             <a href="{{ route('payroll.slip-gaji.export-excel', $periode) }}" 
-               class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg shadow hover:bg-green-700 transition">
-                <i class="fas fa-file-excel mr-2"></i>Export Excel
+               class="inline-flex items-center px-3 py-2 text-xs sm:text-sm bg-green-600 text-white font-medium rounded-lg shadow hover:bg-green-700 transition whitespace-nowrap">
+                <i class="fas fa-file-excel mr-1.5"></i>Export Excel
             </a>
         </div>
     </div>

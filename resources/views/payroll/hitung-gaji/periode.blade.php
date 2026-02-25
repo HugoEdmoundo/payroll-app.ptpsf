@@ -6,17 +6,17 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
-    <div class="card p-6">
-        <div class="flex items-center gap-4">
+    <div class="card p-4 sm:p-6">
+        <div class="flex items-center gap-3">
             <a href="{{ route('payroll.hitung-gaji.index') }}" 
-               class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition">
-                <i class="fas fa-arrow-left"></i>
+               class="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition">
+                <i class="fas fa-arrow-left text-sm"></i>
             </a>
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900">Hitung Gaji</h1>
+            <div class="min-w-0">
+                <h1 class="text-lg sm:text-2xl font-bold text-gray-900">Hitung Gaji</h1>
                 <div class="flex items-center gap-2 mt-1">
-                    <i class="fas fa-calendar-alt text-indigo-600 text-sm"></i>
-                    <p class="text-sm font-medium text-gray-600">{{ \Carbon\Carbon::createFromFormat('Y-m', $periode)->format('F Y') }}</p>
+                    <i class="fas fa-calendar-alt text-indigo-600 text-xs sm:text-sm"></i>
+                    <p class="text-xs sm:text-sm font-medium text-gray-600">{{ \Carbon\Carbon::createFromFormat('Y-m', $periode)->format('F Y') }}</p>
                 </div>
             </div>
         </div>

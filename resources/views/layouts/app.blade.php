@@ -28,11 +28,23 @@
             border: 1px solid #e5e7eb;
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
+        
+        /* Mobile friendly - prevent horizontal scroll */
+        body {
+            overflow-x: hidden;
+        }
+        
+        /* Ensure content is not hidden */
+        @media (max-width: 1023px) {
+            main {
+                min-height: calc(100vh - 3.5rem);
+            }
+        }
     </style>
     
     @stack('styles')
 </head>
-<body class="bg-gray-50 h-full" x-data="{ sidebarOpen: false, dropdownOpen: false }">
+<body class="bg-gray-50 antialiased" x-data="{ sidebarOpen: false, dropdownOpen: false }">
 
     <!-- Include Header -->
     @include('partials.header')
@@ -40,12 +52,9 @@
     <!-- Include Sidebar -->
     @include('partials.sidebar')
     
-    <!-- Include Mobile Nav -->
-    @include('partials.mobile-nav')
-    
     <!-- Main Content -->
-    <main class="lg:pl-64 min-h-screen pt-16">
-        <div class="p-4 md:p-6">
+    <main class="lg:pl-64 pt-14 lg:pt-16">
+        <div class="p-4 md:p-6 lg:p-8">
             <!-- Flash Messages -->
             @include('partials.flash')
             

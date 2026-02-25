@@ -4,25 +4,42 @@
     $jenisKaryawan = \App\Models\SystemSetting::getOptions('jenis_karyawan');
 @endphp
 
-<aside class="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 
-              bg-white border-r border-gray-200 shadow-sm">
+<!-- Mobile Sidebar Overlay -->
+<div x-show="sidebarOpen"
+     @click="sidebarOpen = false"
+     x-transition:enter="transition-opacity ease-linear duration-300"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition-opacity ease-linear duration-300"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-40 lg:hidden"
+     x-cloak>
+</div>
+
+<!-- Sidebar -->
+<aside class="fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out
+              lg:translate-x-0 lg:z-30
+              bg-white border-r border-gray-200 shadow-lg lg:shadow-sm
+              flex flex-col"
+       :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }">
 
     <!-- Wrapper -->
     <div class="flex flex-col h-full">
 
         <!-- Header / Brand -->
-        <div class="px-6 py-6 border-b border-gray-100">
+        <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 
-                <div class="h-12 w-12 rounded-xl overflow-hidden shadow-sm">
+                <div class="h-10 w-10 rounded-xl overflow-hidden shadow-sm">
                     <img src="{{ asset('images/LOGOPSF_v4fq0w.jpg') }}"
                          alt="Logo PSF"
                          class="h-full w-full object-cover"
-                         onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\'h-9 w-9 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold\'>P</div>';">
+                         onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\'h-10 w-10 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold\'>P</div>';">
                 </div>
 
                 <div>
-                    <h1 class="text-xl font-bold leading-tight tracking-wide 
+                    <h1 class="text-lg font-bold leading-tight tracking-wide 
                             bg-gradient-to-r from-yellow-400 via-yellow-300 to-blue-600 
                             bg-clip-text text-transparent">
                         PAYROLL PSF
@@ -30,16 +47,23 @@
                 </div>
 
             </div>
+
+            <!-- Close button for mobile -->
+            <button @click="sidebarOpen = false"
+                    class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition">
+                <i class="fas fa-times text-gray-600"></i>
+            </button>
         </div>
 
         <!-- Navigation -->
-        <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
             
             <!-- ========== MAIN MENU ========== -->
             
             <!-- Dashboard -->
             @if(auth()->user()->hasPermission('dashboard.view'))
             <a href="{{ route('dashboard') }}"
+               @click="sidebarOpen = false"
                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'dashboard') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <i class="fas fa-chart-line w-5 text-center mr-3 {{ str_contains($currentRoute, 'dashboard') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
@@ -50,6 +74,7 @@
             <!-- Data Karyawan -->
             @if(auth()->user()->hasPermission('karyawan.view'))
             <a href="{{ route('karyawan.index') }}"
+               @click="sidebarOpen = false"
                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'karyawan') && !str_contains($currentRoute, 'admin') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <i class="fas fa-users w-5 text-center mr-3 {{ str_contains($currentRoute, 'karyawan') && !str_contains($currentRoute, 'admin') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
@@ -67,6 +92,7 @@
             <!-- Pengaturan Gaji -->
             @if(auth()->user()->hasPermission('pengaturan_gaji.view'))
             <a href="{{ route('payroll.pengaturan-gaji.index') }}"
+               @click="sidebarOpen = false"
                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'pengaturan-gaji') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <i class="fas fa-cog w-5 text-center mr-3 {{ str_contains($currentRoute, 'pengaturan-gaji') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
@@ -90,6 +116,7 @@
                 <div x-show="open" x-transition class="ml-8 mt-1 space-y-1">
                     @if(auth()->user()->hasPermission('nki.view'))
                     <a href="{{ route('payroll.nki.index') }}"
+                       @click="sidebarOpen = false"
                        class="block px-3 py-2 text-sm rounded-lg transition-all duration-200
                               {{ str_contains($currentRoute, 'nki') ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-gray-600 hover:bg-gray-100' }}">
                         <i class="fas fa-star text-xs mr-2"></i>NKI
@@ -97,6 +124,7 @@
                     @endif
                     @if(auth()->user()->hasPermission('absensi.view'))
                     <a href="{{ route('payroll.absensi.index') }}"
+                       @click="sidebarOpen = false"
                        class="block px-3 py-2 text-sm rounded-lg transition-all duration-200
                               {{ str_contains($currentRoute, 'absensi') ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-gray-600 hover:bg-gray-100' }}">
                         <i class="fas fa-calendar-check text-xs mr-2"></i>Absensi
@@ -104,6 +132,7 @@
                     @endif
                     @if(auth()->user()->hasPermission('kasbon.view'))
                     <a href="{{ route('payroll.kasbon.index') }}"
+                       @click="sidebarOpen = false"
                        class="block px-3 py-2 text-sm rounded-lg transition-all duration-200
                               {{ str_contains($currentRoute, 'kasbon') ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-gray-600 hover:bg-gray-100' }}">
                         <i class="fas fa-hand-holding-usd text-xs mr-2"></i>Kasbon
@@ -116,6 +145,7 @@
             <!-- Acuan Gaji -->
             @if(auth()->user()->hasPermission('acuan_gaji.view'))
             <a href="{{ route('payroll.acuan-gaji.index') }}"
+               @click="sidebarOpen = false"
                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'acuan-gaji') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <i class="fas fa-file-invoice-dollar w-5 text-center mr-3 {{ str_contains($currentRoute, 'acuan-gaji') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
@@ -126,6 +156,7 @@
             <!-- Hitung Gaji -->
             @if(auth()->user()->hasPermission('hitung_gaji.view'))
             <a href="{{ route('payroll.hitung-gaji.index') }}"
+               @click="sidebarOpen = false"
                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'hitung-gaji') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <i class="fas fa-calculator w-5 text-center mr-3 {{ str_contains($currentRoute, 'hitung-gaji') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
@@ -136,6 +167,7 @@
             <!-- Slip Gaji -->
             @if(auth()->user()->hasPermission('slip_gaji.view'))
             <a href="{{ route('payroll.slip-gaji.index') }}"
+               @click="sidebarOpen = false"
                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'slip-gaji') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <i class="fas fa-receipt w-5 text-center mr-3 {{ str_contains($currentRoute, 'slip-gaji') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
@@ -153,6 +185,7 @@
             <!-- System Settings -->
             @if(auth()->user()->hasPermission('settings.view'))
             <a href="{{ route('admin.settings.index') }}"
+               @click="sidebarOpen = false"
                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'settings') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <i class="fas fa-sliders-h w-5 text-center mr-3 {{ str_contains($currentRoute, 'settings') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
@@ -163,6 +196,7 @@
             <!-- Manage Users -->
             @if(auth()->user()->hasPermission('users.view'))
             <a href="{{ route('admin.users.index') }}"
+               @click="sidebarOpen = false"
                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'admin.users') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <i class="fas fa-user-shield w-5 text-center mr-3 {{ str_contains($currentRoute, 'admin.users') ? 'text-indigo-600' : 'text-gray-400' }}"></i>
@@ -173,6 +207,7 @@
             <!-- Manage Roles -->
             @if(auth()->user()->hasPermission('roles.view'))
             <a href="{{ route('admin.roles.index') }}"
+               @click="sidebarOpen = false"
                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                       {{ str_contains($currentRoute, 'admin.roles') ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <i class="fas fa-user-tag w-5 text-center mr-3 {{ str_contains($currentRoute, 'admin.roles') ? 'text-indigo-600' : 'text-gray-400' }}"></i>

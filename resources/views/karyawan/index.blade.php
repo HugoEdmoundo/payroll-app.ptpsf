@@ -6,30 +6,30 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header with Actions -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Data Karyawan</h1>
-            <p class="mt-1 text-sm text-gray-600">Manage and view employee data</p>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <div class="min-w-0 flex-1">
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Data Karyawan</h1>
+            <p class="mt-1 text-xs sm:text-sm text-gray-600">Manage and view employee data</p>
         </div>
-        <div class="mt-4 md:mt-0 flex space-x-3">
+        <div class="flex flex-wrap items-center gap-2">
             @if(auth()->user()->hasPermission('karyawan.export'))
             <a href="{{ route('karyawan.export') }}" 
-               class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150">
-                <i class="fas fa-download mr-2"></i>Export
+               class="px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition duration-150 whitespace-nowrap">
+                <i class="fas fa-download mr-1.5"></i>Export
             </a>
             @endif
             
             @if(auth()->user()->hasPermission('karyawan.import'))
             <a href="{{ route('karyawan.import') }}" 
-               class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150">
-                <i class="fas fa-upload mr-2"></i>Import
+               class="px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition duration-150 whitespace-nowrap">
+                <i class="fas fa-upload mr-1.5"></i>Import
             </a>
             @endif
             
             @if(auth()->user()->hasPermission('karyawan.create'))
             <a href="{{ route('karyawan.create') }}" 
-               class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
-                <i class="fas fa-plus mr-2"></i>Add Karyawan
+               class="px-3 py-2 text-xs sm:text-sm bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 whitespace-nowrap">
+                <i class="fas fa-plus mr-1.5"></i>Add Karyawan
             </a>
             @endif
         </div>

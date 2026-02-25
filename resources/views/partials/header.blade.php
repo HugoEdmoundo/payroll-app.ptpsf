@@ -4,20 +4,26 @@
                shadow-[0_8px_30px_rgba(0,0,0,0.05)]">
 
     <div class="px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
+        <div class="flex justify-between items-center h-14 lg:h-16">
 
             <!-- LEFT SIDE -->
-            <div class="flex items-center">
+            <div class="flex items-center gap-2">
+
+                <!-- Mobile Hamburger -->
+                <button @click="sidebarOpen = !sidebarOpen"
+                        class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition">
+                    <i class="fas fa-bars text-gray-600 text-lg"></i>
+                </button>
 
                 <!-- Mobile Logo -->
-                <div class="ml-3 lg:hidden flex items-center">
-                    <div class="h-9 w-9 rounded-xl overflow-hidden mr-2 shadow-md">
+                <div class="lg:hidden flex items-center">
+                    <div class="h-8 w-8 rounded-lg overflow-hidden mr-2 shadow-sm">
                         <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1768808187/LOGOPSF_v4fq0w.jpg"
                              alt="Logo PSF"
                              class="h-full w-full object-cover"
-                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\'h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold\'>P</div>';"/>
+                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\'h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold text-xs\'>P</div>';"/>
                     </div>
-                    <span class="text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    <span class="text-base font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                         PAYROLL PSF
                     </span>
                 </div>
@@ -129,20 +135,20 @@
 
                     <!-- TRIGGER -->
                     <button @click="open = !open"
-                            class="group relative flex items-center space-x-3
-                                   px-3 py-2 rounded-2xl
+                            class="group relative flex items-center space-x-2
+                                   px-2 py-1.5 lg:px-3 lg:py-2 rounded-xl lg:rounded-2xl
                                    transition-all duration-300
                                    hover:bg-white/60 hover:backdrop-blur
                                    hover:shadow-md hover:-translate-y-0.5">
 
                         <!-- Glow Aura -->
-                        <span class="absolute inset-0 rounded-2xl
+                        <span class="absolute inset-0 rounded-xl lg:rounded-2xl
                                      bg-gradient-to-r from-indigo-500 to-purple-600
                                      opacity-0 group-hover:opacity-10
                                      blur-xl transition duration-500"></span>
 
                         <!-- Avatar -->
-                        <div class="relative h-10 w-10 rounded-full overflow-hidden
+                        <div class="relative h-8 w-8 lg:h-10 lg:w-10 rounded-full overflow-hidden
                                     ring-2 ring-white shadow-lg
                                     transition duration-300
                                     group-hover:scale-105">
@@ -155,7 +161,7 @@
                                 <div class="h-full w-full bg-gradient-to-br
                                             from-indigo-600 to-purple-600
                                             flex items-center justify-center">
-                                    <span class="text-white text-sm font-semibold">
+                                    <span class="text-white text-xs lg:text-sm font-semibold">
                                         {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                                     </span>
                                 </div>
@@ -163,12 +169,12 @@
 
                             <!-- Online Indicator -->
                             <span class="absolute bottom-0 right-0
-                                         h-3 w-3 bg-emerald-500
+                                         h-2.5 w-2.5 lg:h-3 lg:w-3 bg-emerald-500
                                          border-2 border-white rounded-full
                                          animate-pulse"></span>
                         </div>
 
-                        <!-- Name -->
+                        <!-- Name - Hidden on mobile -->
                         <div class="hidden md:block text-left leading-tight">
                             <p class="text-sm font-semibold text-gray-800">
                                 {{ auth()->user()->name }}
@@ -178,8 +184,8 @@
                             </p>
                         </div>
 
-                        <!-- Chevron -->
-                        <i class="fas fa-chevron-down text-gray-400 text-xs
+                        <!-- Chevron - Hidden on mobile -->
+                        <i class="hidden md:block fas fa-chevron-down text-gray-400 text-xs
                                   transition-all duration-300 ease-out
                                   group-hover:text-indigo-600"
                            :class="{ 'rotate-180 text-indigo-600': open }"></i>

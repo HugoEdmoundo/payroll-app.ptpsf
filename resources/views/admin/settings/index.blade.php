@@ -5,15 +5,15 @@
 @section('content')
 <div class="space-y-6" x-data="{ activeTab: '{{ array_key_first($groups) }}' }">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">System Settings</h1>
-            <p class="mt-1 text-sm text-gray-600">Manage dropdown options and system configurations</p>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <div class="min-w-0 flex-1">
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-900">System Settings</h1>
+            <p class="mt-1 text-xs sm:text-sm text-gray-600">Manage dropdown options and system configurations</p>
         </div>
-        <div class="mt-4 md:mt-0">
-            <div class="inline-flex items-center px-4 py-2 bg-blue-50 border border-blue-200 rounded-lg">
-                <i class="fas fa-info-circle text-blue-600 mr-2"></i>
-                <span class="text-sm text-blue-700">Changes apply immediately</span>
+        <div>
+            <div class="inline-flex items-center px-3 py-2 text-xs sm:text-sm bg-blue-50 border border-blue-200 rounded-lg">
+                <i class="fas fa-info-circle text-blue-600 mr-1.5"></i>
+                <span class="text-blue-700">Changes apply immediately</span>
             </div>
         </div>
     </div>

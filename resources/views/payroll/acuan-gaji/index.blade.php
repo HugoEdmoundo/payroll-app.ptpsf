@@ -6,16 +6,16 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
-    <div class="card p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900">Acuan Gaji</h1>
-                <p class="mt-1 text-sm text-gray-600">Pilih periode untuk melihat data acuan gaji</p>
+    <div class="card p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+            <div class="min-w-0 flex-1">
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Acuan Gaji</h1>
+                <p class="mt-1 text-xs sm:text-sm text-gray-600">Pilih periode untuk melihat data acuan gaji</p>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
                 <a href="{{ route('payroll.acuan-gaji.manage-periode') }}" 
-                   class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition">
-                    <i class="fas fa-cog mr-2"></i>Kelola Periode
+                   class="inline-flex items-center px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg font-medium text-gray-700 bg-white hover:bg-gray-50 transition whitespace-nowrap">
+                    <i class="fas fa-cog mr-1.5"></i>Kelola Periode
                 </a>
                 
                 @if(auth()->user()->hasPermission('acuan_gaji.import'))

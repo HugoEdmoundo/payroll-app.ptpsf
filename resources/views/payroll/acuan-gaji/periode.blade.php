@@ -6,27 +6,27 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
-    <div class="card p-6">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-4">
+    <div class="card p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+            <div class="flex items-center gap-3">
                 <a href="{{ route('payroll.acuan-gaji.index') }}" 
-                class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition">
-                    <i class="fas fa-arrow-left"></i>
+                class="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition">
+                    <i class="fas fa-arrow-left text-sm"></i>
                 </a>
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Acuan Gaji</h1>
+                <div class="min-w-0">
+                    <h1 class="text-lg sm:text-2xl font-bold text-gray-900">Acuan Gaji</h1>
                     <div class="flex items-center gap-2 mt-1">
-                        <i class="fas fa-calendar-alt text-indigo-600 text-sm"></i>
-                        <p class="text-sm font-medium text-gray-600">{{ \Carbon\Carbon::createFromFormat('Y-m', $periode)->format('F Y') }}</p>
+                        <i class="fas fa-calendar-alt text-indigo-600 text-xs sm:text-sm"></i>
+                        <p class="text-xs sm:text-sm font-medium text-gray-600">{{ \Carbon\Carbon::createFromFormat('Y-m', $periode)->format('F Y') }}</p>
                     </div>
                 </div>
             </div>
             
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
                 @if(auth()->user()->hasPermission('acuan_gaji.export'))
                 <a href="{{ route('payroll.acuan-gaji.export', ['periode' => $periode]) }}" 
-                class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition">
-                    <i class="fas fa-download mr-2"></i>Export
+                class="inline-flex items-center px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg font-medium text-gray-700 bg-white hover:bg-gray-50 transition whitespace-nowrap">
+                    <i class="fas fa-download mr-1.5"></i>Export
                 </a>
                 @endif
                 
@@ -47,9 +47,9 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-blue-600">Total Karyawan</p>
-                    <p class="text-3xl font-bold text-blue-900 mt-2">{{ number_format($stats->total_karyawan ?? 0) }}</p>
+                    <p class="text-2xl font-bold text-blue-900 mt-2">{{ number_format($stats->total_karyawan ?? 0) }}</p>
                 </div>
-                <div class="h-12 w-12 rounded-full bg-blue-500 flex items-center justify-center">
+                <div class="h-11 w-11 rounded-full bg-blue-500 flex items-center justify-center">
                     <i class="fas fa-users text-white text-xl"></i>
                 </div>
             </div>
@@ -60,9 +60,9 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-green-600">Total BPJS</p>
-                    <p class="text-2xl font-bold text-green-900 mt-2">Rp {{ number_format($stats->total_bpjs ?? 0, 0, ',', '.') }}</p>
+                    <p class="text-1xl font-bold text-green-900 mt-2">Rp {{ number_format($stats->total_bpjs ?? 0, 0, ',', '.') }}</p>
                 </div>
-                <div class="h-12 w-12 rounded-full bg-green-500 flex items-center justify-center">
+                <div class="h-11 w-11 rounded-full bg-green-500 flex items-center justify-center">
                     <i class="fas fa-shield-alt text-white text-xl"></i>
                 </div>
             </div>
@@ -73,9 +73,9 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-indigo-600">Total Gaji Bersih</p>
-                    <p class="text-2xl font-bold text-indigo-900 mt-2">Rp {{ number_format($stats->total_gaji_bersih ?? 0, 0, ',', '.') }}</p>
+                    <p class="text-1xl font-bold text-indigo-900 mt-2">Rp {{ number_format($stats->total_gaji_bersih ?? 0, 0, ',', '.') }}</p>
                 </div>
-                <div class="h-12 w-12 rounded-full bg-indigo-500 flex items-center justify-center">
+                <div class="h-11 w-11 rounded-full bg-indigo-500 flex items-center justify-center">
                     <i class="fas fa-money-bill-wave text-white text-xl"></i>
                 </div>
             </div>
@@ -86,9 +86,9 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-red-600">Pengeluaran Perusahaan</p>
-                    <p class="text-2xl font-bold text-red-900 mt-2">Rp {{ number_format($stats->total_pengeluaran_perusahaan ?? 0, 0, ',', '.') }}</p>
+                    <p class="text-1xl font-bold text-red-900 mt-2">Rp {{ number_format($stats->total_pengeluaran_perusahaan ?? 0, 0, ',', '.') }}</p>
                 </div>
-                <div class="h-12 w-12 rounded-full bg-red-500 flex items-center justify-center">
+                <div class="h-11 w-11 rounded-full bg-red-500 flex items-center justify-center">
                     <i class="fas fa-building text-white text-xl"></i>
                 </div>
             </div>

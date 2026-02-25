@@ -6,10 +6,10 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
-    <div class="card p-6">
+    <div class="card p-4 sm:p-6">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Slip Gaji</h1>
-            <p class="mt-1 text-sm text-gray-600">Pilih periode untuk melihat slip gaji karyawan</p>
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Slip Gaji</h1>
+            <p class="mt-1 text-xs sm:text-sm text-gray-600">Pilih periode untuk melihat slip gaji karyawan</p>
         </div>
     </div>
 

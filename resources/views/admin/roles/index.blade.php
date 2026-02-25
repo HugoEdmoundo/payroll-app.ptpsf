@@ -6,15 +6,15 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header with Actions -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Manage Roles</h1>
-            <p class="mt-1 text-sm text-gray-600">Manage system roles and permissions</p>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <div class="min-w-0 flex-1">
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Manage Roles</h1>
+            <p class="mt-1 text-xs sm:text-sm text-gray-600">Manage system roles and permissions</p>
         </div>
-        <div class="mt-4 md:mt-0">
+        <div>
             <a href="{{ route('admin.roles.create') }}" 
-               class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
-                <i class="fas fa-plus mr-2"></i>Create Role
+               class="inline-flex items-center px-3 py-2 text-xs sm:text-sm bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 whitespace-nowrap">
+                <i class="fas fa-plus mr-1.5"></i>Create Role
             </a>
         </div>
     </div>
