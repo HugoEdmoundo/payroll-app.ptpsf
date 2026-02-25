@@ -150,15 +150,6 @@ Route::middleware(['auth'])->group(function () {
     
     // Admin routes (SUPERADMIN ONLY)
     Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-        // CMS Dashboard
-        Route::get('/cms', [\App\Http\Controllers\Admin\CMSController::class, 'index'])->name('cms.index');
-        
-        // Modules Management
-        Route::resource('modules', \App\Http\Controllers\Admin\ModuleController::class);
-        
-        // Dynamic Fields Management
-        Route::resource('fields', \App\Http\Controllers\Admin\DynamicFieldController::class);
-        
         // Users Management
         Route::prefix('users')->name('users.')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('index');
@@ -183,7 +174,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy');
         });
         
-        // System Settings - PASTIKAN INI
+        // System Settings
         Route::prefix('settings')->name('settings.')->group(function () {
             Route::get('/', [SettingController::class, 'index'])->name('index');
             Route::post('/{group}', [SettingController::class, 'update'])->name('update');

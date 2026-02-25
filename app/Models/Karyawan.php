@@ -63,11 +63,11 @@ class Karyawan extends Model
         });
     }
 
-    // Masa Kerja dalam format readable (X bulan Y hari)
+    // Masa Kerja dalam format readable (X Hari Y Bulan) - KEDUANYA HARUS ADA
     public function getMasaKerjaReadableAttribute()
     {
         if (!$this->join_date) {
-            return '0 Hari';
+            return '0 Hari 0 Bulan';
         }
 
         $now = Carbon::now();
@@ -79,19 +79,8 @@ class Karyawan extends Model
         $totalMonths = ($diff->y * 12) + $diff->m;
         $days = $diff->d;
         
-        $parts = [];
-        
-        if ($totalMonths > 0) {
-            $parts[] = $totalMonths . ' Bulan';
-        }
-        if ($days > 0) {
-            $parts[] = $days . ' Hari';
-        }
-        if (empty($parts)) {
-            $parts[] = '0 Hari';
-        }
-        
-        return implode(' ', $parts);
+        // Format: X Hari Y Bulan (keduanya selalu ditampilkan)
+        return $days . ' Hari ' . $totalMonths . ' Bulan';
     }
     
     // Masa Kerja dalam format DD:HH:MM:SS (untuk backward compatibility)
