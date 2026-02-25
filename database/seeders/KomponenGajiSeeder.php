@@ -54,12 +54,13 @@ class KomponenGajiSeeder extends Seeder
         foreach ($karyawans as $karyawan) {
             // Generate nilai NKI random tapi realistis
             $kemampuan = rand(70, 100) / 10; // 7.0 - 10.0
-            $kontribusi = rand(70, 100) / 10;
+            $kontribusi_1 = rand(70, 100) / 10;
+            $kontribusi_2 = rand(70, 100) / 10;
             $kedisiplinan = rand(70, 100) / 10;
-            $lainnya = rand(70, 100) / 10;
             
             // Hitung nilai NKI (weighted average)
-            $nilaiNKI = ($kemampuan * 0.2) + ($kontribusi * 0.2) + ($kedisiplinan * 0.4) + ($lainnya * 0.2);
+            // Kemampuan(20%) + Kontribusi_1(20%) + Kontribusi_2(40%) + Kedisiplinan(20%)
+            $nilaiNKI = ($kemampuan * 0.2) + ($kontribusi_1 * 0.2) + ($kontribusi_2 * 0.4) + ($kedisiplinan * 0.2);
             
             // Tentukan persentase tunjangan berdasarkan NKI
             if ($nilaiNKI >= 8.5) {
@@ -74,9 +75,9 @@ class KomponenGajiSeeder extends Seeder
                 'id_karyawan' => $karyawan->id_karyawan,
                 'periode' => $periode,
                 'kemampuan' => $kemampuan,
-                'kontribusi' => $kontribusi,
+                'kontribusi_1' => $kontribusi_1,
+                'kontribusi_2' => $kontribusi_2,
                 'kedisiplinan' => $kedisiplinan,
-                'lainnya' => $lainnya,
                 'nilai_nki' => round($nilaiNKI, 2),
                 'persentase_tunjangan' => $persentase,
             ]);

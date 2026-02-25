@@ -46,9 +46,9 @@
                         <li>NIK Karyawan</li>
                         <li>Periode (YYYY-MM)</li>
                         <li>Kemampuan (0-10)</li>
-                        <li>Kontribusi (0-10)</li>
+                        <li>Kontribusi 1 (0-10)</li>
+                        <li>Kontribusi 2 (0-10)</li>
                         <li>Kedisiplinan (0-10)</li>
-                        <li>Lainnya (0-10)</li>
                         <li>Keterangan (optional)</li>
                     </ul>
                     <p class="text-xs text-blue-700 mt-2">
