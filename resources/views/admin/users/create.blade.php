@@ -63,19 +63,35 @@
                             @enderror
                         </div>
                         
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Password *</label>
-                            <input type="password" name="password" required
-                                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-                            @error('password')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password *</label>
-                            <input type="password" name="password_confirmation" required
-                                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                        <div x-data="{ showPassword: false, showConfirm: false }">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Password *</label>
+                                <div class="relative">
+                                    <input :type="showPassword ? 'text' : 'password'" name="password" required
+                                           class="w-full px-4 py-2 pr-10 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                                    <button type="button" 
+                                            @click="showPassword = !showPassword"
+                                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition">
+                                        <i class="fas" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                    </button>
+                                </div>
+                                @error('password')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password *</label>
+                                <div class="relative">
+                                    <input :type="showConfirm ? 'text' : 'password'" name="password_confirmation" required
+                                           class="w-full px-4 py-2 pr-10 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                                    <button type="button" 
+                                            @click="showConfirm = !showConfirm"
+                                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition">
+                                        <i class="fas" :class="showConfirm ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

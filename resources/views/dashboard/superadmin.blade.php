@@ -13,55 +13,55 @@
     </div>
 
     <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
         <!-- Total Karyawan -->
-        <div class="card p-6">
-            <div class="flex items-center justify-between">
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-600">Total Karyawan</p>
-                    <p class="text-2xl md:text-3xl font-bold text-gray-900 mt-2 truncate">{{ number_format($stats['total_karyawan']) }}</p>
+        <div class="card p-4 lg:p-6">
+            <div class="flex items-center gap-3">
+                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-indigo-100 flex items-center justify-center">
+                    <i class="fas fa-users text-indigo-600 text-lg"></i>
                 </div>
-                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-indigo-100 flex items-center justify-center ml-3">
-                    <i class="fas fa-users text-indigo-600 text-xl"></i>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-medium text-gray-600 mb-1">Total Karyawan</p>
+                    <p class="text-xl lg:text-2xl font-bold text-gray-900 truncate">{{ number_format($stats['total_karyawan']) }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Active Karyawan -->
-        <div class="card p-6">
-            <div class="flex items-center justify-between">
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-600">Active Karyawan</p>
-                    <p class="text-2xl md:text-3xl font-bold text-green-600 mt-2 truncate">{{ number_format($stats['active_karyawan']) }}</p>
+        <div class="card p-4 lg:p-6">
+            <div class="flex items-center gap-3">
+                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-green-100 flex items-center justify-center">
+                    <i class="fas fa-user-check text-green-600 text-lg"></i>
                 </div>
-                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-green-100 flex items-center justify-center ml-3">
-                    <i class="fas fa-user-check text-green-600 text-xl"></i>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-medium text-gray-600 mb-1">Active Karyawan</p>
+                    <p class="text-xl lg:text-2xl font-bold text-green-600 truncate">{{ number_format($stats['active_karyawan']) }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Total Users -->
-        <div class="card p-6">
-            <div class="flex items-center justify-between">
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-600">Total Users</p>
-                    <p class="text-2xl md:text-3xl font-bold text-gray-900 mt-2 truncate">{{ number_format($stats['total_users']) }}</p>
+        <div class="card p-4 lg:p-6">
+            <div class="flex items-center gap-3">
+                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-purple-100 flex items-center justify-center">
+                    <i class="fas fa-user-shield text-purple-600 text-lg"></i>
                 </div>
-                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-purple-100 flex items-center justify-center ml-3">
-                    <i class="fas fa-user-shield text-purple-600 text-xl"></i>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-medium text-gray-600 mb-1">Total Users</p>
+                    <p class="text-xl lg:text-2xl font-bold text-gray-900 truncate">{{ number_format($stats['total_users']) }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Total Roles -->
-        <div class="card p-6">
-            <div class="flex items-center justify-between">
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-600">Total Roles</p>
-                    <p class="text-2xl md:text-3xl font-bold text-gray-900 mt-2 truncate">{{ number_format($stats['total_roles']) }}</p>
+        <div class="card p-4 lg:p-6">
+            <div class="flex items-center gap-3">
+                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-pink-100 flex items-center justify-center">
+                    <i class="fas fa-user-tag text-pink-600 text-lg"></i>
                 </div>
-                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-pink-100 flex items-center justify-center ml-3">
-                    <i class="fas fa-user-tag text-pink-600 text-xl"></i>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-medium text-gray-600 mb-1">Total Roles</p>
+                    <p class="text-xl lg:text-2xl font-bold text-gray-900 truncate">{{ number_format($stats['total_roles']) }}</p>
                 </div>
             </div>
         </div>
