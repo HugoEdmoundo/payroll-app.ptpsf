@@ -48,11 +48,11 @@
 
             </div>
 
-            <!-- Close button for mobile -->
+            <!-- Close button for mobile
             <button @click="sidebarOpen = false"
                     class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition">
                 <i class="fas fa-times text-gray-600"></i>
-            </button>
+            </button> -->
         </div>
 
         <!-- Navigation -->

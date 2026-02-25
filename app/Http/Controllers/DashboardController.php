@@ -33,6 +33,8 @@ class DashboardController extends Controller
     
     private function superadminDashboard()
     {
+        $periode = \Carbon\Carbon::now()->format('Y-m');
+        
         $stats = [
             'total_karyawan' => Karyawan::count(),
             'active_karyawan' => Karyawan::where('status_karyawan', 'Active')->count(),
@@ -59,7 +61,7 @@ class DashboardController extends Controller
                            ->take(5)
                            ->get();
         
-        return view('dashboard.superadmin', compact('stats', 'recentActivities', 'managedUsers'));
+        return view('dashboard.superadmin', compact('stats', 'recentActivities', 'managedUsers', 'periode'));
     }
     
     private function userDashboard()
