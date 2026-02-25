@@ -4,28 +4,27 @@
 
 @section('content')
 <div class="w-full max-w-md">
-    <!-- Card Container -->
-    <div class="bg-white backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
         
-        <!-- Header Section -->
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-6 text-center">
-            <div class="flex justify-center mb-3">
-                <div class="h-16 w-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center overflow-hidden ring-4 ring-white/30">
+        <!-- Header -->
+        <div class="px-8 pt-8 pb-6 text-center">
+            <div class="flex justify-center mb-4">
+                <div class="h-20 w-20 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center overflow-hidden shadow-lg">
                     <img src="{{ asset('images/LOGOPSF_v4fq0w.jpg') }}" 
                          alt="Logo PSF" 
                          class="h-full w-full object-cover"
-                         onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\'h-16 w-16 rounded-2xl bg-white/20 flex items-center justify-center text-white font-bold text-2xl\'>P</div>';">
+                         onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-white font-bold text-3xl\'>P</span>';">
                 </div>
             </div>
-            <h1 class="text-2xl font-bold text-white mb-1">PAYROLL PSF</h1>
-            <p class="text-white/80 text-sm">Sign in to continue</p>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">PAYROLL PSF</h1>
+            <p class="text-gray-600">Sign in to your account</p>
         </div>
 
-        <!-- Form Section -->
-        <div class="px-8 py-6">
+        <!-- Form -->
+        <div class="px-8 pb-8">
             
             @if($errors->any())
-            <div class="mb-4 rounded-xl bg-red-50 border border-red-200 p-3">
+            <div class="mb-4 rounded-lg bg-red-50 border border-red-200 p-3">
                 <div class="flex items-center">
                     <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
                     <span class="text-sm text-red-800">{{ $errors->first() }}</span>
@@ -34,7 +33,7 @@
             @endif
             
             @if(session('error'))
-            <div class="mb-4 rounded-xl bg-red-50 border border-red-200 p-3">
+            <div class="mb-4 rounded-lg bg-red-50 border border-red-200 p-3">
                 <div class="flex items-center">
                     <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
                     <span class="text-sm text-red-800">{{ session('error') }}</span>
@@ -43,7 +42,7 @@
             @endif
             
             @if(session('success'))
-            <div class="mb-4 rounded-xl bg-green-50 border border-green-200 p-3">
+            <div class="mb-4 rounded-lg bg-green-50 border border-green-200 p-3">
                 <div class="flex items-center">
                     <i class="fas fa-check-circle text-green-500 mr-2"></i>
                     <span class="text-sm text-green-800">{{ session('success') }}</span>
@@ -51,12 +50,12 @@
             </div>
             @endif
             
-            <form method="POST" action="{{ route('login') }}" class="space-y-4">
+            <form method="POST" action="{{ route('login') }}" class="space-y-5">
                 @csrf
                 
-                <!-- Email Input -->
+                <!-- Email -->
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
                         Email Address
                     </label>
                     <div class="relative">
@@ -69,14 +68,14 @@
                                autocomplete="email" 
                                required
                                value="{{ old('email') }}"
-                               class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                               class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                placeholder="your@email.com">
                     </div>
                 </div>
                 
-                <!-- Password Input -->
+                <!-- Password -->
                 <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
                         Password
                     </label>
                     <div class="relative">
@@ -88,7 +87,7 @@
                                type="password" 
                                autocomplete="current-password" 
                                required
-                               class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                               class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                placeholder="••••••••">
                     </div>
                 </div>
@@ -104,16 +103,17 @@
                             Remember me
                         </label>
                     </div>
-                    <a href="#" 
-                       onclick="alert('Please contact your administrator to reset your password.')" 
-                       class="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition">
-                        Forgot password?
-                    </a>
+                    <div class="text-sm">
+                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-600">
+                            <i class="fas fa-lock mr-1"></i>
+                            Forgot password? Coming Soon
+                        </span>
+                    </div>
                 </div>
 
-                <!-- Submit Button -->
+                <!-- Submit -->
                 <button type="submit"
-                        class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+                        class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                     <i class="fas fa-sign-in-alt mr-2"></i>
                     Sign In
                 </button>

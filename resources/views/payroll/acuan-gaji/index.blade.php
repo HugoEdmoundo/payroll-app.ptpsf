@@ -51,14 +51,14 @@
                         </h4>
                         <p class="text-xs text-gray-500">{{ $item['periode'] }}</p>
                     </div>
-                    <div class="h-12 w-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
+                    <div class="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
                         <i class="fas fa-file-invoice-dollar text-white text-xl"></i>
                     </div>
                 </div>
 
                 <div class="flex items-center justify-between pt-3 border-t border-gray-200">
                     <span class="text-sm text-gray-600">Total Karyawan</span>
-                    <span class="text-lg font-bold text-green-600">{{ $item['total_karyawan'] }}</span>
+                    <span class="text-lg font-bold text-indigo-600">{{ $item['total_karyawan'] }}</span>
                 </div>
             </a>
             @endforeach
