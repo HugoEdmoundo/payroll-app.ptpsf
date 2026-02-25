@@ -51,21 +51,42 @@ jobs:
           username: root
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            rm -rf /opt/just-atesting
-            mkdir /opt/just-atesting
+            # Backup .env if exists
+            if [ -f /opt/just-atesting/.env ]; then
+              cp /opt/just-atesting/.env /tmp/.env.backup
+            fi
+
+            # Remove old files except storage
+            cd /opt/just-atesting
+            find . -maxdepth 1 ! -name 'storage' ! -name '.' ! -name '..' -exec rm -rf {} +
+            
+            # Extract new release
             unzip /opt/release.zip -d /opt/just-atesting
             rm /opt/release.zip
+
+            # Restore .env
+            if [ -f /tmp/.env.backup ]; then
+              cp /tmp/.env.backup /opt/just-atesting/.env
+              rm /tmp/.env.backup
+            fi
+
             cd /opt/just-atesting
 
-            git fetch origin
-            git reset --hard origin/main
-
+            # Run migrations only (NO SEEDING in production!)
             php artisan migrate --force
-            php artisan db:seed --force
 
+            # Clear all caches
             php artisan optimize:clear
+            php artisan cache:clear
+            php artisan config:clear
+            php artisan route:clear
+            php artisan view:clear
+
+            # Rebuild caches
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
 
+            # Fix permissions
             chown -R www-data:www-data storage bootstrap/cache
+            chmod -R 775 storage bootstrap/cache
