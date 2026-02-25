@@ -14,6 +14,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'email_valid', // Email untuk verifikasi forgot password
         'password',
         'phone',
         'address',
