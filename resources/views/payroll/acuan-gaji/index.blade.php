@@ -51,7 +51,7 @@
                         </h4>
                         <p class="text-xs text-gray-500">{{ $item['periode'] }}</p>
                     </div>
-                    <div class="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
+                    <div class="h-12 w-12 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
                         <i class="fas fa-file-invoice-dollar text-white text-xl"></i>
                     </div>
                 </div>

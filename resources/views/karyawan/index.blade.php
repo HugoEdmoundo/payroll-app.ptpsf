@@ -14,7 +14,7 @@
         <div class="mt-4 md:mt-0 flex space-x-3">
             @if(auth()->user()->hasPermission('karyawan.export'))
             <a href="{{ route('karyawan.export') }}" 
-               class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition duration-150">
+               class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150">
                 <i class="fas fa-download mr-2"></i>Export
             </a>
             @endif
