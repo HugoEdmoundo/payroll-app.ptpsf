@@ -19,6 +19,11 @@ class HitungGajiImport implements ToModel, WithHeadingRow, WithValidation
             return null; // Skip if employee not found
         }
 
+        // Skip if karyawan is not Active
+        if ($karyawan->status_karyawan !== 'Active') {
+            return null; // Skip non-active/resign karyawan
+        }
+
         // Find existing hitung gaji
         $hitungGaji = HitungGaji::where('karyawan_id', $karyawan->id_karyawan)
                                ->where('periode', $row['periode_yyyy_mm'])

@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Payroll;
 use App\Http\Controllers\Controller;
 use App\Models\PengaturanGaji;
 use App\Models\SystemSetting;
+use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
 
 class PengaturanGajiController extends Controller
 {
+    use GlobalSearchable;
     public function index(Request $request)
     {
         $query = PengaturanGaji::query();
@@ -18,12 +20,11 @@ class PengaturanGajiController extends Controller
             $query->where('jenis_karyawan', $request->jenis_karyawan);
         }
         
-        // Search
+        // Global search using trait
         if ($request->has('search') && $request->search) {
-            $query->where(function($q) use ($request) {
-                $q->where('jabatan', 'like', '%' . $request->search . '%')
-                  ->orWhere('lokasi_kerja', 'like', '%' . $request->search . '%');
-            });
+            $query = $this->applyGlobalSearch($query, $request->search, [
+                'jenis_karyawan', 'jabatan', 'lokasi_kerja'
+            ]);
         }
         
         $pengaturanGaji = $query->orderBy('jenis_karyawan')
@@ -128,5 +129,16 @@ class PengaturanGajiController extends Controller
         
         return redirect()->route('payroll.pengaturan-gaji.index', ['jenis_karyawan' => $jenisKaryawan])
             ->with('success', 'Pengaturan gaji berhasil dihapus.');
+    }
+
+    public function export(Request $request)
+    {
+        $jenisKaryawan = $request->get('jenis_karyawan');
+        $filename = 'pengaturan_gaji_' . ($jenisKaryawan ?? 'all') . '_' . date('YmdHis') . '.xlsx';
+        
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\PengaturanGajiExport($jenisKaryawan),
+            $filename
+        );
     }
 }

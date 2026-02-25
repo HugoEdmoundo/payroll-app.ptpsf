@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HitungGaji;
 use App\Models\AcuanGaji;
 use App\Models\Karyawan;
+use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
@@ -13,6 +14,7 @@ use App\Exports\SlipGajiExport;
 
 class SlipGajiController extends Controller
 {
+    use GlobalSearchable;
     public function index(Request $request)
     {
         // Get all unique periodes from Hitung Gaji
@@ -37,15 +39,11 @@ class SlipGajiController extends Controller
         $query = HitungGaji::with(['karyawan'])
                           ->where('periode', $periode);
 
-        // Global search (nama, jenis_karyawan, lokasi_kerja, jabatan)
+        // Global search using trait
         if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->whereHas('karyawan', function($q) use ($search) {
-                $q->where('nama_karyawan', 'like', "%{$search}%")
-                  ->orWhere('jenis_karyawan', 'like', "%{$search}%")
-                  ->orWhere('lokasi_kerja', 'like', "%{$search}%")
-                  ->orWhere('jabatan', 'like', "%{$search}%");
-            });
+            $query = $this->applyGlobalSearch($query, $request->search, [
+                'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'lokasi_kerja', 'jabatan']
+            ]);
         }
 
         // Filter by lokasi kerja

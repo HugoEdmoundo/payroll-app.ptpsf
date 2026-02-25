@@ -19,6 +19,11 @@ class AbsensiImport implements ToModel, WithHeadingRow, WithValidation
             return null; // Skip if karyawan not found
         }
 
+        // Skip if karyawan is not Active
+        if ($karyawan->status_karyawan !== 'Active') {
+            return null; // Skip non-active/resign karyawan
+        }
+
         // Check if already exists
         $exists = Absensi::where('id_karyawan', $karyawan->id_karyawan)
                         ->where('periode', $row['periode'])

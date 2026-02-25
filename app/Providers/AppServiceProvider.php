@@ -21,6 +21,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Register Observers for Data Cascade
+        \App\Models\PengaturanGaji::observe(\App\Observers\PengaturanGajiObserver::class);
+        \App\Models\AcuanGaji::observe(\App\Observers\AcuanGajiObserver::class);
+        \App\Models\NKI::observe(\App\Observers\NKIObserver::class);
+        \App\Models\Absensi::observe(\App\Observers\AbsensiObserver::class);
+
         // Custom Blade Directives for Permissions
         \Blade::directive('canDo', function ($expression) {
             return "<?php if(auth()->check() && auth()->user()->canDo({$expression})): ?>";

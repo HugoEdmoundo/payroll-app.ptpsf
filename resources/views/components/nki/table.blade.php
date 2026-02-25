@@ -7,10 +7,10 @@
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Karyawan</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Periode</th>
-                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Kemampuan</th>
-                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Kontribusi</th>
-                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Kedisiplinan</th>
-                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Lainnya</th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Kemampuan (20%)</th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Kontribusi 1 (20%)</th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Kontribusi 2 (40%)</th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Kedisiplinan (20%)</th>
                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Nilai NKI</th>
                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Persentase</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
@@ -30,13 +30,13 @@
                     {{ number_format($nki->kemampuan, 2) }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                    {{ number_format($nki->kontribusi, 2) }}
+                    {{ number_format($nki->kontribusi_1, 2) }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
+                    {{ number_format($nki->kontribusi_2, 2) }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
                     {{ number_format($nki->kedisiplinan, 2) }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900">
-                    {{ number_format($nki->lainnya, 2) }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-center">
                     <span class="text-lg font-bold text-indigo-600">

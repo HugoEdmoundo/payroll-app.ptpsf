@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Role;
+use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -12,13 +13,24 @@ use Carbon\Carbon;
 
 class UserController extends Controller
 {
-    public function index()
+    use GlobalSearchable;
+    public function index(Request $request)
     {
         if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
-        $users = User::with('role')->paginate(10);
+        $query = User::with('role');
+        
+        // Global search using trait
+        if ($request->has('search') && $request->search != '') {
+            $query = $this->applyGlobalSearch($query, $request->search, [
+                'name', 'email', 'email_valid', 'phone', 'position',
+                'role' => ['name']
+            ]);
+        }
+        
+        $users = $query->paginate(10);
         return view('admin.users.index', compact('users'));
     }
 

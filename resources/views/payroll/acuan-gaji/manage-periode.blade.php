@@ -33,7 +33,7 @@
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Periode</th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Total Karyawan</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Total Gaji Bersih</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pengeluaran Perusahaan</th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
@@ -59,8 +59,8 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span class="text-sm font-bold text-green-600">
-                                Rp {{ number_format($item['total_gaji_bersih'], 0, ',', '.') }}
+                            <span class="text-sm font-bold text-red-600">
+                                Rp {{ number_format($item['total_pengeluaran_perusahaan'], 0, ',', '.') }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center">

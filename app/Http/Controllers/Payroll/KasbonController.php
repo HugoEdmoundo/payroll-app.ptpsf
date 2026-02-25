@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Kasbon;
 use App\Models\KasbonCicilan;
 use App\Models\Karyawan;
+use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class KasbonController extends Controller
 {
+    use GlobalSearchable;
+
     public function index(Request $request)
     {
         $query = Kasbon::with('karyawan');
@@ -27,14 +30,16 @@ class KasbonController extends Controller
             $query->where('metode_pembayaran', $request->metode);
         }
 
+        // Global search
         if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('deskripsi', 'like', "%{$search}%")
-                  ->orWhereHas('karyawan', function($q2) use ($search) {
-                      $q2->where('nama_karyawan', 'like', "%{$search}%");
-                  });
-            });
+            $query = $this->applyGlobalSearch($query, $request->search, [
+                'periode',
+                'deskripsi',
+                'metode_pembayaran',
+                'status_pembayaran',
+            ], [
+                'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'jabatan', 'lokasi_kerja']
+            ]);
         }
 
         $kasbonList = $query->orderBy('tanggal_pengajuan', 'desc')

@@ -9,7 +9,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">NKI (Tunjangan Prestasi)</h1>
-            <p class="mt-1 text-sm text-gray-600">Performance rating: Kemampuan (20%), Kontribusi (20%), Kedisiplinan (40%), Lainnya (20%)</p>
+            <p class="mt-1 text-sm text-gray-600">Performance rating: Kemampuan (20%), Kontribusi 1 (20%), Kontribusi 2 (40%), Kedisiplinan (20%)</p>
         </div>
         <div class="mt-4 md:mt-0 flex space-x-3">
             @if(auth()->user()->hasPermission('nki.export'))

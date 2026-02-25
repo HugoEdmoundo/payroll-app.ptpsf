@@ -24,6 +24,9 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
+    // Global Search
+    Route::get('/search', [App\Http\Controllers\GlobalSearchController::class, 'search'])->name('global.search');
+    
     // Profile
     Route::middleware(['auth'])->group(function () {
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
@@ -52,6 +55,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [PengaturanGajiController::class, 'index'])->name('index');
             Route::get('/create', [PengaturanGajiController::class, 'create'])->name('create');
             Route::post('/', [PengaturanGajiController::class, 'store'])->name('store');
+            Route::get('/export', [PengaturanGajiController::class, 'export'])->name('export');
             Route::get('/{pengaturanGaji}', [PengaturanGajiController::class, 'show'])->name('show');
             Route::get('/{pengaturanGaji}/edit', [PengaturanGajiController::class, 'edit'])->name('edit');
             Route::put('/{pengaturanGaji}', [PengaturanGajiController::class, 'update'])->name('update');

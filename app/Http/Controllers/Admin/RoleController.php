@@ -5,17 +5,28 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\Permission;
+use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    public function index()
+    use GlobalSearchable;
+    public function index(Request $request)
     {
         if (!auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
         
-        $roles = Role::withCount('users')->paginate(10);
+        $query = Role::withCount('users');
+        
+        // Global search using trait
+        if ($request->has('search') && $request->search != '') {
+            $query = $this->applyGlobalSearch($query, $request->search, [
+                'name', 'description'
+            ]);
+        }
+        
+        $roles = $query->paginate(10);
         return view('admin.roles.index', compact('roles'));
     }
 

@@ -6,6 +6,7 @@ use App\Models\Karyawan;
 use App\Models\SystemSetting;
 use App\Imports\KaryawanImport;
 use App\Exports\KaryawanExport;
+use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -13,9 +14,30 @@ use Carbon\Carbon;
 
 class KaryawanController extends Controller
 {
-    public function index()
+    use GlobalSearchable;
+
+    public function index(Request $request)
     {
-        $karyawan = Karyawan::paginate(10);
+        $query = Karyawan::query();
+
+        // Global search
+        if ($request->has('search') && $request->search != '') {
+            $query = $this->applyGlobalSearch($query, $request->search, [
+                'nama_karyawan',
+                'email',
+                'no_telp',
+                'jabatan',
+                'lokasi_kerja',
+                'jenis_karyawan',
+                'status_pegawai',
+                'status_karyawan',
+                'bank',
+                'no_rekening',
+                'npwp',
+            ]);
+        }
+
+        $karyawan = $query->orderBy('created_at', 'desc')->paginate(10);
         return view('karyawan.index', compact('karyawan'));
     }
 

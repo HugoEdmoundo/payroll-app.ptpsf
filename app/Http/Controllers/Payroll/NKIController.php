@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Payroll;
 use App\Http\Controllers\Controller;
 use App\Models\NKI;
 use App\Models\Karyawan;
+use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class NKIController extends Controller
 {
+    use GlobalSearchable;
+
     public function index(Request $request)
     {
         $query = NKI::with('karyawan');
@@ -19,12 +22,14 @@ class NKIController extends Controller
             $query->where('periode', $request->periode);
         }
 
-        // Search functionality
+        // Global search
         if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->whereHas('karyawan', function($q) use ($search) {
-                $q->where('nama_karyawan', 'like', "%{$search}%");
-            });
+            $query = $this->applyGlobalSearch($query, $request->search, [
+                'periode',
+                'keterangan',
+            ], [
+                'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'jabatan', 'lokasi_kerja']
+            ]);
         }
 
         $nkiList = $query->orderBy('periode', 'desc')

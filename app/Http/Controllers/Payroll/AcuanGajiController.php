@@ -9,10 +9,12 @@ use App\Models\PengaturanGaji;
 use App\Models\NKI;
 use App\Models\Absensi;
 use App\Models\Kasbon;
+use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
 
 class AcuanGajiController extends Controller
 {
+    use GlobalSearchable;
     public function index(Request $request)
     {
         // Get all unique periodes from Acuan Gaji
@@ -41,13 +43,22 @@ class AcuanGajiController extends Controller
                             ->get()
                             ->map(function($item) {
                                 $stats = AcuanGaji::where('periode', $item->periode)
-                                                 ->selectRaw('COUNT(*) as total_karyawan, SUM(gaji_bersih) as total_gaji_bersih')
+                                                 ->selectRaw('
+                                                     COUNT(*) as total_karyawan, 
+                                                     SUM(gaji_bersih) as total_gaji_bersih,
+                                                     SUM(bpjs_kesehatan_pendapatan + bpjs_kecelakaan_kerja_pendapatan + bpjs_kematian_pendapatan + bpjs_jht_pendapatan + bpjs_jp_pendapatan) as total_bpjs
+                                                 ')
                                                  ->first();
+
+                                // Pengeluaran Perusahaan = Total Gaji Bersih + Total BPJS
+                                $pengeluaranPerusahaan = ($stats->total_gaji_bersih ?? 0) + ($stats->total_bpjs ?? 0);
 
                                 return [
                                     'periode' => $item->periode,
                                     'total_karyawan' => $stats->total_karyawan,
                                     'total_gaji_bersih' => $stats->total_gaji_bersih ?? 0,
+                                    'total_bpjs' => $stats->total_bpjs ?? 0,
+                                    'total_pengeluaran_perusahaan' => $pengeluaranPerusahaan,
                                 ];
                             });
 
@@ -60,15 +71,13 @@ class AcuanGajiController extends Controller
         $query = AcuanGaji::with('karyawan')
                          ->where('periode', $periode);
 
-        // Global search (nama, jenis_karyawan, lokasi_kerja, jabatan)
+        // Global search
         if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->whereHas('karyawan', function($q) use ($search) {
-                $q->where('nama_karyawan', 'like', "%{$search}%")
-                  ->orWhere('jenis_karyawan', 'like', "%{$search}%")
-                  ->orWhere('lokasi_kerja', 'like', "%{$search}%")
-                  ->orWhere('jabatan', 'like', "%{$search}%");
-            });
+            $query = $this->applyGlobalSearch($query, $request->search, [
+                'periode',
+            ], [
+                'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'jabatan', 'lokasi_kerja', 'email', 'no_telp']
+            ]);
         }
 
         // Filter by lokasi kerja
@@ -93,10 +102,12 @@ class AcuanGajiController extends Controller
                          ->selectRaw('
                              COUNT(*) as total_karyawan,
                              SUM(bpjs_kesehatan_pendapatan + bpjs_kecelakaan_kerja_pendapatan + bpjs_kematian_pendapatan + bpjs_jht_pendapatan + bpjs_jp_pendapatan) as total_bpjs,
-                             SUM(gaji_bersih) as total_gaji_bersih,
-                             SUM(total_pengeluaran) as total_pengeluaran_perusahaan
+                             SUM(gaji_bersih) as total_gaji_bersih
                          ')
                          ->first();
+        
+        // Calculate Pengeluaran Perusahaan = Total Gaji Bersih + Total BPJS
+        $stats->total_pengeluaran_perusahaan = ($stats->total_gaji_bersih ?? 0) + ($stats->total_bpjs ?? 0);
 
         // Get unique lokasi kerja and jabatan for filters
         $lokasiKerjaList = Karyawan::select('lokasi_kerja')

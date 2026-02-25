@@ -19,6 +19,11 @@ class NKIImport implements ToModel, WithHeadingRow, WithValidation
             return null; // Skip if karyawan not found
         }
 
+        // Skip if karyawan is not Active
+        if ($karyawan->status_karyawan !== 'Active') {
+            return null; // Skip non-active/resign karyawan
+        }
+
         // Check if already exists
         $exists = NKI::where('id_karyawan', $karyawan->id_karyawan)
                     ->where('periode', $row['periode'])
@@ -31,10 +36,10 @@ class NKIImport implements ToModel, WithHeadingRow, WithValidation
         return new NKI([
             'id_karyawan' => $karyawan->id_karyawan,
             'periode' => $row['periode'],
-            'kemampuan' => $row['kemampuan'],
-            'kontribusi' => $row['kontribusi'],
-            'kedisiplinan' => $row['kedisiplinan'],
-            'lainnya' => $row['lainnya'],
+            'kemampuan' => $row['kemampuan_20'],
+            'kontribusi_1' => $row['kontribusi_1_20'],
+            'kontribusi_2' => $row['kontribusi_2_40'],
+            'kedisiplinan' => $row['kedisiplinan_20'],
             'keterangan' => $row['keterangan'] ?? null,
         ]);
     }
@@ -44,10 +49,10 @@ class NKIImport implements ToModel, WithHeadingRow, WithValidation
         return [
             'nama_karyawan' => 'required|string',
             'periode' => 'required|regex:/^\d{4}-\d{2}$/',
-            'kemampuan' => 'required|numeric|min:0|max:10',
-            'kontribusi' => 'required|numeric|min:0|max:10',
-            'kedisiplinan' => 'required|numeric|min:0|max:10',
-            'lainnya' => 'required|numeric|min:0|max:10',
+            'kemampuan_20' => 'required|numeric|min:0|max:10',
+            'kontribusi_1_20' => 'required|numeric|min:0|max:10',
+            'kontribusi_2_40' => 'required|numeric|min:0|max:10',
+            'kedisiplinan_20' => 'required|numeric|min:0|max:10',
         ];
     }
 }

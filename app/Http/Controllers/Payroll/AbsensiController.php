@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Payroll;
 use App\Http\Controllers\Controller;
 use App\Models\Absensi;
 use App\Models\Karyawan;
+use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
 
 class AbsensiController extends Controller
 {
+    use GlobalSearchable;
+
     public function index(Request $request)
     {
         $query = Absensi::with('karyawan');
@@ -17,11 +20,13 @@ class AbsensiController extends Controller
             $query->where('periode', $request->periode);
         }
 
+        // Global search
         if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->whereHas('karyawan', function($q) use ($search) {
-                $q->where('nama_karyawan', 'like', "%{$search}%");
-            });
+            $query = $this->applyGlobalSearch($query, $request->search, [
+                'periode',
+            ], [
+                'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'jabatan', 'lokasi_kerja']
+            ]);
         }
 
         $absensiList = $query->orderBy('periode', 'desc')
