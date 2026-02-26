@@ -30,19 +30,23 @@ class KasbonSeeder extends Seeder
         foreach ($karyawanList as $index => $karyawan) {
             $kasbonData = $kasbonTypes[$index % count($kasbonTypes)];
             
-            Kasbon::create([
-                'id_karyawan' => $karyawan->id_karyawan,
-                'periode' => $periode,
-                'tanggal_pengajuan' => Carbon::now()->subDays(rand(1, 15)),
-                'deskripsi' => $kasbonData['deskripsi'],
-                'nominal' => $kasbonData['nominal'],
-                'metode_pembayaran' => $kasbonData['metode'],
-                'status_pembayaran' => 'Pending',
-                'jumlah_cicilan' => $kasbonData['jumlah'],
-                'cicilan_terbayar' => 0,
-                'sisa_cicilan' => $kasbonData['nominal'],
-                'keterangan' => 'Approved by manager',
-            ]);
+            Kasbon::updateOrCreate(
+                [
+                    'id_karyawan' => $karyawan->id_karyawan,
+                    'periode' => $periode,
+                ],
+                [
+                    'tanggal_pengajuan' => Carbon::now()->subDays(rand(1, 15)),
+                    'deskripsi' => $kasbonData['deskripsi'],
+                    'nominal' => $kasbonData['nominal'],
+                    'metode_pembayaran' => $kasbonData['metode'],
+                    'status_pembayaran' => 'Pending',
+                    'jumlah_cicilan' => $kasbonData['jumlah'],
+                    'cicilan_terbayar' => 0,
+                    'sisa_cicilan' => $kasbonData['nominal'],
+                    'keterangan' => 'Approved by manager',
+                ]
+            );
         }
     }
 }

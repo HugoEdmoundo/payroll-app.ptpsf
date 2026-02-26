@@ -32,13 +32,17 @@ class NKISeeder extends Seeder
                 $persentaseTunjangan = 70;
             }
 
-            NKI::create([
-                'id_karyawan' => $karyawan->id_karyawan,
-                'periode' => $periode,
-                'nilai_nki' => $nilaiNKI,
-                'persentase_tunjangan' => $persentaseTunjangan,
-                'keterangan' => $nilaiNKI >= 8.5 ? 'Excellent performance' : ($nilaiNKI >= 8.0 ? 'Good performance' : 'Satisfactory performance'),
-            ]);
+            NKI::updateOrCreate(
+                [
+                    'id_karyawan' => $karyawan->id_karyawan,
+                    'periode' => $periode,
+                ],
+                [
+                    'nilai_nki' => $nilaiNKI,
+                    'persentase_tunjangan' => $persentaseTunjangan,
+                    'keterangan' => $nilaiNKI >= 8.5 ? 'Excellent performance' : ($nilaiNKI >= 8.0 ? 'Good performance' : 'Satisfactory performance'),
+                ]
+            );
         }
     }
 }

@@ -22,16 +22,20 @@ class AbsensiSeeder extends Seeder
             $tanpaKeterangan = rand(0, 1); // 0-1 days without notice
             $onBase = rand(0, 3); // 0-3 days on base
 
-            Absensi::create([
-                'id_karyawan' => $karyawan->id_karyawan,
-                'periode' => $periode,
-                'hadir' => $hadir,
-                'absence' => $absence,
-                'tanpa_keterangan' => $tanpaKeterangan,
-                'on_base' => $onBase,
-                'jumlah_hari_bulan' => $jumlahHariBulan,
-                'keterangan' => $absence > 0 ? 'Sick leave' : null,
-            ]);
+            Absensi::updateOrCreate(
+                [
+                    'id_karyawan' => $karyawan->id_karyawan,
+                    'periode' => $periode,
+                ],
+                [
+                    'hadir' => $hadir,
+                    'absence' => $absence,
+                    'tanpa_keterangan' => $tanpaKeterangan,
+                    'on_base' => $onBase,
+                    'jumlah_hari_bulan' => $jumlahHariBulan,
+                    'keterangan' => $absence > 0 ? 'Sick leave' : null,
+                ]
+            );
         }
     }
 }
