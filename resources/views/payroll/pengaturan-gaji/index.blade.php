@@ -12,6 +12,13 @@
             <p class="mt-1 text-xs sm:text-sm text-gray-600">Master salary configuration by employee type, position, and location</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
+            @if(auth()->user()->hasPermission('pengaturan_gaji.view'))
+            <a href="{{ route('payroll.pengaturan-gaji.status-pegawai.index') }}" 
+               class="px-3 py-2 text-xs sm:text-sm border-2 border-indigo-500 text-indigo-600 rounded-lg font-medium hover:bg-indigo-50 transition duration-150 whitespace-nowrap">
+                <i class="fas fa-user-clock mr-1.5"></i>Status Pegawai
+            </a>
+            @endif
+            
             @if(auth()->user()->hasPermission('pengaturan_gaji.export'))
             <a href="{{ route('payroll.pengaturan-gaji.export') }}" 
                class="px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition duration-150 whitespace-nowrap">
