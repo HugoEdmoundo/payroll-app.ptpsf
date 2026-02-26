@@ -32,8 +32,7 @@
                 <label class="block text-sm font-medium text-gray-500 mb-1">Status Pegawai</label>
                 <p class="text-lg font-semibold text-gray-900">
                     <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full 
-                        {{ $pengaturanGaji->status_pegawai === 'Harian' ? 'bg-yellow-100 text-yellow-800' : 
-                           ($pengaturanGaji->status_pegawai === 'OJT' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800') }}">
+                        {{ $pengaturanGaji->status_pegawai === 'Harian' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800' }}">
                         {{ $pengaturanGaji->status_pegawai }}
                     </span>
                 </p>

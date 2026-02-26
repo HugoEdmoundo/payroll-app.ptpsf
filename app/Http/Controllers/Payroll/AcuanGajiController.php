@@ -176,12 +176,12 @@ class AcuanGajiController extends Controller
                 $kasbonTotal += $kasbon->getPotonganForPeriode($periode);
             }
 
-            // Determine if this is status pegawai or regular pengaturan
-            $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT', 'Kontrak']);
+            // Determine if this is status pegawai (Harian/OJT) or regular employee (Kontrak)
+            $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT']);
             
             // Create Acuan Gaji
             if ($isStatusPegawai) {
-                // For status pegawai: only gaji_pokok, no BPJS or other benefits
+                // For Harian/OJT: only gaji_pokok, no BPJS or other benefits
                 AcuanGaji::create([
                     'id_karyawan' => $karyawan->id_karyawan,
                     'periode' => $periode,
@@ -215,7 +215,7 @@ class AcuanGajiController extends Controller
                     'potongan_kehadiran' => 0,
                 ]);
             } else {
-                // For regular employees: full benefits from PengaturanGaji
+                // For Kontrak (normal employees): full benefits from PengaturanGaji
                 AcuanGaji::create([
                     'id_karyawan' => $karyawan->id_karyawan,
                     'periode' => $periode,

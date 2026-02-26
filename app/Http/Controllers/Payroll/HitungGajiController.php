@@ -145,10 +145,10 @@ class HitungGajiController extends Controller
             return response()->json(['error' => 'Pengaturan gaji tidak ditemukan untuk karyawan ini.'], 404);
         }
         
-        // Check if this is status pegawai
-        $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT', 'Kontrak']);
+        // Check if this is status pegawai (Harian/OJT only)
+        $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT']);
 
-        // Calculate NKI (Tunjangan Prestasi) - ONLY for regular employees
+        // Calculate NKI (Tunjangan Prestasi) - ONLY for Kontrak (normal employees)
         $nki = NKI::where('id_karyawan', $karyawanId)
                  ->where('periode', $periode)
                  ->first();
@@ -157,7 +157,7 @@ class HitungGajiController extends Controller
         $nkiInfo = null;
         
         if (!$isStatusPegawai && $nki) {
-            // For regular employees: calculate based on tunjangan_operasional
+            // For Kontrak (normal employees): calculate based on tunjangan_operasional
             $tunjanganOperasional = $pengaturan->tunjangan_operasional ?? 0;
             if ($tunjanganOperasional > 0) {
                 $tunjanganPrestasi = $tunjanganOperasional * ($nki->persentase_tunjangan / 100);
@@ -276,10 +276,10 @@ class HitungGajiController extends Controller
             return back()->withErrors(['karyawan_id' => 'Pengaturan gaji tidak ditemukan.'])->withInput();
         }
         
-        // Check if this is status pegawai
-        $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT', 'Kontrak']);
+        // Check if this is status pegawai (Harian/OJT only)
+        $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT']);
 
-        // Calculate NKI - ONLY for regular employees
+        // Calculate NKI - ONLY for Kontrak (normal employees)
         $nki = NKI::where('id_karyawan', $request->karyawan_id)
                  ->where('periode', $request->periode)
                  ->first();

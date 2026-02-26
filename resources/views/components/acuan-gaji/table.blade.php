@@ -25,9 +25,8 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                         {{ $acuan->karyawan->status_pegawai === 'Harian' ? 'bg-yellow-100 text-yellow-800' : 
-                           ($acuan->karyawan->status_pegawai === 'OJT' ? 'bg-blue-100 text-blue-800' : 
-                           ($acuan->karyawan->status_pegawai === 'Kontrak' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800')) }}">
-                        {{ $acuan->karyawan->status_pegawai ?? '-' }}
+                           ($acuan->karyawan->status_pegawai === 'OJT' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800') }}">
+                        {{ $acuan->karyawan->status_pegawai ?? 'Kontrak' }}
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">

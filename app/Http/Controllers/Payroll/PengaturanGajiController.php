@@ -171,7 +171,7 @@ class PengaturanGajiController extends Controller
     public function createStatusPegawai()
     {
         $settings = [
-            'status_pegawai' => ['Harian', 'OJT', 'Kontrak'],
+            'status_pegawai' => ['Harian', 'OJT'], // Only Harian and OJT, Kontrak = Normal
             'jabatan_options' => SystemSetting::getOptions('jabatan_options'),
             'lokasi_kerja' => SystemSetting::getOptions('lokasi_kerja'),
         ];
@@ -182,7 +182,7 @@ class PengaturanGajiController extends Controller
     public function storeStatusPegawai(Request $request)
     {
         $request->validate([
-            'status_pegawai' => 'required|string|in:Harian,OJT,Kontrak',
+            'status_pegawai' => 'required|string|in:Harian,OJT', // Only Harian and OJT
             'jabatan' => 'required|string',
             'lokasi_kerja' => 'required|string',
             'gaji_pokok' => 'required|numeric|min:0',
@@ -212,7 +212,7 @@ class PengaturanGajiController extends Controller
     public function editStatusPegawai(PengaturanGajiStatusPegawai $pengaturanGaji)
     {
         $settings = [
-            'status_pegawai' => ['Harian', 'OJT', 'Kontrak'],
+            'status_pegawai' => ['Harian', 'OJT'], // Only Harian and OJT
             'jabatan_options' => SystemSetting::getOptions('jabatan_options'),
             'lokasi_kerja' => SystemSetting::getOptions('lokasi_kerja'),
         ];
@@ -223,7 +223,7 @@ class PengaturanGajiController extends Controller
     public function updateStatusPegawai(Request $request, PengaturanGajiStatusPegawai $pengaturanGaji)
     {
         $request->validate([
-            'status_pegawai' => 'required|string|in:Harian,OJT,Kontrak',
+            'status_pegawai' => 'required|string|in:Harian,OJT', // Only Harian and OJT
             'jabatan' => 'required|string',
             'lokasi_kerja' => 'required|string',
             'gaji_pokok' => 'required|numeric|min:0',

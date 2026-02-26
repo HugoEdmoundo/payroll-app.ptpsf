@@ -73,12 +73,12 @@ class Karyawan extends Model
      * Calculate Status Pegawai based on join_date
      * Harian: 14 hari pertama (90rb/hari)
      * OJT: 3 bulan setelah fase harian (gaji tetap)
-     * Kontrak: Setelah OJT selesai (karyawan normal)
+     * Kontrak: Setelah OJT selesai (karyawan normal - pakai PengaturanGaji biasa)
      */
     public function calculateStatusPegawai()
     {
         if (!$this->join_date) {
-            return 'Harian';
+            return 'Kontrak';
         }
         
         $now = Carbon::now();
@@ -96,7 +96,7 @@ class Karyawan extends Model
             return 'OJT';
         }
         
-        // Fase 3: Kontrak (setelah OJT selesai)
+        // Fase 3: Kontrak (setelah OJT selesai - NORMAL EMPLOYEE)
         return 'Kontrak';
     }
     
@@ -117,8 +117,8 @@ class Karyawan extends Model
     {
         $statusPegawai = $this->status_pegawai;
         
-        // Check if status pegawai is Harian, OJT, or Kontrak
-        if (in_array($statusPegawai, ['Harian', 'OJT', 'Kontrak'])) {
+        // Check if status pegawai is Harian or OJT (special cases)
+        if (in_array($statusPegawai, ['Harian', 'OJT'])) {
             // Get from PengaturanGajiStatusPegawai
             return \App\Models\PengaturanGajiStatusPegawai::where('status_pegawai', $statusPegawai)
                 ->where('jabatan', $this->jabatan)
@@ -126,7 +126,7 @@ class Karyawan extends Model
                 ->first();
         }
         
-        // Default: Get from PengaturanGaji (normal employee)
+        // Default: Kontrak = Normal employee, use PengaturanGaji
         return \App\Models\PengaturanGaji::where('jenis_karyawan', $this->jenis_karyawan)
             ->where('jabatan', $this->jabatan)
             ->where('lokasi_kerja', $this->lokasi_kerja)
