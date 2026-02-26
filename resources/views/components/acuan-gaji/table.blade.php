@@ -6,6 +6,7 @@
         <thead class="bg-gray-50">
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Karyawan</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Periode</th>
                 <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Gaji Pokok</th>
                 <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total Pendapatan</th>
@@ -20,6 +21,14 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm font-medium text-gray-900">{{ $acuan->karyawan->nama_karyawan ?? '-' }}</div>
                     <div class="text-sm text-gray-500">{{ $acuan->karyawan->jenis_karyawan ?? '-' }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                        {{ $acuan->karyawan->status_pegawai === 'Harian' ? 'bg-yellow-100 text-yellow-800' : 
+                           ($acuan->karyawan->status_pegawai === 'OJT' ? 'bg-blue-100 text-blue-800' : 
+                           ($acuan->karyawan->status_pegawai === 'Kontrak' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800')) }}">
+                        {{ $acuan->karyawan->status_pegawai ?? '-' }}
+                    </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {{ \Carbon\Carbon::createFromFormat('Y-m', $acuan->periode)->format('F Y') }}
