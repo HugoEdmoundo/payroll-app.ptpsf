@@ -41,7 +41,7 @@ class Karyawan extends Model
         'jumlah_anak' => 'integer'
     ];
     
-    // Boot method untuk set join_date dengan waktu SEKARANG
+    // Boot method untuk set join_date dengan waktu SEKARANG dan auto-calculate status_pegawai
     protected static function boot()
     {
         parent::boot();
@@ -52,6 +52,9 @@ class Karyawan extends Model
                 $waktuSekarang = Carbon::now()->format('H:i:s');
                 $karyawan->join_date = Carbon::parse($tanggal . ' ' . $waktuSekarang);
             }
+            
+            // Auto-calculate status_pegawai
+            $karyawan->status_pegawai = $karyawan->calculateStatusPegawai();
         });
         
         static::updating(function ($karyawan) {
@@ -60,7 +63,50 @@ class Karyawan extends Model
                 $waktuSekarang = Carbon::now()->format('H:i:s');
                 $karyawan->join_date = Carbon::parse($tanggal . ' ' . $waktuSekarang);
             }
+            
+            // Auto-update status_pegawai
+            $karyawan->status_pegawai = $karyawan->calculateStatusPegawai();
         });
+    }
+    
+    /**
+     * Calculate Status Pegawai based on join_date
+     * Harian: 14 hari pertama (90rb/hari)
+     * OJT: 3 bulan setelah fase harian (gaji tetap)
+     * Kontrak: Setelah OJT selesai (karyawan normal)
+     */
+    public function calculateStatusPegawai()
+    {
+        if (!$this->join_date) {
+            return 'Harian';
+        }
+        
+        $now = Carbon::now();
+        $join = Carbon::parse($this->join_date);
+        $daysSinceJoin = $join->diffInDays($now);
+        
+        // Fase 1: Harian (14 hari pertama)
+        if ($daysSinceJoin < 14) {
+            return 'Harian';
+        }
+        
+        // Fase 2: OJT (3 bulan setelah 14 hari)
+        // 14 hari + 90 hari (3 bulan) = 104 hari total
+        if ($daysSinceJoin < 104) {
+            return 'OJT';
+        }
+        
+        // Fase 3: Kontrak (setelah OJT selesai)
+        return 'Kontrak';
+    }
+    
+    /**
+     * Get current status pegawai (accessor)
+     */
+    public function getStatusPegawaiAttribute($value)
+    {
+        // Always recalculate to ensure it's up to date
+        return $this->calculateStatusPegawai();
     }
 
     // Masa Kerja dalam format readable (X Bulan Y Hari) - KEDUANYA HARUS ADA

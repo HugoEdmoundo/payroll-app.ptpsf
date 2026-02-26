@@ -1,6 +1,6 @@
 @props(['karyawan' => null, 'settings' => []])
 
-<div class="space-y-8" x-data="karyawanForm()" x-init="init()">
+<div class="space-y-6" x-data="karyawanForm()" x-init="init()">
     
     <!-- Section 1: Informasi Dasar -->
     <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
@@ -116,25 +116,8 @@
                 @enderror
             </div>
 
-            <!-- Status Pegawai -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Status Pegawai *</label>
-                <select name="status_pegawai" required
-                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition">
-                    <option value="">Pilih Status</option>
-                    @foreach($settings['status_pegawai'] ?? [] as $key => $value)
-                        <option value="{{ $value }}" {{ old('status_pegawai', $karyawan->status_pegawai ?? '') == $value ? 'selected' : '' }}>
-                            {{ $value }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('status_pegawai')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-
             <!-- Status Karyawan -->
-            <div class="md:col-span-2">
+            <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Status Karyawan *</label>
                 <select name="status_karyawan" required
                         class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition">
