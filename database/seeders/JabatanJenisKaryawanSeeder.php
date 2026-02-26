@@ -10,30 +10,27 @@ class JabatanJenisKaryawanSeeder extends Seeder
     public function run(): void
     {
         $mappings = [
-            // Teknisi
-            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Teknisi Senior'],
-            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Teknisi Junior'],
-            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Teknisi Lapangan'],
-            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Teknisi Maintenance'],
+            // Teknisi - All 9 positions available
+            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Junior Installer'],
+            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Junior Leader'],
+            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Junior Engineer'],
+            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Senior Installer'],
+            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Senior Leader'],
+            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Senior Engineer'],
+            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Project Manager'],
+            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Team Leader (senior)'],
+            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Team Leader (junior)'],
             
-            // Borongan
-            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Pekerja Borongan'],
-            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Mandor'],
-            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Helper'],
-            
-            // Konsultan
-            ['jenis_karyawan' => 'Konsultan', 'jabatan' => 'Konsultan Senior'],
-            ['jenis_karyawan' => 'Konsultan', 'jabatan' => 'Konsultan'],
-            ['jenis_karyawan' => 'Konsultan', 'jabatan' => 'Konsultan IT'],
-            ['jenis_karyawan' => 'Konsultan', 'jabatan' => 'Konsultan Keuangan'],
-            
-            // Organik
-            ['jenis_karyawan' => 'Organik', 'jabatan' => 'Manager'],
-            ['jenis_karyawan' => 'Organik', 'jabatan' => 'Supervisor'],
-            ['jenis_karyawan' => 'Organik', 'jabatan' => 'Staff Admin'],
-            ['jenis_karyawan' => 'Organik', 'jabatan' => 'Staff Keuangan'],
-            ['jenis_karyawan' => 'Organik', 'jabatan' => 'Staff HRD'],
-            ['jenis_karyawan' => 'Organik', 'jabatan' => 'Staff IT'],
+            // Borongan - All 9 positions available
+            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Junior Installer'],
+            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Junior Leader'],
+            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Junior Engineer'],
+            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Senior Installer'],
+            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Senior Leader'],
+            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Senior Engineer'],
+            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Project Manager'],
+            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Team Leader (senior)'],
+            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Team Leader (junior)'],
         ];
         
         foreach ($mappings as $mapping) {

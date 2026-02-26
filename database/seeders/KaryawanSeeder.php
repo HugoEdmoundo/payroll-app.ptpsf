@@ -11,71 +11,52 @@ class KaryawanSeeder extends Seeder
     public function run(): void
     {
         $karyawanData = [
-            // Konsultan - Jakarta
-            ['nama' => 'Ahmad Fauzi', 'jenis' => 'Konsultan', 'jabatan' => 'Senior Consultant', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
-            ['nama' => 'Siti Nurhaliza', 'jenis' => 'Konsultan', 'jabatan' => 'Consultant', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
-            ['nama' => 'Budi Santoso', 'jenis' => 'Konsultan', 'jabatan' => 'Junior Consultant', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
-            ['nama' => 'Dewi Lestari', 'jenis' => 'Konsultan', 'jabatan' => 'Senior Consultant', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
-            ['nama' => 'Eko Prasetyo', 'jenis' => 'Konsultan', 'jabatan' => 'Consultant', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            // Teknisi - West Java (8 orang)
+            ['nama' => 'Indah Permata', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Engineer', 'lokasi' => 'West Java', 'status' => 'Kontrak'],
+            ['nama' => 'Joko Widodo', 'jenis' => 'Teknisi', 'jabatan' => 'Junior Engineer', 'lokasi' => 'West Java', 'status' => 'Kontrak'],
+            ['nama' => 'Kurniawan Adi', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Leader', 'lokasi' => 'West Java', 'status' => 'Kontrak'],
+            ['nama' => 'Linda Sari', 'jenis' => 'Teknisi', 'jabatan' => 'Junior Leader', 'lokasi' => 'West Java', 'status' => 'Kontrak'],
+            ['nama' => 'Muhammad Rizki', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Installer', 'lokasi' => 'West Java', 'status' => 'Kontrak'],
+            ['nama' => 'Nur Azizah', 'jenis' => 'Teknisi', 'jabatan' => 'Junior Installer', 'lokasi' => 'West Java', 'status' => 'Kontrak'],
+            ['nama' => 'Rina Wati', 'jenis' => 'Teknisi', 'jabatan' => 'Project Manager', 'lokasi' => 'West Java', 'status' => 'Kontrak'],
+            ['nama' => 'Slamet Riyadi', 'jenis' => 'Teknisi', 'jabatan' => 'Team Leader (junior)', 'lokasi' => 'West Java', 'status' => 'Kontrak'],
             
-            // Organik - Jakarta
-            ['nama' => 'Fitri Handayani', 'jenis' => 'Organik', 'jabatan' => 'Manager', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
-            ['nama' => 'Gunawan Wijaya', 'jenis' => 'Organik', 'jabatan' => 'Supervisor', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
-            ['nama' => 'Hendra Kusuma', 'jenis' => 'Organik', 'jabatan' => 'Staff', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
-            ['nama' => 'Indah Permata', 'jenis' => 'Organik', 'jabatan' => 'Staff', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
-            ['nama' => 'Joko Widodo', 'jenis' => 'Organik', 'jabatan' => 'Coordinator', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            // Borongan - West Java (6 orang)
+            ['nama' => 'Omar Bakri', 'jenis' => 'Borongan', 'jabatan' => 'Junior Leader', 'lokasi' => 'West Java', 'status' => 'Harian'],
+            ['nama' => 'Putra Mahendra', 'jenis' => 'Borongan', 'jabatan' => 'Junior Installer', 'lokasi' => 'West Java', 'status' => 'Harian'],
+            ['nama' => 'Qori Amalia', 'jenis' => 'Borongan', 'jabatan' => 'Junior Engineer', 'lokasi' => 'West Java', 'status' => 'Harian'],
+            ['nama' => 'Taufik Hidayat', 'jenis' => 'Borongan', 'jabatan' => 'Junior Installer', 'lokasi' => 'West Java', 'status' => 'Harian'],
+            ['nama' => 'Udin Sedunia', 'jenis' => 'Borongan', 'jabatan' => 'Senior Installer', 'lokasi' => 'West Java', 'status' => 'Harian'],
+            ['nama' => 'Vivi Lestari', 'jenis' => 'Borongan', 'jabatan' => 'Junior Installer', 'lokasi' => 'West Java', 'status' => 'Harian'],
             
-            // Teknisi - Jakarta
-            ['nama' => 'Kurniawan Adi', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Technician', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
-            ['nama' => 'Linda Sari', 'jenis' => 'Teknisi', 'jabatan' => 'Technician', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
-            ['nama' => 'Muhammad Rizki', 'jenis' => 'Teknisi', 'jabatan' => 'Junior Technician', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
-            ['nama' => 'Nur Azizah', 'jenis' => 'Teknisi', 'jabatan' => 'Technician', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
-            ['nama' => 'Omar Bakri', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Technician', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            // Teknisi - Central Java (7 orang)
+            ['nama' => 'Xaverius Budi', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Engineer', 'lokasi' => 'Central Java', 'status' => 'Kontrak'],
+            ['nama' => 'Yanti Kusuma', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Leader', 'lokasi' => 'Central Java', 'status' => 'Kontrak'],
+            ['nama' => 'Zaki Rahman', 'jenis' => 'Teknisi', 'jabatan' => 'Junior Leader', 'lokasi' => 'Central Java', 'status' => 'Kontrak'],
+            ['nama' => 'Andi Wijaya', 'jenis' => 'Teknisi', 'jabatan' => 'Junior Engineer', 'lokasi' => 'Central Java', 'status' => 'Kontrak'],
+            ['nama' => 'Bambang Sutrisno', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Installer', 'lokasi' => 'Central Java', 'status' => 'Kontrak'],
+            ['nama' => 'Citra Dewi', 'jenis' => 'Teknisi', 'jabatan' => 'Junior Installer', 'lokasi' => 'Central Java', 'status' => 'Kontrak'],
+            ['nama' => 'Dedi Supardi', 'jenis' => 'Teknisi', 'jabatan' => 'Team Leader (senior)', 'lokasi' => 'Central Java', 'status' => 'Kontrak'],
             
-            // Borongan - Jakarta
-            ['nama' => 'Putra Mahendra', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Jakarta', 'status' => 'Harian'],
-            ['nama' => 'Qori Amalia', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Jakarta', 'status' => 'Harian'],
-            ['nama' => 'Rudi Hartono', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Jakarta', 'status' => 'Harian'],
-            ['nama' => 'Sari Wulandari', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Jakarta', 'status' => 'Harian'],
-            ['nama' => 'Tono Sugiarto', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Jakarta', 'status' => 'Harian'],
+            // Borongan - Central Java (5 orang)
+            ['nama' => 'Agus Salim', 'jenis' => 'Borongan', 'jabatan' => 'Senior Installer', 'lokasi' => 'Central Java', 'status' => 'Harian'],
+            ['nama' => 'Bella Safira', 'jenis' => 'Borongan', 'jabatan' => 'Junior Installer', 'lokasi' => 'Central Java', 'status' => 'Harian'],
+            ['nama' => 'Cahyo Nugroho', 'jenis' => 'Borongan', 'jabatan' => 'Junior Engineer', 'lokasi' => 'Central Java', 'status' => 'Harian'],
+            ['nama' => 'Dian Purnama', 'jenis' => 'Borongan', 'jabatan' => 'Junior Installer', 'lokasi' => 'Central Java', 'status' => 'Harian'],
+            ['nama' => 'Eko Saputra', 'jenis' => 'Borongan', 'jabatan' => 'Senior Leader', 'lokasi' => 'Central Java', 'status' => 'Harian'],
             
-            // Konsultan - Bandung
-            ['nama' => 'Umar Faruq', 'jenis' => 'Konsultan', 'jabatan' => 'Senior Consultant', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
-            ['nama' => 'Vina Melinda', 'jenis' => 'Konsultan', 'jabatan' => 'Consultant', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
-            ['nama' => 'Wawan Setiawan', 'jenis' => 'Konsultan', 'jabatan' => 'Junior Consultant', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
+            // Teknisi - East Java (5 orang)
+            ['nama' => 'Gita Savitri', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Engineer', 'lokasi' => 'East Java', 'status' => 'Kontrak'],
+            ['nama' => 'Hadi Purnomo', 'jenis' => 'Teknisi', 'jabatan' => 'Team Leader (senior)', 'lokasi' => 'East Java', 'status' => 'Kontrak'],
+            ['nama' => 'Ika Rahmawati', 'jenis' => 'Teknisi', 'jabatan' => 'Junior Leader', 'lokasi' => 'East Java', 'status' => 'Kontrak'],
+            ['nama' => 'Jaya Kusuma', 'jenis' => 'Teknisi', 'jabatan' => 'Junior Engineer', 'lokasi' => 'East Java', 'status' => 'Kontrak'],
+            ['nama' => 'Kartini Sari', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Installer', 'lokasi' => 'East Java', 'status' => 'Kontrak'],
             
-            // Organik - Bandung
-            ['nama' => 'Xaverius Budi', 'jenis' => 'Organik', 'jabatan' => 'Manager', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
-            ['nama' => 'Yanti Kusuma', 'jenis' => 'Organik', 'jabatan' => 'Supervisor', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
-            ['nama' => 'Zaki Rahman', 'jenis' => 'Organik', 'jabatan' => 'Staff', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
-            
-            // Teknisi - Bandung
-            ['nama' => 'Agus Salim', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Technician', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
-            ['nama' => 'Bella Safira', 'jenis' => 'Teknisi', 'jabatan' => 'Technician', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
-            ['nama' => 'Candra Wijaya', 'jenis' => 'Teknisi', 'jabatan' => 'Junior Technician', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
-            
-            // Borongan - Bandung
-            ['nama' => 'Dani Pratama', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Bandung', 'status' => 'Harian'],
-            ['nama' => 'Erna Susanti', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Bandung', 'status' => 'Harian'],
-            
-            // Konsultan - Surabaya
-            ['nama' => 'Fajar Nugroho', 'jenis' => 'Konsultan', 'jabatan' => 'Senior Consultant', 'lokasi' => 'Surabaya', 'status' => 'Kontrak'],
-            ['nama' => 'Gita Savitri', 'jenis' => 'Konsultan', 'jabatan' => 'Consultant', 'lokasi' => 'Surabaya', 'status' => 'Kontrak'],
-            
-            // Organik - Surabaya
-            ['nama' => 'Hadi Purnomo', 'jenis' => 'Organik', 'jabatan' => 'Manager', 'lokasi' => 'Surabaya', 'status' => 'Kontrak'],
-            ['nama' => 'Ika Rahmawati', 'jenis' => 'Organik', 'jabatan' => 'Supervisor', 'lokasi' => 'Surabaya', 'status' => 'Kontrak'],
-            
-            // Teknisi - Surabaya
-            ['nama' => 'Jaka Sembung', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Technician', 'lokasi' => 'Surabaya', 'status' => 'Kontrak'],
-            ['nama' => 'Kartika Sari', 'jenis' => 'Teknisi', 'jabatan' => 'Technician', 'lokasi' => 'Surabaya', 'status' => 'Kontrak'],
-            
-            // Borongan - Surabaya
-            ['nama' => 'Lukman Hakim', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Surabaya', 'status' => 'Harian'],
-            ['nama' => 'Maya Anggraini', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Surabaya', 'status' => 'Harian'],
-            
-            // Additional employees
-            ['nama' => 'Nanda Pratiwi', 'jenis' => 'Organik', 'jabatan' => 'Staff', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            // Borongan - East Java (4 orang)
+            ['nama' => 'Jaka Sembung', 'jenis' => 'Borongan', 'jabatan' => 'Senior Installer', 'lokasi' => 'East Java', 'status' => 'Harian'],
+            ['nama' => 'Kartika Sari', 'jenis' => 'Borongan', 'jabatan' => 'Junior Engineer', 'lokasi' => 'East Java', 'status' => 'Harian'],
+            ['nama' => 'Lukman Hakim', 'jenis' => 'Borongan', 'jabatan' => 'Junior Installer', 'lokasi' => 'East Java', 'status' => 'Harian'],
+            ['nama' => 'Maya Anggraini', 'jenis' => 'Borongan', 'jabatan' => 'Team Leader (junior)', 'lokasi' => 'East Java', 'status' => 'Harian'],
         ];
 
         foreach ($karyawanData as $index => $data) {
