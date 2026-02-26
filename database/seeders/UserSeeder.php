@@ -19,10 +19,10 @@ class UserSeeder extends Seeder
 
         // Superadmin
         DB::table('users')->updateOrInsert(
-            ['email' => 'superadmin@ptpsf.com'],
+            ['email' => 'superadmin@hugoedm.fun'],
             [
                 'name' => 'Superadmin',
-                'email' => 'superadmin@ptpsf.com',
+                'email' => 'superadmin@hugoedm.fun',
                 'password' => Hash::make('password123'),
                 'role_id' => $superadminRole->id,
                 'is_active' => true,
@@ -33,10 +33,10 @@ class UserSeeder extends Seeder
 
         // Regular User
         DB::table('users')->updateOrInsert(
-            ['email' => 'user@ptpsf.com'],
+            ['email' => 'user@hugoedm.fun'],
             [
                 'name' => 'Regular User',
-                'email' => 'user@ptpsf.com',
+                'email' => 'user@hugoedm.fun',
                 'password' => Hash::make('password123'),
                 'role_id' => $userRole->id,
                 'is_active' => true,

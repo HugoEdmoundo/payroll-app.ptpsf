@@ -81,7 +81,9 @@ jobs:
             chmod -R 775 storage bootstrap/cache
 
             # Generate APP_KEY jika belum ada
-            php artisan key:generate --force
+            if ! grep -q "APP_KEY=base64" .env; then
+              php artisan key:generate --force
+            fi
 
             # Run migrations only, DB tidak di-reset
             php artisan migrate --force
