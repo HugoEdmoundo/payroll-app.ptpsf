@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Payroll;
 
 use App\Http\Controllers\Controller;
 use App\Models\PengaturanGaji;
+use App\Models\PengaturanGajiStatusPegawai;
 use App\Models\SystemSetting;
 use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
@@ -140,5 +141,117 @@ class PengaturanGajiController extends Controller
             new \App\Exports\PengaturanGajiExport($jenisKaryawan),
             $filename
         );
+    }
+    
+    // ========== STATUS PEGAWAI METHODS ==========
+    
+    public function indexStatusPegawai(Request $request)
+    {
+        $query = PengaturanGajiStatusPegawai::query();
+        
+        // Filter by status pegawai
+        if ($request->has('status_pegawai') && $request->status_pegawai) {
+            $query->where('status_pegawai', $request->status_pegawai);
+        }
+        
+        // Global search
+        if ($request->has('search') && $request->search) {
+            $query = $this->applyGlobalSearch($query, $request->search, [
+                'status_pegawai', 'jabatan', 'lokasi_kerja'
+            ]);
+        }
+        
+        $pengaturanGaji = $query->orderBy('status_pegawai')
+                                ->orderBy('jabatan')
+                                ->paginate(15);
+        
+        return view('payroll.pengaturan-gaji.status-pegawai.index', compact('pengaturanGaji'));
+    }
+    
+    public function createStatusPegawai()
+    {
+        $settings = [
+            'status_pegawai' => ['Harian', 'OJT', 'Kontrak'],
+            'jabatan_options' => SystemSetting::getOptions('jabatan_options'),
+            'lokasi_kerja' => SystemSetting::getOptions('lokasi_kerja'),
+        ];
+        
+        return view('payroll.pengaturan-gaji.status-pegawai.create', compact('settings'));
+    }
+    
+    public function storeStatusPegawai(Request $request)
+    {
+        $request->validate([
+            'status_pegawai' => 'required|string|in:Harian,OJT,Kontrak',
+            'jabatan' => 'required|string',
+            'lokasi_kerja' => 'required|string',
+            'gaji_pokok' => 'required|numeric|min:0',
+        ]);
+        
+        // Check unique
+        $exists = PengaturanGajiStatusPegawai::where('status_pegawai', $request->status_pegawai)
+            ->where('jabatan', $request->jabatan)
+            ->where('lokasi_kerja', $request->lokasi_kerja)
+            ->exists();
+            
+        if ($exists) {
+            return back()->withInput()->with('error', 'Pengaturan gaji untuk kombinasi ini sudah ada.');
+        }
+        
+        PengaturanGajiStatusPegawai::create($request->all());
+        
+        return redirect()->route('payroll.pengaturan-gaji.status-pegawai.index', ['status_pegawai' => $request->status_pegawai])
+            ->with('success', 'Pengaturan gaji status pegawai berhasil ditambahkan.');
+    }
+    
+    public function showStatusPegawai(PengaturanGajiStatusPegawai $pengaturanGaji)
+    {
+        return view('payroll.pengaturan-gaji.status-pegawai.show', compact('pengaturanGaji'));
+    }
+    
+    public function editStatusPegawai(PengaturanGajiStatusPegawai $pengaturanGaji)
+    {
+        $settings = [
+            'status_pegawai' => ['Harian', 'OJT', 'Kontrak'],
+            'jabatan_options' => SystemSetting::getOptions('jabatan_options'),
+            'lokasi_kerja' => SystemSetting::getOptions('lokasi_kerja'),
+        ];
+        
+        return view('payroll.pengaturan-gaji.status-pegawai.edit', compact('pengaturanGaji', 'settings'));
+    }
+    
+    public function updateStatusPegawai(Request $request, PengaturanGajiStatusPegawai $pengaturanGaji)
+    {
+        $request->validate([
+            'status_pegawai' => 'required|string|in:Harian,OJT,Kontrak',
+            'jabatan' => 'required|string',
+            'lokasi_kerja' => 'required|string',
+            'gaji_pokok' => 'required|numeric|min:0',
+        ]);
+        
+        // Check unique (except current)
+        $exists = PengaturanGajiStatusPegawai::where('status_pegawai', $request->status_pegawai)
+            ->where('jabatan', $request->jabatan)
+            ->where('lokasi_kerja', $request->lokasi_kerja)
+            ->where('id_pengaturan', '!=', $pengaturanGaji->id_pengaturan)
+            ->exists();
+            
+        if ($exists) {
+            return back()->withInput()->with('error', 'Pengaturan gaji untuk kombinasi ini sudah ada.');
+        }
+        
+        $pengaturanGaji->update($request->all());
+        
+        return redirect()->route('payroll.pengaturan-gaji.status-pegawai.index', ['status_pegawai' => $request->status_pegawai])
+            ->with('success', 'Pengaturan gaji status pegawai berhasil diupdate.');
+    }
+    
+    public function destroyStatusPegawai(PengaturanGajiStatusPegawai $pengaturanGaji)
+    {
+        $statusPegawai = $pengaturanGaji->status_pegawai;
+        $pengaturanGaji->delete();
+        
+        return redirect()->route('payroll.pengaturan-gaji.status-pegawai.index', ['status_pegawai' => $statusPegawai])
+            ->with('success', 'Pengaturan gaji status pegawai berhasil dihapus.');
     }
 }

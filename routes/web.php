@@ -74,6 +74,17 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{pengaturanGaji}/edit', [PengaturanGajiController::class, 'edit'])->name('edit');
             Route::put('/{pengaturanGaji}', [PengaturanGajiController::class, 'update'])->name('update');
             Route::delete('/{pengaturanGaji}', [PengaturanGajiController::class, 'destroy'])->name('destroy');
+            
+            // Status Pegawai Routes
+            Route::prefix('status-pegawai')->name('status-pegawai.')->group(function () {
+                Route::get('/', [PengaturanGajiController::class, 'indexStatusPegawai'])->name('index');
+                Route::get('/create', [PengaturanGajiController::class, 'createStatusPegawai'])->name('create');
+                Route::post('/', [PengaturanGajiController::class, 'storeStatusPegawai'])->name('store');
+                Route::get('/{pengaturanGaji}', [PengaturanGajiController::class, 'showStatusPegawai'])->name('show');
+                Route::get('/{pengaturanGaji}/edit', [PengaturanGajiController::class, 'editStatusPegawai'])->name('edit');
+                Route::put('/{pengaturanGaji}', [PengaturanGajiController::class, 'updateStatusPegawai'])->name('update');
+                Route::delete('/{pengaturanGaji}', [PengaturanGajiController::class, 'destroyStatusPegawai'])->name('destroy');
+            });
         });
 
         // NKI (Tunjangan Prestasi)
