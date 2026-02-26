@@ -41,6 +41,10 @@
         <!-- Tab Content -->
         <div class="p-8">
             @foreach($groups as $key => $label)
+                @if($key === 'jabatan_by_jenis')
+                    @continue
+                @endif
+                
                 @php
                     $groupSettings = $settings[$key] ?? collect([]);
                 @endphp
