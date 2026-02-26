@@ -325,6 +325,10 @@ class AcuanGajiController extends Controller
 
         return redirect()->route('payroll.acuan-gaji.index')
                         ->with('success', 'Acuan gaji berhasil diupdate.');
+
+        
+                        
+
     }
 
     public function destroy(AcuanGaji $acuanGaji)

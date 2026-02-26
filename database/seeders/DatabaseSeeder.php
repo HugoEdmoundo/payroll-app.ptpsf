@@ -49,6 +49,11 @@ class DatabaseSeeder extends Seeder
         $this->call(PengaturanGajiSeeder::class);
         $this->command->newLine();
         
+        // 5b. Pengaturan Gaji Status Pegawai (Harian & OJT)
+        $this->command->info('💼 Step 5b: Pengaturan Gaji Status Pegawai (Harian & OJT)');
+        $this->call(PengaturanGajiStatusPegawaiSeeder::class);
+        $this->command->newLine();
+        
         // 6. Komponen Gaji (NKI, Absensi, Kasbon)
         $this->command->info('📊 Step 6: Komponen Gaji (NKI, Absensi, Kasbon)');
         $this->call(KomponenGajiSeeder::class);

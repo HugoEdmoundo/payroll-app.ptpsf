@@ -5,17 +5,17 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">Karyawan *</label>
             <select name="id_karyawan" 
                     required
-                    {{ $acuanGaji ? 'disabled' : '' }}
+                    {{ isset($acuanGaji) && $acuanGaji ? 'disabled' : '' }}
                     class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @error('id_karyawan') border-red-500 @enderror">
                 <option value="">Select Employee</option>
                 @foreach($karyawanList as $karyawan)
                     <option value="{{ $karyawan->id_karyawan }}" 
-                            {{ old('id_karyawan', $acuanGaji->id_karyawan ?? '') == $karyawan->id_karyawan ? 'selected' : '' }}>
+                            {{ old('id_karyawan', isset($acuanGaji) ? $acuanGaji->id_karyawan : '') == $karyawan->id_karyawan ? 'selected' : '' }}>
                         {{ $karyawan->nama_karyawan }} - {{ $karyawan->jenis_karyawan }} - {{ $karyawan->jabatan }}
                     </option>
                 @endforeach
             </select>
-            @if($acuanGaji)
+            @if(isset($acuanGaji) && $acuanGaji)
                 <input type="hidden" name="id_karyawan" value="{{ $acuanGaji->id_karyawan }}">
             @endif
             @error('id_karyawan')
@@ -27,7 +27,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">Periode *</label>
             <input type="month" 
                    name="periode" 
-                   value="{{ old('periode', $acuanGaji->periode ?? '') }}"
+                   value="{{ old('periode', isset($acuanGaji) ? $acuanGaji->periode : '') }}"
                    required
                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @error('periode') border-red-500 @enderror">
             @error('periode')
@@ -47,7 +47,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Gaji Pokok</label>
                 <input type="number" 
                        name="gaji_pokok" 
-                       value="{{ old('gaji_pokok', $acuanGaji->gaji_pokok ?? 0) }}"
+                       value="{{ old('gaji_pokok', isset($acuanGaji) ? $acuanGaji->gaji_pokok : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -55,7 +55,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Kesehatan (Pendapatan)</label>
                 <input type="number" 
                        name="bpjs_kesehatan_pendapatan" 
-                       value="{{ old('bpjs_kesehatan_pendapatan', $acuanGaji->bpjs_kesehatan_pendapatan ?? 0) }}"
+                       value="{{ old('bpjs_kesehatan_pendapatan', isset($acuanGaji) ? $acuanGaji->bpjs_kesehatan_pendapatan : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -63,7 +63,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Kecelakaan Kerja (Pendapatan)</label>
                 <input type="number" 
                        name="bpjs_kecelakaan_kerja_pendapatan" 
-                       value="{{ old('bpjs_kecelakaan_kerja_pendapatan', $acuanGaji->bpjs_kecelakaan_kerja_pendapatan ?? 0) }}"
+                       value="{{ old('bpjs_kecelakaan_kerja_pendapatan', isset($acuanGaji) ? $acuanGaji->bpjs_kecelakaan_kerja_pendapatan : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -71,7 +71,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Kematian (Pendapatan)</label>
                 <input type="number" 
                        name="bpjs_kematian_pendapatan" 
-                       value="{{ old('bpjs_kematian_pendapatan', $acuanGaji->bpjs_kematian_pendapatan ?? 0) }}"
+                       value="{{ old('bpjs_kematian_pendapatan', isset($acuanGaji) ? $acuanGaji->bpjs_kematian_pendapatan : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -79,7 +79,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">BPJS JHT (Pendapatan)</label>
                 <input type="number" 
                        name="bpjs_jht_pendapatan" 
-                       value="{{ old('bpjs_jht_pendapatan', $acuanGaji->bpjs_jht_pendapatan ?? 0) }}"
+                       value="{{ old('bpjs_jht_pendapatan', isset($acuanGaji) ? $acuanGaji->bpjs_jht_pendapatan : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -87,7 +87,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">BPJS JP (Pendapatan)</label>
                 <input type="number" 
                        name="bpjs_jp_pendapatan" 
-                       value="{{ old('bpjs_jp_pendapatan', $acuanGaji->bpjs_jp_pendapatan ?? 0) }}"
+                       value="{{ old('bpjs_jp_pendapatan', isset($acuanGaji) ? $acuanGaji->bpjs_jp_pendapatan : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -95,7 +95,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tunjangan Prestasi</label>
                 <input type="number" 
                        name="tunjangan_prestasi" 
-                       value="{{ old('tunjangan_prestasi', $acuanGaji->tunjangan_prestasi ?? 0) }}"
+                       value="{{ old('tunjangan_prestasi', isset($acuanGaji) ? $acuanGaji->tunjangan_prestasi : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -103,7 +103,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tunjangan Konjungtur</label>
                 <input type="number" 
                        name="tunjangan_konjungtur" 
-                       value="{{ old('tunjangan_konjungtur', $acuanGaji->tunjangan_konjungtur ?? 0) }}"
+                       value="{{ old('tunjangan_konjungtur', isset($acuanGaji) ? $acuanGaji->tunjangan_konjungtur : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -111,7 +111,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Benefit Ibadah</label>
                 <input type="number" 
                        name="benefit_ibadah" 
-                       value="{{ old('benefit_ibadah', $acuanGaji->benefit_ibadah ?? 0) }}"
+                       value="{{ old('benefit_ibadah', isset($acuanGaji) ? $acuanGaji->benefit_ibadah : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -119,7 +119,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Benefit Komunikasi</label>
                 <input type="number" 
                        name="benefit_komunikasi" 
-                       value="{{ old('benefit_komunikasi', $acuanGaji->benefit_komunikasi ?? 0) }}"
+                       value="{{ old('benefit_komunikasi', isset($acuanGaji) ? $acuanGaji->benefit_komunikasi : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -127,7 +127,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Benefit Operasional</label>
                 <input type="number" 
                        name="benefit_operasional" 
-                       value="{{ old('benefit_operasional', $acuanGaji->benefit_operasional ?? 0) }}"
+                       value="{{ old('benefit_operasional', isset($acuanGaji) ? $acuanGaji->benefit_operasional : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -135,7 +135,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Reward</label>
                 <input type="number" 
                        name="reward" 
-                       value="{{ old('reward', $acuanGaji->reward ?? 0) }}"
+                       value="{{ old('reward', isset($acuanGaji) ? $acuanGaji->reward : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -153,7 +153,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Kesehatan (Pengeluaran)</label>
                 <input type="number" 
                        name="bpjs_kesehatan_pengeluaran" 
-                       value="{{ old('bpjs_kesehatan_pengeluaran', $acuanGaji->bpjs_kesehatan_pengeluaran ?? 0) }}"
+                       value="{{ old('bpjs_kesehatan_pengeluaran', isset($acuanGaji) ? $acuanGaji->bpjs_kesehatan_pengeluaran : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -161,7 +161,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Kecelakaan Kerja (Pengeluaran)</label>
                 <input type="number" 
                        name="bpjs_kecelakaan_kerja_pengeluaran" 
-                       value="{{ old('bpjs_kecelakaan_kerja_pengeluaran', $acuanGaji->bpjs_kecelakaan_kerja_pengeluaran ?? 0) }}"
+                       value="{{ old('bpjs_kecelakaan_kerja_pengeluaran', isset($acuanGaji) ? $acuanGaji->bpjs_kecelakaan_kerja_pengeluaran : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -169,7 +169,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Kematian (Pengeluaran)</label>
                 <input type="number" 
                        name="bpjs_kematian_pengeluaran" 
-                       value="{{ old('bpjs_kematian_pengeluaran', $acuanGaji->bpjs_kematian_pengeluaran ?? 0) }}"
+                       value="{{ old('bpjs_kematian_pengeluaran', isset($acuanGaji) ? $acuanGaji->bpjs_kematian_pengeluaran : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -177,7 +177,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">BPJS JHT (Pengeluaran)</label>
                 <input type="number" 
                        name="bpjs_jht_pengeluaran" 
-                       value="{{ old('bpjs_jht_pengeluaran', $acuanGaji->bpjs_jht_pengeluaran ?? 0) }}"
+                       value="{{ old('bpjs_jht_pengeluaran', isset($acuanGaji) ? $acuanGaji->bpjs_jht_pengeluaran : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -185,7 +185,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">BPJS JP (Pengeluaran)</label>
                 <input type="number" 
                        name="bpjs_jp_pengeluaran" 
-                       value="{{ old('bpjs_jp_pengeluaran', $acuanGaji->bpjs_jp_pengeluaran ?? 0) }}"
+                       value="{{ old('bpjs_jp_pengeluaran', isset($acuanGaji) ? $acuanGaji->bpjs_jp_pengeluaran : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -193,7 +193,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tabungan Koperasi</label>
                 <input type="number" 
                        name="tabungan_koperasi" 
-                       value="{{ old('tabungan_koperasi', $acuanGaji->tabungan_koperasi ?? 0) }}"
+                       value="{{ old('tabungan_koperasi', isset($acuanGaji) ? $acuanGaji->tabungan_koperasi : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -201,7 +201,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Koperasi</label>
                 <input type="number" 
                        name="koperasi" 
-                       value="{{ old('koperasi', $acuanGaji->koperasi ?? 0) }}"
+                       value="{{ old('koperasi', isset($acuanGaji) ? $acuanGaji->koperasi : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -209,7 +209,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Kasbon</label>
                 <input type="number" 
                        name="kasbon" 
-                       value="{{ old('kasbon', $acuanGaji->kasbon ?? 0) }}"
+                       value="{{ old('kasbon', isset($acuanGaji) ? $acuanGaji->kasbon : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -217,7 +217,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Umroh</label>
                 <input type="number" 
                        name="umroh" 
-                       value="{{ old('umroh', $acuanGaji->umroh ?? 0) }}"
+                       value="{{ old('umroh', isset($acuanGaji) ? $acuanGaji->umroh : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -225,7 +225,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Kurban</label>
                 <input type="number" 
                        name="kurban" 
-                       value="{{ old('kurban', $acuanGaji->kurban ?? 0) }}"
+                       value="{{ old('kurban', isset($acuanGaji) ? $acuanGaji->kurban : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -233,7 +233,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Mutabaah</label>
                 <input type="number" 
                        name="mutabaah" 
-                       value="{{ old('mutabaah', $acuanGaji->mutabaah ?? 0) }}"
+                       value="{{ old('mutabaah', isset($acuanGaji) ? $acuanGaji->mutabaah : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -241,7 +241,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Potongan Absensi</label>
                 <input type="number" 
                        name="potongan_absensi" 
-                       value="{{ old('potongan_absensi', $acuanGaji->potongan_absensi ?? 0) }}"
+                       value="{{ old('potongan_absensi', isset($acuanGaji) ? $acuanGaji->potongan_absensi : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -249,7 +249,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Potongan Kehadiran</label>
                 <input type="number" 
                        name="potongan_kehadiran" 
-                       value="{{ old('potongan_kehadiran', $acuanGaji->potongan_kehadiran ?? 0) }}"
+                       value="{{ old('potongan_kehadiran', isset($acuanGaji) ? $acuanGaji->potongan_kehadiran : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
@@ -262,7 +262,7 @@
         <textarea name="keterangan" 
                   rows="3"
                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                  placeholder="Additional notes...">{{ old('keterangan', $acuanGaji->keterangan ?? '') }}</textarea>
+                  placeholder="Additional notes...">{{ old('keterangan', isset($acuanGaji) ? $acuanGaji->keterangan : '') }}</textarea>
     </div>
 
     <!-- Info Note -->
