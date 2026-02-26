@@ -3,14 +3,15 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\JabatanJenisKaryawan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class JabatanJenisKaryawanSeeder extends Seeder
 {
     public function run(): void
     {
         // Check if table exists first
-        if (!\Schema::hasTable('jabatan_jenis_karyawan')) {
+        if (!Schema::hasTable('jabatan_jenis_karyawan')) {
             $this->command->warn('Table jabatan_jenis_karyawan does not exist. Skipping...');
             $this->command->info('Please run migrations first: php artisan migrate');
             return;
@@ -41,7 +42,7 @@ class JabatanJenisKaryawanSeeder extends Seeder
         ];
         
         foreach ($mappings as $mapping) {
-            \DB::table('jabatan_jenis_karyawan')->updateOrInsert(
+            DB::table('jabatan_jenis_karyawan')->updateOrInsert(
                 [
                     'jenis_karyawan' => $mapping['jenis_karyawan'],
                     'jabatan' => $mapping['jabatan'],
