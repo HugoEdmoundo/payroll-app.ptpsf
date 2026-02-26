@@ -207,19 +207,15 @@
                  x-cloak>
                 
                 <div class="space-y-6">
-                    <!-- Section Header -->
-                    <div class="pb-4 border-b border-gray-200">
-                        <h3 class="text-xl font-bold text-gray-900">Jabatan by Jenis Karyawan</h3>
-                        <p class="mt-1 text-sm text-gray-600">Map jabatan options to specific jenis karyawan. This will filter jabatan dropdown when adding/editing karyawan.</p>
-                    </div>
                     
                     <!-- Add New Mapping Form -->
                     <div class="bg-white rounded-xl border-2 border-gray-200 overflow-hidden">
                         <div class="bg-gradient-to-r from-indigo-50 to-purple-50 px-6 py-4 border-b border-gray-200">
-                            <h4 class="text-sm font-semibold text-gray-900 flex items-center">
-                                <i class="fas fa-plus-circle text-indigo-600 mr-2"></i>
-                                Add New Mapping
+                            <h4 class="text-lg font-semibold text-gray-900 flex items-center">
+                                <i class="fas fa-link text-indigo-600 mr-2"></i>
+                                Jabatan by Jenis Karyawan
                             </h4>
+                            <p class="mt-1 text-sm text-gray-600">Map jabatan options to specific jenis karyawan. This will filter jabatan dropdown when adding/editing karyawan.</p>
                         </div>
                         
                         <form action="{{ route('admin.settings.jabatan-jenis.store') }}" method="POST" class="p-6">
