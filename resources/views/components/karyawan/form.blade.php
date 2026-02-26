@@ -72,12 +72,15 @@
                 x-model="jabatan"
                 :disabled="!jenisKaryawan"
                 class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed">
-            <option value="">{{ jenisKaryawan ? 'Pilih Jabatan' : 'Pilih Jenis Karyawan dulu' }}</option>
+            <option value="" x-text="jenisKaryawan ? 'Pilih Jabatan' : 'Pilih Jenis Karyawan dulu'"></option>
             <template x-for="jab in jabatanList" :key="jab">
                 <option :value="jab" x-text="jab"></option>
             </template>
         </select>
         @error('jabatan')
+        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
     </div>
