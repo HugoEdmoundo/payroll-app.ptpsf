@@ -18,9 +18,8 @@ class SystemSettingSeeder extends Seeder
             // Jenis Karyawan (2 types only)
             ['group' => 'jenis_karyawan', 'key' => 'teknisi', 'value' => 'Teknisi', 'order' => 1],
             ['group' => 'jenis_karyawan', 'key' => 'borongan', 'value' => 'Borongan', 'order' => 2],
-            ['group' => 'jenis_karyawan', 'key' => 'konsultan', 'value' => 'Konsultan', 'order' => 2],
-            ['group' => 'jenis_karyawan', 'key' => 'organik', 'value' => 'Organik', 'order' => 2],
-
+            ['group' => 'jenis_karyawan', 'key' => 'konsultan', 'value' => 'Konsultan', 'order' => 3],
+            ['group' => 'jenis_karyawan', 'key' => 'organik', 'value' => 'Organik', 'order' => 4],
             
             // Status Pegawai
             ['group' => 'status_pegawai', 'key' => 'harian', 'value' => 'Harian', 'order' => 1],
@@ -63,28 +62,6 @@ class SystemSettingSeeder extends Seeder
             ['group' => 'jabatan_options', 'key' => 'project_manager', 'value' => 'Project Manager', 'order' => 7],
             ['group' => 'jabatan_options', 'key' => 'team_leader_senior', 'value' => 'Team Leader (senior)', 'order' => 8],
             ['group' => 'jabatan_options', 'key' => 'team_leader_junior', 'value' => 'Team Leader (junior)', 'order' => 9],
-
-            // Teknisi - All 9 positions available
-            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Junior Installer'],
-            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Junior Leader'],
-            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Junior Engineer'],
-            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Senior Installer'],
-            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Senior Leader'],
-            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Senior Engineer'],
-            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Project Manager'],
-            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Team Leader (senior)'],
-            ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Team Leader (junior)'],
-            
-            // Borongan - All 9 positions available
-            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Junior Installer'],
-            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Junior Leader'],
-            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Junior Engineer'],
-            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Senior Installer'],
-            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Senior Leader'],
-            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Senior Engineer'],
-            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Project Manager'],
-            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Team Leader (senior)'],
-            ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Team Leader (junior)'],
         ];
 
         foreach ($settings as $setting) {
