@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\SystemSetting;
+use App\Models\JabatanJenisKaryawan;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller
@@ -24,9 +25,13 @@ class SettingController extends Controller
             'lokasi_kerja' => 'Lokasi Kerja',
             'bank_options' => 'Bank Options',
             'jabatan_options' => 'Jabatan Options',
+            'jabatan_by_jenis' => 'Jabatan by Jenis Karyawan',
         ];
+        
+        // Get jabatan by jenis karyawan mapping
+        $jabatanByJenis = JabatanJenisKaryawan::getAllGrouped();
 
-        return view('admin.settings.index', compact('settings', 'groups'));
+        return view('admin.settings.index', compact('settings', 'groups', 'jabatanByJenis'));
     }
 
     public function update(Request $request, $group)
@@ -102,5 +107,53 @@ class SettingController extends Controller
             return redirect()->route('admin.settings.index')
                 ->with('error', 'Failed to delete setting.');
         }
+    }
+    
+    public function storeJabatanJenis(Request $request)
+    {
+        if (!auth()->user()->isSuperadmin()) {
+            abort(403, 'Unauthorized access.');
+        }
+        
+        $request->validate([
+            'jenis_karyawan' => 'required|string',
+            'jabatan' => 'required|string',
+        ]);
+        
+        try {
+            JabatanJenisKaryawan::create([
+                'jenis_karyawan' => $request->jenis_karyawan,
+                'jabatan' => $request->jabatan,
+            ]);
+            
+            return redirect()->route('admin.settings.index')
+                ->with('success', 'Jabatan mapping added successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.settings.index')
+                ->with('error', 'Failed to add jabatan mapping. It may already exist.');
+        }
+    }
+    
+    public function destroyJabatanJenis($id)
+    {
+        if (!auth()->user()->isSuperadmin()) {
+            abort(403, 'Unauthorized access.');
+        }
+        
+        try {
+            JabatanJenisKaryawan::findOrFail($id)->delete();
+            
+            return redirect()->route('admin.settings.index')
+                ->with('success', 'Jabatan mapping deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.settings.index')
+                ->with('error', 'Failed to delete jabatan mapping.');
+        }
+    }
+    
+    public function getJabatanByJenis($jenisKaryawan)
+    {
+        $jabatan = JabatanJenisKaryawan::getJabatanByJenis($jenisKaryawan);
+        return response()->json($jabatan);
     }
 }

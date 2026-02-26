@@ -42,12 +42,12 @@ class DashboardController extends Controller
             'total_roles' => \App\Models\Role::count(),
         ];
         
-        // Recent activities (last 10) - with error handling
+        // Recent activities (last 5) - with error handling
         try {
             $activities = ActivityLog::with('user')
                                     ->where('user_id', '!=', auth()->id())
                                     ->latest()
-                                    ->take(10)
+                                    ->take(5)
                                     ->get();
             
             $recentActivities = $activities->map(function($activity) {

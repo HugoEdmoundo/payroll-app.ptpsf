@@ -197,7 +197,14 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [SettingController::class, 'index'])->name('index');
             Route::post('/{group}', [SettingController::class, 'update'])->name('update');
             Route::delete('/{group}/{id}', [SettingController::class, 'destroy'])->name('destroy');
+            
+            // Jabatan by Jenis Karyawan
+            Route::post('/jabatan-jenis/store', [SettingController::class, 'storeJabatanJenis'])->name('jabatan-jenis.store');
+            Route::delete('/jabatan-jenis/{id}', [SettingController::class, 'destroyJabatanJenis'])->name('jabatan-jenis.destroy');
         });
+        
+        // API for getting jabatan by jenis
+        Route::get('/api/jabatan-by-jenis/{jenisKaryawan}', [SettingController::class, 'getJabatanByJenis'])->name('api.jabatan-by-jenis');
         
         // Activity Logs
         Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
