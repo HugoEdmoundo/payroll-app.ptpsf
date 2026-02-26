@@ -1,6 +1,6 @@
 @props(['karyawan' => null, 'settings' => []])
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6" x-data="karyawanForm()">
     <!-- Nama Karyawan -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Nama Karyawan *</label>
@@ -46,17 +46,36 @@
         @enderror
     </div>
 
-    <!-- Jabatan -->
+    <!-- Jenis Karyawan - PINDAH KE ATAS -->
     <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Jabatan *</label>
-        <select name="jabatan" required
+        <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Karyawan *</label>
+        <select name="jenis_karyawan" required
+                x-model="jenisKaryawan"
+                @change="loadJabatan()"
                 class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-            <option value="">Pilih Jabatan</option>
-            @foreach($settings['jabatan_options'] ?? [] as $key => $value)
-                <option value="{{ $value }}" {{ old('jabatan', $karyawan->jabatan ?? '') == $value ? 'selected' : '' }}>
+            <option value="">Pilih Jenis</option>
+            @foreach($settings['jenis_karyawan'] ?? [] as $key => $value)
+                <option value="{{ $value }}" {{ old('jenis_karyawan', $karyawan->jenis_karyawan ?? '') == $value ? 'selected' : '' }}>
                     {{ $value }}
                 </option>
             @endforeach
+        </select>
+        @error('jenis_karyawan')
+        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <!-- Jabatan - DYNAMIC BASED ON JENIS -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Jabatan *</label>
+        <select name="jabatan" required
+                x-model="jabatan"
+                :disabled="!jenisKaryawan"
+                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed">
+            <option value="">{{ jenisKaryawan ? 'Pilih Jabatan' : 'Pilih Jenis Karyawan dulu' }}</option>
+            <template x-for="jab in jabatanList" :key="jab">
+                <option :value="jab" x-text="jab"></option>
+            </template>
         </select>
         @error('jabatan')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -76,23 +95,6 @@
             @endforeach
         </select>
         @error('lokasi_kerja')
-        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-        @enderror
-    </div>
-
-    <!-- Jenis Karyawan -->
-    <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Karyawan *</label>
-        <select name="jenis_karyawan" required
-                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-            <option value="">Pilih Jenis</option>
-            @foreach($settings['jenis_karyawan'] ?? [] as $key => $value)
-                <option value="{{ $value }}" {{ old('jenis_karyawan', $karyawan->jenis_karyawan ?? '') == $value ? 'selected' : '' }}>
-                    {{ $value }}
-                </option>
-            @endforeach
-        </select>
-        @error('jenis_karyawan')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
     </div>
@@ -282,5 +284,44 @@ function hanyaAngka(event) {
         return false;
     }
     return true;
+}
+
+function karyawanForm() {
+    return {
+        jenisKaryawan: '{{ old('jenis_karyawan', $karyawan->jenis_karyawan ?? '') }}',
+        jabatan: '{{ old('jabatan', $karyawan->jabatan ?? '') }}',
+        jabatanList: [],
+        
+        init() {
+            // Load jabatan on init if jenis already selected
+            if (this.jenisKaryawan) {
+                this.loadJabatan();
+            }
+        },
+        
+        async loadJabatan() {
+            if (!this.jenisKaryawan) {
+                this.jabatanList = [];
+                this.jabatan = '';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/admin/api/jabatan-by-jenis/${encodeURIComponent(this.jenisKaryawan)}`);
+                const data = await response.json();
+                
+                this.jabatanList = data;
+                
+                // If current jabatan not in list, reset
+                if (this.jabatan && !data.includes(this.jabatan)) {
+                    this.jabatan = '';
+                }
+            } catch (error) {
+                console.error('Failed to load jabatan:', error);
+                // Fallback to all jabatan options
+                this.jabatanList = @json(array_values($settings['jabatan_options'] ?? []));
+            }
+        }
+    }
 }
 </script>
