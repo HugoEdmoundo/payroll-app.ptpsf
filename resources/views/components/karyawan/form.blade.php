@@ -1,6 +1,6 @@
 @props(['karyawan' => null, 'settings' => []])
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6" x-data="karyawanForm()">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6" x-data="karyawanForm()" x-init="init()">
     <!-- Nama Karyawan -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Nama Karyawan *</label>

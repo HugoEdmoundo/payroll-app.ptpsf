@@ -207,6 +207,99 @@
                     </form>
                 </div>
             @endforeach
+            
+            <!-- Special Tab: Jabatan by Jenis Karyawan -->
+            <div x-show="activeTab === 'jabatan_by_jenis'" 
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 transform scale-95"
+                 x-transition:enter-end="opacity-100 transform scale-100"
+                 x-cloak>
+                
+                <div class="space-y-6">
+                    <!-- Section Header -->
+                    <div class="pb-4 border-b border-gray-200">
+                        <h3 class="text-xl font-bold text-gray-900">Jabatan by Jenis Karyawan</h3>
+                        <p class="mt-1 text-sm text-gray-600">Map jabatan options to specific jenis karyawan</p>
+                    </div>
+                    
+                    <!-- Add New Mapping Form -->
+                    <form action="{{ route('admin.settings.jabatan-jenis.store') }}" method="POST" class="bg-gradient-to-br from-indigo-50 to-purple-50 p-6 rounded-xl border-2 border-indigo-200">
+                        @csrf
+                        <h4 class="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-4">Add New Mapping</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Karyawan *</label>
+                                <select name="jenis_karyawan" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option value="">Pilih Jenis Karyawan</option>
+                                    @foreach($settings['jenis_karyawan'] ?? [] as $jenis)
+                                    <option value="{{ $jenis->value }}">{{ $jenis->value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Jabatan *</label>
+                                <select name="jabatan" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option value="">Pilih Jabatan</option>
+                                    @foreach($settings['jabatan_options'] ?? [] as $jabatan)
+                                    <option value="{{ $jabatan->value }}">{{ $jabatan->value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <div class="flex items-end">
+                                <button type="submit" class="w-full px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700 transition">
+                                    <i class="fas fa-plus mr-2"></i>Add Mapping
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <!-- Current Mappings -->
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-4">Current Mappings</h4>
+                        
+                        @if($jabatanByJenis->count() > 0)
+                        <div class="space-y-4">
+                            @foreach($jabatanByJenis as $jenis => $jabatanList)
+                            <div class="bg-white rounded-lg border border-gray-200 p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h5 class="text-base font-semibold text-gray-900">{{ $jenis }}</h5>
+                                    <span class="px-2 py-1 text-xs font-medium bg-indigo-100 text-indigo-800 rounded-full">
+                                        {{ count($jabatanList) }} jabatan
+                                    </span>
+                                </div>
+                                
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach($jabatanList as $jabatan)
+                                    @php
+                                        $mapping = \App\Models\JabatanJenisKaryawan::where('jenis_karyawan', $jenis)->where('jabatan', $jabatan)->first();
+                                    @endphp
+                                    <div class="inline-flex items-center px-3 py-1.5 bg-gray-100 rounded-lg text-sm">
+                                        <span class="text-gray-700">{{ $jabatan }}</span>
+                                        <form action="{{ route('admin.settings.jabatan-jenis.destroy', $mapping->id) }}" method="POST" class="inline ml-2">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" onclick="return confirm('Delete this mapping?')" class="text-red-500 hover:text-red-700">
+                                                <i class="fas fa-times text-xs"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        @else
+                        <div class="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                            <i class="fas fa-inbox text-gray-400 text-4xl mb-3"></i>
+                            <p class="text-gray-600">No mappings yet. Add your first mapping above.</p>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

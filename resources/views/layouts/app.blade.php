@@ -8,16 +8,16 @@
     <title>@yield('title', 'Payroll System')</title>
     
     <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" class="rounded-lg">
     
     <!-- Tailwind CSS CDN -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <link rel="icon" href="{{ asset('images/LOGOPSF_v4fq0w.jpg') }}" type="image/x-icon">
     
-    <!-- Real-time Auto-Refresh System -->
-    <script src="{{ asset('js/realtime.js') }}" defer></script>
-    <script src="{{ asset('js/realtime-universal.js') }}" defer></script>
+    <!-- Real-time Auto-Refresh System - Load BEFORE Alpine -->
+    <script src="{{ asset('js/realtime.js') }}"></script>
+    <script src="{{ asset('js/realtime-universal.js') }}"></script>
     
     <style>
         /* Custom styles */
