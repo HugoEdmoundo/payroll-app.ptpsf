@@ -103,7 +103,6 @@ class KaryawanController extends Controller
             'jabatan' => 'required|string',
             'lokasi_kerja' => 'required|string',
             'jenis_karyawan' => 'required|string',
-            'status_pegawai' => 'required|string',
             'no_rekening' => 'required|string|max:20',
             'bank' => 'required|string',
             'status_karyawan' => 'required|string',
