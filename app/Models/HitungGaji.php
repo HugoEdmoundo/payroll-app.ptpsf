@@ -31,7 +31,6 @@ class HitungGaji extends Model
         'bpjs_kematian_pengeluaran',
         'bpjs_jht_pengeluaran',
         'bpjs_jp_pengeluaran',
-        'tabungan_koperasi',
         'koperasi',
         'kasbon',
         'umroh',
@@ -69,7 +68,6 @@ class HitungGaji extends Model
         'bpjs_kematian_pengeluaran' => 'decimal:2',
         'bpjs_jht_pengeluaran' => 'decimal:2',
         'bpjs_jp_pengeluaran' => 'decimal:2',
-        'tabungan_koperasi' => 'decimal:2',
         'koperasi' => 'decimal:2',
         'kasbon' => 'decimal:2',
         'umroh' => 'decimal:2',
@@ -116,7 +114,7 @@ class HitungGaji extends Model
             $pengeluaranFields = [
                 'bpjs_kesehatan_pengeluaran', 'bpjs_kecelakaan_kerja_pengeluaran',
                 'bpjs_kematian_pengeluaran', 'bpjs_jht_pengeluaran', 'bpjs_jp_pengeluaran',
-                'tabungan_koperasi', 'koperasi', 'kasbon', 'umroh', 'kurban',
+                'koperasi', 'kasbon', 'umroh', 'kurban',
                 'mutabaah', 'potongan_absensi', 'potongan_kehadiran'
             ];
             

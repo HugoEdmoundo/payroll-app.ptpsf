@@ -8,6 +8,7 @@ use App\Models\PengaturanGajiStatusPegawai;
 use App\Models\SystemSetting;
 use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PengaturanGajiController extends Controller
 {
@@ -147,6 +148,8 @@ class PengaturanGajiController extends Controller
     
     public function indexStatusPegawai(Request $request)
     {
+        \Log::info('indexStatusPegawai called', ['user' => auth()->id(), 'request' => $request->all()]);
+        
         $query = PengaturanGajiStatusPegawai::query();
         
         // Filter by status pegawai
@@ -258,5 +261,13 @@ class PengaturanGajiController extends Controller
         
         return redirect()->route('payroll.pengaturan-gaji.status-pegawai.index', ['status_pegawai' => $statusPegawai])
             ->with('success', 'Pengaturan gaji status pegawai berhasil dihapus.');
+    }
+    
+    public function exportStatusPegawai(Request $request)
+    {
+        $statusPegawai = $request->status_pegawai;
+        $filename = 'pengaturan-gaji-status-pegawai-' . ($statusPegawai ?? 'all') . '-' . date('Y-m-d') . '.xlsx';
+        
+        return Excel::download(new \App\Exports\PengaturanGajiStatusPegawaiExport($statusPegawai), $filename);
     }
 }

@@ -90,7 +90,6 @@
             @include('components.acuan-gaji.show-field', ['label' => 'BPJS Kematian', 'value' => $acuanGaji->bpjs_kematian_pengeluaran])
             @include('components.acuan-gaji.show-field', ['label' => 'BPJS JHT', 'value' => $acuanGaji->bpjs_jht_pengeluaran])
             @include('components.acuan-gaji.show-field', ['label' => 'BPJS JP', 'value' => $acuanGaji->bpjs_jp_pengeluaran])
-            @include('components.acuan-gaji.show-field', ['label' => 'Tabungan Koperasi', 'value' => $acuanGaji->tabungan_koperasi])
             @include('components.acuan-gaji.show-field', ['label' => 'Koperasi', 'value' => $acuanGaji->koperasi])
             @include('components.acuan-gaji.show-field', ['label' => 'Kasbon', 'value' => $acuanGaji->kasbon])
             @include('components.acuan-gaji.show-field', ['label' => 'Umroh', 'value' => $acuanGaji->umroh])

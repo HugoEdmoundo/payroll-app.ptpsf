@@ -190,14 +190,6 @@
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Tabungan Koperasi</label>
-                <input type="number" 
-                       name="tabungan_koperasi" 
-                       value="{{ old('tabungan_koperasi', isset($acuanGaji) ? $acuanGaji->tabungan_koperasi : 0) }}"
-                       step="0.01"
-                       class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-            </div>
-            <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Koperasi</label>
                 <input type="number" 
                        name="koperasi" 

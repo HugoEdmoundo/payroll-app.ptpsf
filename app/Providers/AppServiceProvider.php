@@ -24,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
         // Register Observers for Data Cascade
         \App\Models\PengaturanGaji::observe(\App\Observers\PengaturanGajiObserver::class);
         \App\Models\AcuanGaji::observe(\App\Observers\AcuanGajiObserver::class);
+        \App\Models\HitungGaji::observe(\App\Observers\HitungGajiObserver::class);
         \App\Models\NKI::observe(\App\Observers\NKIObserver::class);
         \App\Models\Absensi::observe(\App\Observers\AbsensiObserver::class);
 

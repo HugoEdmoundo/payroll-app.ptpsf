@@ -16,6 +16,7 @@ class AcuanGajiImport implements ToModel, WithHeadingRow, WithValidation
         $karyawan = Karyawan::where('nama_karyawan', $row['nama_karyawan'])->first();
         
         if (!$karyawan) {
+            \Log::warning("Karyawan tidak ditemukan: {$row['nama_karyawan']}");
             return null; // Skip if employee not found
         }
 
@@ -30,6 +31,7 @@ class AcuanGajiImport implements ToModel, WithHeadingRow, WithValidation
                           ->first();
         
         if ($exists) {
+            \Log::warning("Data acuan gaji sudah ada untuk: {$row['nama_karyawan']} periode {$row['periode']}");
             // Update existing record
             $exists->update([
                 'gaji_pokok' => $row['gaji_pokok'] ?? 0,
@@ -49,7 +51,6 @@ class AcuanGajiImport implements ToModel, WithHeadingRow, WithValidation
                 'bpjs_kematian_pengeluaran' => $row['bpjs_kematian_pengeluaran'] ?? 0,
                 'bpjs_jht_pengeluaran' => $row['bpjs_jht_pengeluaran'] ?? 0,
                 'bpjs_jp_pengeluaran' => $row['bpjs_jp_pengeluaran'] ?? 0,
-                'tabungan_koperasi' => $row['tabungan_koperasi'] ?? 0,
                 'koperasi' => $row['koperasi'] ?? 0,
                 'kasbon' => $row['kasbon'] ?? 0,
                 'umroh' => $row['umroh'] ?? 0,
@@ -83,7 +84,6 @@ class AcuanGajiImport implements ToModel, WithHeadingRow, WithValidation
             'bpjs_kematian_pengeluaran' => $row['bpjs_kematian_pengeluaran'] ?? 0,
             'bpjs_jht_pengeluaran' => $row['bpjs_jht_pengeluaran'] ?? 0,
             'bpjs_jp_pengeluaran' => $row['bpjs_jp_pengeluaran'] ?? 0,
-            'tabungan_koperasi' => $row['tabungan_koperasi'] ?? 0,
             'koperasi' => $row['koperasi'] ?? 0,
             'kasbon' => $row['kasbon'] ?? 0,
             'umroh' => $row['umroh'] ?? 0,

@@ -25,40 +25,38 @@ class AcuanGajiObserver
             return; // Skip if already exists
         }
 
-        // Get Pengaturan Gaji for calculations
+        // Get karyawan
         $karyawan = $acuanGaji->karyawan;
-        $pengaturan = PengaturanGaji::where('jenis_karyawan', $karyawan->jenis_karyawan)
-                                   ->where('jabatan', $karyawan->jabatan)
-                                   ->where('lokasi_kerja', $karyawan->lokasi_kerja)
-                                   ->first();
+        
+        // Check if this is status pegawai (Harian/OJT only)
+        $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT']);
 
-        if (!$pengaturan) {
-            return; // Skip if no pengaturan
-        }
-
-        // Calculate NKI (Tunjangan Prestasi)
+        // Calculate NKI (Tunjangan Prestasi) - ONLY for Kontrak (normal employees)
+        // Formula: Tunjangan Prestasi (from Acuan Gaji) × Persentase Tunjangan (from NKI)
         $nki = NKI::where('id_karyawan', $acuanGaji->id_karyawan)
                  ->where('periode', $acuanGaji->periode)
                  ->first();
         
-        $tunjanganPrestasi = 0;
-        if ($nki && $pengaturan->tunjangan_operasional > 0) {
-            $tunjanganPrestasi = $pengaturan->tunjangan_operasional * ($nki->persentase_tunjangan / 100);
+        $tunjanganPrestasi = $acuanGaji->tunjangan_prestasi; // Default from acuan gaji
+        if (!$isStatusPegawai && $nki && $acuanGaji->tunjangan_prestasi > 0) {
+            // Apply NKI percentage to tunjangan prestasi
+            $tunjanganPrestasi = $acuanGaji->tunjangan_prestasi * ($nki->persentase_tunjangan / 100);
         }
 
         // Calculate Absensi (Potongan Absensi)
+        // Formula: (Absence + Tanpa Keterangan) ÷ Jumlah Hari × (Gaji Pokok + Tunjangan Prestasi + Operasional)
         $absensi = Absensi::where('id_karyawan', $acuanGaji->id_karyawan)
                          ->where('periode', $acuanGaji->periode)
                          ->first();
         
-        $potonganAbsensi = 0;
-        if ($absensi) {
+        $potonganAbsensi = $acuanGaji->potongan_absensi; // Default from acuan gaji
+        if ($absensi && $absensi->jumlah_hari_bulan > 0) {
             $totalAbsence = $absensi->absence + $absensi->tanpa_keterangan;
-            $baseAmount = $pengaturan->gaji_pokok + $tunjanganPrestasi + $pengaturan->tunjangan_operasional;
+            $baseAmount = $acuanGaji->gaji_pokok + $tunjanganPrestasi + $acuanGaji->benefit_operasional;
             $potonganAbsensi = ($totalAbsence / $absensi->jumlah_hari_bulan) * $baseAmount;
         }
 
-        // Create Hitung Gaji automatically
+        // Create Hitung Gaji automatically with calculated values
         HitungGaji::create([
             'acuan_gaji_id' => $acuanGaji->id_acuan,
             'karyawan_id' => $acuanGaji->id_karyawan,
@@ -69,7 +67,7 @@ class AcuanGajiObserver
             'bpjs_kematian_pendapatan' => $acuanGaji->bpjs_kematian_pendapatan,
             'bpjs_jht_pendapatan' => $acuanGaji->bpjs_jht_pendapatan,
             'bpjs_jp_pendapatan' => $acuanGaji->bpjs_jp_pendapatan,
-            'tunjangan_prestasi' => $tunjanganPrestasi,
+            'tunjangan_prestasi' => $tunjanganPrestasi, // Calculated with NKI
             'tunjangan_konjungtur' => $acuanGaji->tunjangan_konjungtur,
             'benefit_ibadah' => $acuanGaji->benefit_ibadah,
             'benefit_komunikasi' => $acuanGaji->benefit_komunikasi,
@@ -80,13 +78,12 @@ class AcuanGajiObserver
             'bpjs_kematian_pengeluaran' => $acuanGaji->bpjs_kematian_pengeluaran,
             'bpjs_jht_pengeluaran' => $acuanGaji->bpjs_jht_pengeluaran,
             'bpjs_jp_pengeluaran' => $acuanGaji->bpjs_jp_pengeluaran,
-            'tabungan_koperasi' => $acuanGaji->tabungan_koperasi,
             'koperasi' => $acuanGaji->koperasi,
             'kasbon' => $acuanGaji->kasbon,
             'umroh' => $acuanGaji->umroh,
             'kurban' => $acuanGaji->kurban,
             'mutabaah' => $acuanGaji->mutabaah,
-            'potongan_absensi' => $potonganAbsensi,
+            'potongan_absensi' => $potonganAbsensi, // Calculated with Absensi
             'potongan_kehadiran' => $acuanGaji->potongan_kehadiran,
             'adjustments' => [],
             'status' => 'approved',
@@ -109,25 +106,21 @@ class AcuanGajiObserver
             return; // No Hitung Gaji to update
         }
 
-        // Get Pengaturan Gaji for recalculation
+        // Get karyawan
         $karyawan = $acuanGaji->karyawan;
-        $pengaturan = PengaturanGaji::where('jenis_karyawan', $karyawan->jenis_karyawan)
-                                   ->where('jabatan', $karyawan->jabatan)
-                                   ->where('lokasi_kerja', $karyawan->lokasi_kerja)
-                                   ->first();
+        
+        // Check if this is status pegawai (Harian/OJT only)
+        $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT']);
 
-        if (!$pengaturan) {
-            return;
-        }
-
-        // Recalculate NKI
+        // Recalculate NKI = Tunjangan Prestasi (from Acuan Gaji) × Persentase Tunjangan (from NKI)
         $nki = NKI::where('id_karyawan', $acuanGaji->id_karyawan)
                  ->where('periode', $acuanGaji->periode)
                  ->first();
         
-        $tunjanganPrestasi = 0;
-        if ($nki && $pengaturan->tunjangan_operasional > 0) {
-            $tunjanganPrestasi = $pengaturan->tunjangan_operasional * ($nki->persentase_tunjangan / 100);
+        $tunjanganPrestasi = $acuanGaji->tunjangan_prestasi; // Default from acuan gaji
+        if (!$isStatusPegawai && $nki && $acuanGaji->tunjangan_prestasi > 0) {
+            // Apply NKI percentage to tunjangan prestasi
+            $tunjanganPrestasi = $acuanGaji->tunjangan_prestasi * ($nki->persentase_tunjangan / 100);
         }
 
         // Recalculate Absensi
@@ -135,14 +128,14 @@ class AcuanGajiObserver
                          ->where('periode', $acuanGaji->periode)
                          ->first();
         
-        $potonganAbsensi = 0;
-        if ($absensi) {
+        $potonganAbsensi = $acuanGaji->potongan_absensi; // Default from acuan gaji
+        if ($absensi && $absensi->jumlah_hari_bulan > 0) {
             $totalAbsence = $absensi->absence + $absensi->tanpa_keterangan;
-            $baseAmount = $pengaturan->gaji_pokok + $tunjanganPrestasi + $pengaturan->tunjangan_operasional;
+            $baseAmount = $acuanGaji->gaji_pokok + $tunjanganPrestasi + $acuanGaji->benefit_operasional;
             $potonganAbsensi = ($totalAbsence / $absensi->jumlah_hari_bulan) * $baseAmount;
         }
 
-        // Update Hitung Gaji
+        // Update Hitung Gaji with all fields from Acuan Gaji + calculated values
         $hitungGaji->update([
             'gaji_pokok' => $acuanGaji->gaji_pokok,
             'bpjs_kesehatan_pendapatan' => $acuanGaji->bpjs_kesehatan_pendapatan,
@@ -150,7 +143,7 @@ class AcuanGajiObserver
             'bpjs_kematian_pendapatan' => $acuanGaji->bpjs_kematian_pendapatan,
             'bpjs_jht_pendapatan' => $acuanGaji->bpjs_jht_pendapatan,
             'bpjs_jp_pendapatan' => $acuanGaji->bpjs_jp_pendapatan,
-            'tunjangan_prestasi' => $tunjanganPrestasi,
+            'tunjangan_prestasi' => $tunjanganPrestasi, // Calculated with NKI
             'tunjangan_konjungtur' => $acuanGaji->tunjangan_konjungtur,
             'benefit_ibadah' => $acuanGaji->benefit_ibadah,
             'benefit_komunikasi' => $acuanGaji->benefit_komunikasi,
@@ -161,13 +154,12 @@ class AcuanGajiObserver
             'bpjs_kematian_pengeluaran' => $acuanGaji->bpjs_kematian_pengeluaran,
             'bpjs_jht_pengeluaran' => $acuanGaji->bpjs_jht_pengeluaran,
             'bpjs_jp_pengeluaran' => $acuanGaji->bpjs_jp_pengeluaran,
-            'tabungan_koperasi' => $acuanGaji->tabungan_koperasi,
             'koperasi' => $acuanGaji->koperasi,
             'kasbon' => $acuanGaji->kasbon,
             'umroh' => $acuanGaji->umroh,
             'kurban' => $acuanGaji->kurban,
             'mutabaah' => $acuanGaji->mutabaah,
-            'potongan_absensi' => $potonganAbsensi,
+            'potongan_absensi' => $potonganAbsensi, // Calculated with Absensi
             'potongan_kehadiran' => $acuanGaji->potongan_kehadiran,
         ]);
     }

@@ -11,43 +11,70 @@ class AcuanGajiTemplateExport implements FromArray, WithHeadings, WithStyles
 {
     public function array(): array
     {
-        // Return empty array for template
+        // Return example data for template
         return [
-            ['KARYAWAN001', '2026-02', 5000000, 1000000, 500000, 200000, 150000, 100000, 0, 50000, 25000, 15000, 100000, 50000, 0, 0, 0, 0, 0, 100000, 0, 0, 0, 0, 0, 0, 0, 'Contoh data'],
+            [
+                'John Doe', // nama_karyawan
+                '2026-02', // periode
+                5000000, // gaji_pokok
+                100000, // bpjs_kesehatan_pendapatan
+                50000, // bpjs_kecelakaan_kerja_pendapatan
+                25000, // bpjs_kematian_pendapatan
+                150000, // bpjs_jht_pendapatan
+                75000, // bpjs_jp_pendapatan
+                1000000, // tunjangan_prestasi
+                500000, // tunjangan_konjungtur
+                200000, // benefit_ibadah
+                150000, // benefit_komunikasi
+                300000, // benefit_operasional
+                0, // reward
+                50000, // bpjs_kesehatan_pengeluaran
+                25000, // bpjs_kecelakaan_kerja_pengeluaran
+                15000, // bpjs_kematian_pengeluaran
+                100000, // bpjs_jht_pengeluaran
+                50000, // bpjs_jp_pengeluaran
+                100000, // koperasi
+                0, // kasbon
+                0, // umroh
+                0, // kurban
+                0, // mutabaah
+                0, // potongan_absensi
+                0, // potongan_kehadiran
+                'Contoh data', // keterangan
+            ],
         ];
     }
 
     public function headings(): array
     {
         return [
-            'nik',
+            'nama_karyawan',
             'periode',
             'gaji_pokok',
+            'bpjs_kesehatan_pendapatan',
+            'bpjs_kecelakaan_kerja_pendapatan',
+            'bpjs_kematian_pendapatan',
+            'bpjs_jht_pendapatan',
+            'bpjs_jp_pendapatan',
             'tunjangan_prestasi',
             'tunjangan_konjungtur',
             'benefit_ibadah',
             'benefit_komunikasi',
             'benefit_operasional',
             'reward',
-            'bpjs_kesehatan',
-            'bpjs_kecelakaan_kerja',
-            'bpjs_kematian',
-            'bpjs_jht',
-            'bpjs_jp',
-            'potongan_bpjs_kesehatan',
-            'potongan_bpjs_kecelakaan',
-            'potongan_bpjs_kematian',
-            'potongan_bpjs_jht',
-            'potongan_bpjs_jp',
-            'potongan_koperasi',
-            'potongan_tabungan_koperasi',
-            'potongan_kasbon',
-            'potongan_umroh',
-            'potongan_kurban',
-            'potongan_mutabaah',
+            'bpjs_kesehatan_pengeluaran',
+            'bpjs_kecelakaan_kerja_pengeluaran',
+            'bpjs_kematian_pengeluaran',
+            'bpjs_jht_pengeluaran',
+            'bpjs_jp_pengeluaran',
+            'koperasi',
+            'kasbon',
+            'umroh',
+            'kurban',
+            'mutabaah',
             'potongan_absensi',
             'potongan_kehadiran',
-            'catatan',
+            'keterangan',
         ];
     }
 

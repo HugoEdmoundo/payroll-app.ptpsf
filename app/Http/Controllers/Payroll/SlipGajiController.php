@@ -94,8 +94,11 @@ class SlipGajiController extends Controller
             $absensi = \App\Models\Absensi::where('id_karyawan', $hitungGaji->karyawan_id)
                                           ->where('periode', $hitungGaji->periode)
                                           ->first();
+            // Get active kasbon for this karyawan (not filtered by periode)
+            // We want to show the kasbon that's being paid in this periode
             $kasbon = \App\Models\Kasbon::where('id_karyawan', $hitungGaji->karyawan_id)
-                                        ->where('periode', $hitungGaji->periode)
+                                        ->whereIn('status_pembayaran', ['Pending', 'Cicilan', 'Lunas'])
+                                        ->orderBy('tanggal_pengajuan', 'asc')
                                         ->first();
             $acuanGaji = \App\Models\AcuanGaji::where('id_karyawan', $hitungGaji->karyawan_id)
                                               ->where('periode', $hitungGaji->periode)
@@ -142,8 +145,11 @@ class SlipGajiController extends Controller
             $absensi = \App\Models\Absensi::where('id_karyawan', $hitungGaji->karyawan_id)
                                           ->where('periode', $hitungGaji->periode)
                                           ->first();
+            // Get active kasbon for this karyawan (not filtered by periode)
+            // We want to show the kasbon that's being paid in this periode
             $kasbon = \App\Models\Kasbon::where('id_karyawan', $hitungGaji->karyawan_id)
-                                        ->where('periode', $hitungGaji->periode)
+                                        ->whereIn('status_pembayaran', ['Pending', 'Cicilan', 'Lunas'])
+                                        ->orderBy('tanggal_pengajuan', 'asc')
                                         ->first();
             $acuanGaji = \App\Models\AcuanGaji::where('id_karyawan', $hitungGaji->karyawan_id)
                                               ->where('periode', $hitungGaji->periode)

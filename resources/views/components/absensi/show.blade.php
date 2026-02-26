@@ -39,6 +39,12 @@
         <p class="text-2xl font-bold text-blue-900">{{ $absensi->on_site }} hari</p>
     </div>
 
+    <!-- On Base -->
+    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+        <label class="block text-sm font-medium text-indigo-700 mb-1">On Base</label>
+        <p class="text-2xl font-bold text-indigo-900">{{ $absensi->on_base }} hari</p>
+    </div>
+
     <!-- Absence -->
     <div class="bg-red-50 p-4 rounded-lg border border-red-200">
         <label class="block text-sm font-medium text-red-700 mb-1">Absence</label>

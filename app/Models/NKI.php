@@ -45,7 +45,7 @@ class NKI extends Model
                                ($model->kontribusi_2 * 0.40) + 
                                ($model->kedisiplinan * 0.20);
             
-            // Determine percentage based on NKI value
+            // Determine percentage based on NKI value (used in Tunjangan Prestasi calculation)
             if ($model->nilai_nki >= 8.5) {
                 $model->persentase_tunjangan = 100;
             } elseif ($model->nilai_nki >= 8.0) {

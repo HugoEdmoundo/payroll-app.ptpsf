@@ -21,63 +21,60 @@ class KaryawanTemplateExport implements FromArray, WithHeadings, WithStyles, Wit
                 'john.doe@example.com',
                 '081234567890',
                 '2024-01-15',
+                'Organik',
                 'Manager',
                 'Jakarta',
-                'Organik',
-                'Tetap',
+                'Active',
+                'BCA',
+                '1234567890',
                 '1234567890123456',
                 '0001234567890',
                 '0009876543210',
                 '1234567890123',
-                '1234567890',
-                'BCA',
                 'Menikah',
-                'Jane Doe',
                 '2',
+                'Jane Doe',
                 '081298765432',
-                'Active'
             ],
             [
                 'Jane Smith',
                 'jane.smith@example.com',
                 '082345678901',
                 '2024-02-20',
+                'Konsultan',
                 'Staff',
                 'Bandung',
-                'Konsultan',
-                'Kontrak',
+                'Active',
+                'Mandiri',
+                '9876543210',
                 '9876543210987654',
                 '0009876543210',
                 '0001234567890',
                 '9876543210987',
-                '9876543210',
-                'Mandiri',
                 'Belum Menikah',
-                '',
                 '0',
                 '',
-                'Active'
+                '',
             ],
             [
                 'Bob Johnson',
                 'bob.johnson@example.com',
                 '083456789012',
                 '2024-03-10',
+                'Organik',
                 'Supervisor',
                 'Surabaya',
-                'Organik',
-                'Tetap',
+                'Active',
+                'BNI',
+                '5555666677',
                 '5555666677778888',
                 '0005555666677',
                 '0008888777766',
                 '5555666677778',
-                '5555666677',
-                'BNI',
                 'Menikah',
-                'Alice Johnson',
                 '1',
+                'Alice Johnson',
                 '083987654321',
-                'Active'
             ],
         ];
     }
@@ -89,21 +86,20 @@ class KaryawanTemplateExport implements FromArray, WithHeadings, WithStyles, Wit
             'email',
             'no_telp',
             'join_date',
+            'jenis_karyawan',
             'jabatan',
             'lokasi_kerja',
-            'jenis_karyawan',
-            'status_pegawai',
+            'status_karyawan',
+            'bank',
+            'no_rekening',
             'npwp',
             'bpjs_kesehatan_no',
             'bpjs_kecelakaan_kerja_no',
             'bpjs_tk_no',
-            'no_rekening',
-            'bank',
             'status_perkawinan',
-            'nama_istri',
             'jumlah_anak',
+            'nama_istri',
             'no_telp_istri',
-            'status_karyawan'
         ];
     }
 
@@ -127,21 +123,20 @@ class KaryawanTemplateExport implements FromArray, WithHeadings, WithStyles, Wit
             'B' => 25, // email
             'C' => 15, // no_telp
             'D' => 12, // join_date
-            'E' => 15, // jabatan
-            'F' => 15, // lokasi_kerja
-            'G' => 15, // jenis_karyawan
-            'H' => 15, // status_pegawai
-            'I' => 20, // npwp
-            'J' => 18, // bpjs_kesehatan_no
-            'K' => 22, // bpjs_kecelakaan_kerja_no
-            'L' => 18, // bpjs_tk_no
-            'M' => 18, // no_rekening
-            'N' => 12, // bank
+            'E' => 15, // jenis_karyawan
+            'F' => 15, // jabatan
+            'G' => 15, // lokasi_kerja
+            'H' => 15, // status_karyawan
+            'I' => 12, // bank
+            'J' => 18, // no_rekening
+            'K' => 20, // npwp
+            'L' => 18, // bpjs_kesehatan_no
+            'M' => 22, // bpjs_kecelakaan_kerja_no
+            'N' => 18, // bpjs_tk_no
             'O' => 18, // status_perkawinan
-            'P' => 20, // nama_istri
-            'Q' => 12, // jumlah_anak
+            'P' => 12, // jumlah_anak
+            'Q' => 20, // nama_istri
             'R' => 15, // no_telp_istri
-            'S' => 15, // status_karyawan
         ];
     }
 }

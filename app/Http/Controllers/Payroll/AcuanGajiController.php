@@ -167,13 +167,18 @@ class AcuanGajiController extends Controller
             // Get Kasbon - handle both Langsung and Cicilan
             $kasbonTotal = 0;
             
-            // Get all pending kasbon for this employee
+            // Get all active kasbon for this employee (including Lunas to allow updates)
             $kasbonList = Kasbon::where('id_karyawan', $karyawan->id_karyawan)
-                               ->where('status_pembayaran', '!=', 'Lunas')
+                               ->whereIn('status_pembayaran', ['Pending', 'Cicilan', 'Lunas'])
+                               ->orderBy('tanggal_pengajuan', 'asc')
                                ->get();
             
             foreach ($kasbonList as $kasbon) {
-                $kasbonTotal += $kasbon->getPotonganForPeriode($periode);
+                $potongan = $kasbon->getPotonganForPeriode($periode);
+                if ($potongan > 0) {
+                    $kasbonTotal += $potongan;
+                    break; // Only process first active kasbon
+                }
             }
 
             // Determine if this is status pegawai (Harian/OJT) or regular employee (Kontrak)
@@ -208,7 +213,6 @@ class AcuanGajiController extends Controller
                     'reward' => 0,
                     'bpjs_jht_pengeluaran' => 0,
                     'bpjs_jp_pengeluaran' => 0,
-                    'tabungan_koperasi' => 0,
                     'umroh' => 0,
                     'kurban' => 0,
                     'mutabaah' => 0,
@@ -243,7 +247,6 @@ class AcuanGajiController extends Controller
                     'reward' => 0,
                     'bpjs_jht_pengeluaran' => 0,
                     'bpjs_jp_pengeluaran' => 0,
-                    'tabungan_koperasi' => 0,
                     'umroh' => 0,
                     'kurban' => 0,
                     'mutabaah' => 0,

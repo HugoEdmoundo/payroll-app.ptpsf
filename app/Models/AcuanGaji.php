@@ -35,7 +35,6 @@ class AcuanGaji extends Model
         'bpjs_kematian_pengeluaran',
         'bpjs_jht_pengeluaran',
         'bpjs_jp_pengeluaran',
-        'tabungan_koperasi',
         'koperasi',
         'kasbon',
         'umroh',
@@ -67,7 +66,6 @@ class AcuanGaji extends Model
         'bpjs_kematian_pengeluaran' => 'decimal:2',
         'bpjs_jht_pengeluaran' => 'decimal:2',
         'bpjs_jp_pengeluaran' => 'decimal:2',
-        'tabungan_koperasi' => 'decimal:2',
         'koperasi' => 'decimal:2',
         'kasbon' => 'decimal:2',
         'umroh' => 'decimal:2',
@@ -105,7 +103,6 @@ class AcuanGaji extends Model
                 $model->bpjs_kematian_pengeluaran +
                 $model->bpjs_jht_pengeluaran +
                 $model->bpjs_jp_pengeluaran +
-                $model->tabungan_koperasi +
                 $model->koperasi +
                 $model->kasbon +
                 $model->umroh +

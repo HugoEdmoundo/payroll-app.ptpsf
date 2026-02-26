@@ -227,6 +227,61 @@ function closeModal() {
     window.location.reload();
 }
 
+// Submit form handler for Hitung Gaji
+function submitForm(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    
+    // Debug: Log all form data
+    console.log('=== FORM DATA DEBUG ===');
+    for (let [key, value] of formData.entries()) {
+        console.log(key + ': ' + value);
+    }
+    console.log('======================');
+    
+    // Show loading
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
+    
+    fetch('/payroll/hitung-gaji', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+        },
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => Promise.reject(err));
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Server response:', data);
+        if (data.success) {
+            alert('Data berhasil disimpan! Silakan buka modal lagi untuk melihat adjustment yang tersimpan.');
+            closeModal();
+        } else {
+            console.error('Server response:', data);
+            alert('Error: ' + (data.message || 'Terjadi kesalahan'));
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    })
+    .catch(error => {
+        console.error('Error details:', error);
+        const errorMsg = error.message || error.errors || error || 'Terjadi kesalahan';
+        alert('Error: ' + JSON.stringify(errorMsg));
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    });
+}
+
 // Close modal when clicking outside
 document.getElementById('hitungGajiModal').addEventListener('click', function(e) {
     if (e.target === this) {

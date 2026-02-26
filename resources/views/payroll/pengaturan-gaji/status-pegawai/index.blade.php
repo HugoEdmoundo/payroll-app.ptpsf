@@ -17,6 +17,13 @@
                 <i class="fas fa-plus mr-1.5"></i>Add Configuration
             </a>
             @endif
+            
+            @if(auth()->user()->hasPermission('pengaturan_gaji.export'))
+            <a href="{{ route('payroll.pengaturan-gaji.status-pegawai.export', ['status_pegawai' => request('status_pegawai')]) }}" 
+               class="px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition duration-150 whitespace-nowrap">
+                <i class="fas fa-download mr-1.5"></i>Export
+            </a>
+            @endif
         </div>
     </div>
 

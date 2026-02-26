@@ -106,7 +106,6 @@
                 'bpjs_kematian_pengeluaran' => 'BPJS Kematian',
                 'bpjs_jht_pengeluaran' => 'BPJS JHT',
                 'bpjs_jp_pengeluaran' => 'BPJS JP',
-                'tabungan_koperasi' => 'Tabungan Koperasi',
                 'koperasi' => 'Koperasi',
                 'kasbon' => 'Kasbon',
                 'umroh' => 'Umroh',

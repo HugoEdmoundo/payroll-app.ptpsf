@@ -179,11 +179,36 @@
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+// Store current slip info for refresh
+let currentSlipGajiId = null;
+let currentNamaKaryawan = null;
+
 function openSlipModal(hitungGajiId, namaKaryawan) {
-    document.getElementById('slipGajiModal').classList.remove('hidden');
+    currentSlipGajiId = hitungGajiId;
+    currentNamaKaryawan = namaKaryawan;
     
-    // Load slip via AJAX
-    fetch(`/payroll/slip-gaji/slip/${hitungGajiId}`)
+    document.getElementById('slipGajiModal').classList.remove('hidden');
+    loadSlipData(hitungGajiId, namaKaryawan);
+}
+
+function refreshSlipModal() {
+    if (currentSlipGajiId) {
+        loadSlipData(currentSlipGajiId, currentNamaKaryawan);
+    }
+}
+
+function loadSlipData(hitungGajiId, namaKaryawan) {
+    // Show loading
+    document.getElementById('modalContent').innerHTML = `
+        <div class="text-center py-8">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+            <p class="mt-4 text-gray-600">Loading...</p>
+        </div>
+    `;
+    
+    // Load slip via AJAX with cache-busting parameter
+    const timestamp = new Date().getTime();
+    fetch(`/payroll/slip-gaji/slip/${hitungGajiId}?t=${timestamp}`)
         .then(response => response.text())
         .then(html => {
             document.getElementById('modalContent').innerHTML = html;

@@ -90,7 +90,6 @@
                 'bpjs_kematian_pengeluaran' => 'BPJS Kematian (Pengeluaran)',
                 'bpjs_jht_pengeluaran' => 'BPJS JHT (Pengeluaran)',
                 'bpjs_jp_pengeluaran' => 'BPJS JP (Pengeluaran)',
-                'tabungan_koperasi' => 'Tabungan Koperasi',
                 'koperasi' => 'Koperasi',
                 'kasbon' => 'Kasbon',
                 'umroh' => 'Umroh',
@@ -134,42 +133,3 @@
         </button>
     </div>
 </form>
-
-<script>
-function submitForm(event) {
-    event.preventDefault();
-    
-    const form = event.target;
-    const formData = new FormData(form);
-    
-    // Show loading
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
-    
-    fetch('/payroll/hitung-gaji', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Accept': 'application/json',
-        },
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            closeModal();
-        } else {
-            alert('Error: ' + (data.message || 'Terjadi kesalahan'));
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-        }
-    })
-    .catch(error => {
-        alert('Error: ' + error);
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalText;
-    });
-}
-</script>

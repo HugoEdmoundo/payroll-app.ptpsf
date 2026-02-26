@@ -70,21 +70,24 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/create', [PengaturanGajiController::class, 'create'])->name('create');
             Route::post('/', [PengaturanGajiController::class, 'store'])->name('store');
             Route::get('/export', [PengaturanGajiController::class, 'export'])->name('export');
-            Route::get('/{pengaturanGaji}', [PengaturanGajiController::class, 'show'])->name('show');
-            Route::get('/{pengaturanGaji}/edit', [PengaturanGajiController::class, 'edit'])->name('edit');
-            Route::put('/{pengaturanGaji}', [PengaturanGajiController::class, 'update'])->name('update');
-            Route::delete('/{pengaturanGaji}', [PengaturanGajiController::class, 'destroy'])->name('destroy');
             
-            // Status Pegawai Routes
+            // Status Pegawai Routes - MUST BE BEFORE WILDCARD ROUTES
             Route::prefix('status-pegawai')->name('status-pegawai.')->group(function () {
                 Route::get('/', [PengaturanGajiController::class, 'indexStatusPegawai'])->name('index');
                 Route::get('/create', [PengaturanGajiController::class, 'createStatusPegawai'])->name('create');
                 Route::post('/', [PengaturanGajiController::class, 'storeStatusPegawai'])->name('store');
+                Route::get('/export', [PengaturanGajiController::class, 'exportStatusPegawai'])->name('export');
                 Route::get('/{id}', [PengaturanGajiController::class, 'showStatusPegawai'])->name('show');
                 Route::get('/{id}/edit', [PengaturanGajiController::class, 'editStatusPegawai'])->name('edit');
                 Route::put('/{id}', [PengaturanGajiController::class, 'updateStatusPegawai'])->name('update');
                 Route::delete('/{id}', [PengaturanGajiController::class, 'destroyStatusPegawai'])->name('destroy');
             });
+            
+            // Wildcard routes - MUST BE AFTER SPECIFIC ROUTES
+            Route::get('/{pengaturanGaji}', [PengaturanGajiController::class, 'show'])->name('show');
+            Route::get('/{pengaturanGaji}/edit', [PengaturanGajiController::class, 'edit'])->name('edit');
+            Route::put('/{pengaturanGaji}', [PengaturanGajiController::class, 'update'])->name('update');
+            Route::delete('/{pengaturanGaji}', [PengaturanGajiController::class, 'destroy'])->name('destroy');
         });
 
         // NKI (Tunjangan Prestasi)

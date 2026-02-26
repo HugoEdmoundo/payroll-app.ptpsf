@@ -83,6 +83,12 @@ class HitungGajiController extends Controller
         
         if ($hitungGaji) {
             // Return existing data for edit
+            \Log::info('Loading existing hitung gaji for edit', [
+                'id' => $hitungGaji->id,
+                'adjustments_raw' => $hitungGaji->getAttributes()['adjustments'] ?? 'NULL',
+                'adjustments_cast' => $hitungGaji->adjustments,
+            ]);
+            
             $data = [
                 'mode' => 'edit',
                 'hitung_gaji_id' => $hitungGaji->id,
@@ -111,7 +117,6 @@ class HitungGajiController extends Controller
                     'bpjs_kematian_pengeluaran' => $hitungGaji->bpjs_kematian_pengeluaran,
                     'bpjs_jht_pengeluaran' => $hitungGaji->bpjs_jht_pengeluaran,
                     'bpjs_jp_pengeluaran' => $hitungGaji->bpjs_jp_pengeluaran,
-                    'tabungan_koperasi' => $hitungGaji->tabungan_koperasi,
                     'koperasi' => $hitungGaji->koperasi,
                     'kasbon' => $hitungGaji->kasbon,
                     'umroh' => $hitungGaji->umroh,
@@ -149,6 +154,7 @@ class HitungGajiController extends Controller
         $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT']);
 
         // Calculate NKI (Tunjangan Prestasi) - ONLY for Kontrak (normal employees)
+        // Formula: Tunjangan Prestasi (from Acuan Gaji) × Persentase Tunjangan (from NKI)
         $nki = NKI::where('id_karyawan', $karyawanId)
                  ->where('periode', $periode)
                  ->first();
@@ -157,19 +163,20 @@ class HitungGajiController extends Controller
         $nkiInfo = null;
         
         if (!$isStatusPegawai && $nki) {
-            // For Kontrak (normal employees): calculate based on tunjangan_operasional
-            $tunjanganOperasional = $pengaturan->tunjangan_operasional ?? 0;
-            if ($tunjanganOperasional > 0) {
-                $tunjanganPrestasi = $tunjanganOperasional * ($nki->persentase_tunjangan / 100);
+            // Get tunjangan_prestasi from acuan gaji (base amount)
+            $baseTunjanganPrestasi = $acuanGaji->tunjangan_prestasi ?? 0;
+            if ($baseTunjanganPrestasi > 0) {
+                $tunjanganPrestasi = $baseTunjanganPrestasi * ($nki->persentase_tunjangan / 100);
                 $nkiInfo = [
-                    'nilai' => $nki->nilai_nki,
                     'persentase' => $nki->persentase_tunjangan,
-                    'acuan' => $tunjanganOperasional
+                    'nilai_nki' => $nki->nilai_nki,
+                    'acuan' => $baseTunjanganPrestasi
                 ];
             }
         }
 
         // Calculate Absensi (Potongan Absensi)
+        // Formula: (Absence + Tanpa Keterangan) ÷ Jumlah Hari × (Gaji Pokok + Tunjangan Prestasi + Operasional)
         $absensi = Absensi::where('id_karyawan', $karyawanId)
                          ->where('periode', $periode)
                          ->first();
@@ -178,14 +185,16 @@ class HitungGajiController extends Controller
         $absensiInfo = null;
         if ($absensi) {
             $totalAbsence = $absensi->absence + $absensi->tanpa_keterangan;
-            $baseAmount = $pengaturan->gaji_pokok + $tunjanganPrestasi;
+            $gajiPokok = $pengaturan->gaji_pokok ?? 0;
+            $operasional = $isStatusPegawai ? 0 : ($pengaturan->tunjangan_operasional ?? 0);
             
-            // Add tunjangan_operasional only for regular employees
-            if (!$isStatusPegawai) {
-                $baseAmount += ($pengaturan->tunjangan_operasional ?? 0);
+            // Base amount = Gaji Pokok + Tunjangan Prestasi + Operasional
+            $baseAmount = $gajiPokok + $tunjanganPrestasi + $operasional;
+            
+            if ($absensi->jumlah_hari_bulan > 0) {
+                $potonganAbsensi = ($totalAbsence / $absensi->jumlah_hari_bulan) * $baseAmount;
             }
             
-            $potonganAbsensi = ($totalAbsence / $absensi->jumlah_hari_bulan) * $baseAmount;
             $absensiInfo = [
                 'absence' => $absensi->absence,
                 'tanpa_keterangan' => $absensi->tanpa_keterangan,
@@ -223,7 +232,6 @@ class HitungGajiController extends Controller
                 'bpjs_kematian_pengeluaran' => $acuanGaji->bpjs_kematian_pengeluaran,
                 'bpjs_jht_pengeluaran' => $acuanGaji->bpjs_jht_pengeluaran,
                 'bpjs_jp_pengeluaran' => $acuanGaji->bpjs_jp_pengeluaran,
-                'tabungan_koperasi' => $acuanGaji->tabungan_koperasi,
                 'koperasi' => $acuanGaji->koperasi,
                 'kasbon' => $acuanGaji->kasbon,
                 'umroh' => $acuanGaji->umroh,
@@ -280,48 +288,48 @@ class HitungGajiController extends Controller
         $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT']);
 
         // Calculate NKI - ONLY for Kontrak (normal employees)
+        // Formula: Tunjangan Prestasi (from Acuan Gaji) × Persentase Tunjangan (from NKI)
         $nki = NKI::where('id_karyawan', $request->karyawan_id)
                  ->where('periode', $request->periode)
                  ->first();
         
-        $tunjanganPrestasi = 0;
-        if (!$isStatusPegawai && $nki) {
-            $tunjanganOperasional = $pengaturan->tunjangan_operasional ?? 0;
-            if ($tunjanganOperasional > 0) {
-                $tunjanganPrestasi = $tunjanganOperasional * ($nki->persentase_tunjangan / 100);
-            }
+        $tunjanganPrestasi = $acuanGaji->tunjangan_prestasi; // Default from acuan gaji
+        if (!$isStatusPegawai && $nki && $acuanGaji->tunjangan_prestasi > 0) {
+            // Apply NKI percentage to tunjangan prestasi
+            $tunjanganPrestasi = $acuanGaji->tunjangan_prestasi * ($nki->persentase_tunjangan / 100);
         }
 
         // Calculate Absensi
+        // Formula: (Absence + Tanpa Keterangan) ÷ Jumlah Hari × (Gaji Pokok + Tunjangan Prestasi + Operasional)
         $absensi = Absensi::where('id_karyawan', $request->karyawan_id)
                          ->where('periode', $request->periode)
                          ->first();
         
-        $potonganAbsensi = 0;
-        if ($absensi) {
+        $potonganAbsensi = $acuanGaji->potongan_absensi; // Default from acuan gaji
+        if ($absensi && $absensi->jumlah_hari_bulan > 0) {
             $totalAbsence = $absensi->absence + $absensi->tanpa_keterangan;
-            $baseAmount = $pengaturan->gaji_pokok + $tunjanganPrestasi;
-            
-            // Add tunjangan_operasional only for regular employees
-            if (!$isStatusPegawai) {
-                $baseAmount += ($pengaturan->tunjangan_operasional ?? 0);
-            }
+            $baseAmount = $acuanGaji->gaji_pokok + $tunjanganPrestasi + $acuanGaji->benefit_operasional;
             $potonganAbsensi = ($totalAbsence / $absensi->jumlah_hari_bulan) * $baseAmount;
         }
 
-        // Process adjustments
-        $adjustments = [];
-        if ($request->has('adjustments')) {
-            foreach ($request->adjustments as $field => $adj) {
-                if (!empty($adj['nominal']) && !empty($adj['description'])) {
-                    $adjustments[$field] = [
-                        'nominal' => (float) $adj['nominal'],
-                        'type' => $adj['type'],
-                        'description' => $adj['description']
-                    ];
-                }
+        // Process adjustments - ALWAYS save even if empty
+        $adjustments = $request->input('adjustments', []);
+        $processedAdjustments = [];
+        
+        \Log::info('Raw adjustments received in store:', ['adjustments' => $adjustments]);
+        
+        foreach ($adjustments as $field => $adj) {
+            // Check if adjustment has data
+            if (isset($adj['nominal']) && $adj['nominal'] != '' && $adj['nominal'] != 0) {
+                $processedAdjustments[$field] = [
+                    'nominal' => (float) $adj['nominal'],
+                    'type' => $adj['type'] ?? '+',
+                    'description' => $adj['description'] ?? 'Adjustment'
+                ];
             }
         }
+        
+        \Log::info('Processed adjustments in store:', ['count' => count($processedAdjustments), 'data' => $processedAdjustments]);
 
         // Create Hitung Gaji
         HitungGaji::create([
@@ -345,7 +353,6 @@ class HitungGajiController extends Controller
             'bpjs_kematian_pengeluaran' => $acuanGaji->bpjs_kematian_pengeluaran,
             'bpjs_jht_pengeluaran' => $acuanGaji->bpjs_jht_pengeluaran,
             'bpjs_jp_pengeluaran' => $acuanGaji->bpjs_jp_pengeluaran,
-            'tabungan_koperasi' => $acuanGaji->tabungan_koperasi,
             'koperasi' => $acuanGaji->koperasi,
             'kasbon' => $acuanGaji->kasbon,
             'umroh' => $acuanGaji->umroh,
@@ -353,7 +360,7 @@ class HitungGajiController extends Controller
             'mutabaah' => $acuanGaji->mutabaah,
             'potongan_absensi' => $potonganAbsensi,
             'potongan_kehadiran' => $acuanGaji->potongan_kehadiran,
-            'adjustments' => $adjustments,
+            'adjustments' => $processedAdjustments,
             'status' => 'approved', // Langsung approved, tidak perlu workflow
             'approved_at' => now(),
             'approved_by' => auth()->id(),
@@ -365,24 +372,31 @@ class HitungGajiController extends Controller
 
     private function updateExisting($hitungGaji, $request)
     {
-        // Process adjustments
-        $adjustments = [];
-        if ($request->has('adjustments')) {
-            foreach ($request->adjustments as $field => $adj) {
-                if (!empty($adj['nominal']) && !empty($adj['description'])) {
-                    $adjustments[$field] = [
-                        'nominal' => (float) $adj['nominal'],
-                        'type' => $adj['type'],
-                        'description' => $adj['description']
-                    ];
-                }
+        // Process adjustments - ALWAYS save even if empty
+        $adjustments = $request->input('adjustments', []);
+        $processedAdjustments = [];
+        
+        \Log::info('Raw adjustments received:', ['adjustments' => $adjustments]);
+        
+        foreach ($adjustments as $field => $adj) {
+            // Check if adjustment has data
+            if (isset($adj['nominal']) && $adj['nominal'] != '' && $adj['nominal'] != 0) {
+                $processedAdjustments[$field] = [
+                    'nominal' => (float) $adj['nominal'],
+                    'type' => $adj['type'] ?? '+',
+                    'description' => $adj['description'] ?? 'Adjustment'
+                ];
             }
         }
+        
+        \Log::info('Processed adjustments:', ['count' => count($processedAdjustments), 'data' => $processedAdjustments]);
 
         $hitungGaji->update([
-            'adjustments' => $adjustments,
+            'adjustments' => $processedAdjustments,
             'keterangan' => $request->keterangan,
         ]);
+        
+        \Log::info('After save - adjustments in DB:', ['adjustments' => $hitungGaji->fresh()->adjustments]);
 
         return response()->json(['success' => true, 'message' => 'Hitung gaji berhasil diupdate.']);
     }

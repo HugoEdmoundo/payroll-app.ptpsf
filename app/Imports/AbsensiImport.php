@@ -16,6 +16,7 @@ class AbsensiImport implements ToModel, WithHeadingRow, WithValidation
         $karyawan = Karyawan::where('nama_karyawan', $row['nama_karyawan'])->first();
         
         if (!$karyawan) {
+            \Log::warning("Karyawan tidak ditemukan: {$row['nama_karyawan']}");
             return null; // Skip if karyawan not found
         }
 
@@ -27,9 +28,10 @@ class AbsensiImport implements ToModel, WithHeadingRow, WithValidation
         // Check if already exists
         $exists = Absensi::where('id_karyawan', $karyawan->id_karyawan)
                         ->where('periode', $row['periode'])
-                        ->exists();
+                        ->first();
         
         if ($exists) {
+            \Log::warning("Data absensi sudah ada untuk: {$row['nama_karyawan']} periode {$row['periode']}");
             return null; // Skip if already exists
         }
 
@@ -38,6 +40,7 @@ class AbsensiImport implements ToModel, WithHeadingRow, WithValidation
             'periode' => $row['periode'],
             'hadir' => $row['hadir'] ?? 0,
             'on_site' => $row['on_site'] ?? 0,
+            'on_base' => $row['on_base'] ?? 0,
             'absence' => $row['absence'] ?? 0,
             'idle_rest' => $row['idle_rest'] ?? 0,
             'izin_sakit_cuti' => $row['izin_sakit_cuti'] ?? 0,
@@ -53,6 +56,7 @@ class AbsensiImport implements ToModel, WithHeadingRow, WithValidation
             'periode' => 'required|regex:/^\d{4}-\d{2}$/',
             'hadir' => 'required|integer|min:0',
             'on_site' => 'nullable|integer|min:0',
+            'on_base' => 'nullable|integer|min:0',
             'absence' => 'nullable|integer|min:0',
             'idle_rest' => 'nullable|integer|min:0',
             'izin_sakit_cuti' => 'nullable|integer|min:0',

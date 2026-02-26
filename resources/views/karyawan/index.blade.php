@@ -45,7 +45,7 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-medium text-blue-600">Total Karyawan</p>
-                    <p class="text-lg lg:text-xl font-bold text-blue-900 truncate">{{ number_format($stats->total_karyawan ?? 0) }}</p>
+                    <p class="text-lg lg:text-xl font-bold text-blue-900 truncate">{{ number_format($stats['total']) }}</p>
                 </div>
             </div>
         </div>
@@ -80,7 +80,7 @@
         <div class="card p-4 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
             <div class="flex items-center gap-3">
                 <div class="h-11 w-11 flex-shrink-0 rounded-full bg-red-100 flex items-center justify-center">
-                    <i class="fas fa-user-times text-red-600 text-lg"></i>
+                    <i class="fas fa-users text-red-600 text-lg"></i>
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-medium text-blue-600">Resign</p>

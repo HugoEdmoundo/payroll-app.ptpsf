@@ -79,7 +79,6 @@ class AcuanGajiSeeder extends Seeder
                 'reward' => 0,
                 'bpjs_jht_pengeluaran' => 0,
                 'bpjs_jp_pengeluaran' => 0,
-                'tabungan_koperasi' => 0,
                 'umroh' => 0,
                 'kurban' => 0,
                 'mutabaah' => 0,

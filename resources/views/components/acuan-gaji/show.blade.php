@@ -27,7 +27,6 @@
             <div class="bg-white p-3 rounded"><label class="text-xs text-gray-600">Kasbon</label><p class="text-sm font-bold text-gray-900">Rp {{ number_format($acuanGaji->kasbon, 0, ',', '.') }}</p></div>
             <div class="bg-white p-3 rounded"><label class="text-xs text-gray-600">Potongan Absensi</label><p class="text-sm font-bold text-gray-900">Rp {{ number_format($acuanGaji->potongan_absensi, 0, ',', '.') }}</p></div>
             <div class="bg-white p-3 rounded"><label class="text-xs text-gray-600">Koperasi</label><p class="text-sm font-bold text-gray-900">Rp {{ number_format($acuanGaji->koperasi, 0, ',', '.') }}</p></div>
-            <div class="bg-white p-3 rounded"><label class="text-xs text-gray-600">Tabungan Koperasi</label><p class="text-sm font-bold text-gray-900">Rp {{ number_format($acuanGaji->tabungan_koperasi, 0, ',', '.') }}</p></div>
         </div>
         <div class="mt-4 bg-red-100 p-4 rounded-lg border-2 border-red-300">
             <label class="text-sm font-medium text-red-800">Total Pengeluaran</label>

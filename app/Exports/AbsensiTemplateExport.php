@@ -14,10 +14,11 @@ class AbsensiTemplateExport implements FromArray, WithHeadings, WithStyles
         // Return 3 example rows
         return [
             [
-                1, // id_karyawan (example)
+                'John Doe', // nama_karyawan
                 '2024-01', // periode (YYYY-MM format)
                 20, // hadir
                 5, // on_site
+                3, // on_base
                 2, // absence
                 1, // idle_rest
                 1, // izin_sakit_cuti
@@ -25,10 +26,11 @@ class AbsensiTemplateExport implements FromArray, WithHeadings, WithStyles
                 'Contoh keterangan', // keterangan
             ],
             [
-                2,
+                'Jane Smith',
                 '2024-01',
                 22,
                 3,
+                2,
                 0,
                 0,
                 0,
@@ -36,10 +38,11 @@ class AbsensiTemplateExport implements FromArray, WithHeadings, WithStyles
                 '',
             ],
             [
-                3,
+                'Bob Johnson',
                 '2024-01',
                 21,
                 4,
+                1,
                 1,
                 0,
                 0,
@@ -52,10 +55,11 @@ class AbsensiTemplateExport implements FromArray, WithHeadings, WithStyles
     public function headings(): array
     {
         return [
-            'id_karyawan',
+            'nama_karyawan',
             'periode',
             'hadir',
             'on_site',
+            'on_base',
             'absence',
             'idle_rest',
             'izin_sakit_cuti',

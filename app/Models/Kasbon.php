@@ -93,9 +93,81 @@ class Kasbon extends Model
             // Jika langsung, potong di periode kasbon dibuat
             return $this->periode === $periode ? $this->nominal : 0;
         } else {
-            // Jika cicilan, ambil nominal cicilan untuk periode tersebut
+            // Jika cicilan, check if there's already a cicilan record
             $cicilan = $this->getCicilanForPeriode($periode);
-            return $cicilan ? $cicilan->nominal_cicilan : 0;
+            if ($cicilan) {
+                return $cicilan->nominal_cicilan;
+            }
+            
+            // If no cicilan record yet, calculate nominal per cicilan
+            // Only if kasbon is still pending (not fully paid)
+            if ($this->status_pembayaran !== 'Lunas' && $this->jumlah_cicilan > 0) {
+                return $this->nominal / $this->jumlah_cicilan;
+            }
+            
+            return 0;
+        }
+    }
+    
+    // Get total yang sudah dibayar
+    public function getTotalPaidAttribute()
+    {
+        return $this->cicilan()->sum('nominal_cicilan');
+    }
+    
+    // Get payment status info with color
+    public function getPaymentStatusInfo()
+    {
+        $totalPaid = $this->total_paid;
+        $nominal = $this->nominal;
+        
+        // Build cicilan info if applicable
+        $cicilanInfo = '';
+        if ($this->metode_pembayaran === 'Cicilan' && $this->jumlah_cicilan > 0) {
+            $cicilanPaid = $this->cicilan()->count();
+            $cicilanRemaining = $this->jumlah_cicilan - $cicilanPaid;
+            if ($cicilanRemaining > 0) {
+                $cicilanInfo = " - Sisa {$cicilanRemaining} cicilan";
+            }
+        }
+        
+        if ($totalPaid >= $nominal) {
+            $diff = $totalPaid - $nominal;
+            if ($diff > 0) {
+                // Overpaid
+                return [
+                    'status' => 'Overpaid',
+                    'color' => 'red',
+                    'bg_color' => 'bg-red-100',
+                    'text_color' => 'text-red-800',
+                    'border_color' => 'border-red-300',
+                    'message' => 'Lebih bayar Rp ' . number_format($diff, 0, ',', '.'),
+                    'diff' => $diff
+                ];
+            } else {
+                // Exactly paid
+                return [
+                    'status' => 'Lunas',
+                    'color' => 'green',
+                    'bg_color' => 'bg-green-100',
+                    'text_color' => 'text-green-800',
+                    'border_color' => 'border-green-300',
+                    'message' => 'Lunas',
+                    'diff' => 0
+                ];
+            }
+        } else {
+            // Still pending
+            $remaining = $nominal - $totalPaid;
+            return [
+                'status' => 'Pending',
+                'color' => 'yellow',
+                'bg_color' => 'bg-yellow-100',
+                'text_color' => 'text-yellow-800',
+                'border_color' => 'border-yellow-300',
+                'message' => 'Sisa Rp ' . number_format($remaining, 0, ',', '.') . $cicilanInfo,
+                'diff' => -$remaining
+            ];
         }
     }
 }

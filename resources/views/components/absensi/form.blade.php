@@ -51,6 +51,17 @@
         @enderror
     </div>
 
+    <!-- On Base -->
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">On Base</label>
+        <input type="number" name="on_base" min="0"
+               value="{{ old('on_base', $absensi->on_base ?? 0) }}"
+               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+        @error('on_base')
+        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
     <!-- Absence -->
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Absence</label>

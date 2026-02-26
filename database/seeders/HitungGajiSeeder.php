@@ -95,7 +95,6 @@ class HitungGajiSeeder extends Seeder
                 'bpjs_kematian_pengeluaran' => $acuanGaji->bpjs_kematian_pengeluaran,
                 'bpjs_jht_pengeluaran' => $acuanGaji->bpjs_jht_pengeluaran,
                 'bpjs_jp_pengeluaran' => $acuanGaji->bpjs_jp_pengeluaran,
-                'tabungan_koperasi' => $acuanGaji->tabungan_koperasi,
                 'koperasi' => $acuanGaji->koperasi,
                 'kasbon' => $acuanGaji->kasbon,
                 'umroh' => $acuanGaji->umroh,

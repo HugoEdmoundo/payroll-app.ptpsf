@@ -6,9 +6,16 @@
             <h3 class="text-lg font-semibold text-gray-900">Slip Gaji</h3>
             <p class="text-sm text-gray-600 mt-1" id="modalEmployeeInfo"></p>
         </div>
-        <button type="button" onclick="closeSlipModal()" class="text-gray-400 hover:text-gray-600 transition">
-            <i class="fas fa-times text-2xl"></i>
-        </button>
+        <div class="flex items-center space-x-2">
+            <button type="button" onclick="refreshSlipModal()" 
+                    class="text-gray-400 hover:text-gray-600 transition px-3 py-2 rounded-lg hover:bg-gray-100"
+                    title="Refresh data">
+                <i class="fas fa-sync-alt text-lg"></i>
+            </button>
+            <button type="button" onclick="closeSlipModal()" class="text-gray-400 hover:text-gray-600 transition">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
     </div>
 
     <!-- Content Area -->
@@ -179,35 +186,41 @@
                             PENDAPATAN
                         </div>
 
-                        @php $pendapatan_fields = [
-                                'gaji_pokok' => 'Gaji Pokok',
-                                'tunjangan_prestasi' => 'Tunjangan Prestasi',
-                                'benefit_operasional' => 'Benefit Operasional',
-                                'tunjangan_konjungtur' => 'Tunjangan Konjungtur',
-                                'benefit_ibadah' => 'Benefit Ibadah',
-                                'benefit_komunikasi' => 'Benefit Komunikasi',
-                                'reward' => 'Reward'
-                            ]; @endphp
+                        @php 
+                        $pendapatan_fields = [
+                            'gaji_pokok' => 'Gaji Pokok',
+                            'tunjangan_prestasi' => 'Tunjangan Prestasi',
+                            'benefit_operasional' => 'Benefit Operasional',
+                            'tunjangan_konjungtur' => 'Tunjangan Konjungtur',
+                            'benefit_ibadah' => 'Benefit Ibadah',
+                            'benefit_komunikasi' => 'Benefit Komunikasi',
+                            'reward' => 'Reward'
+                        ];
+                        
+                        $total_pendapatan_display = 0;
+                        @endphp
 
-                            <table class="w-full">
-                                @foreach($pendapatan_fields as $field => $label)
-                                    @if($data['hitung_gaji']->$field > 0)
-                                    <tr>
-                                        <td class="py-2">{{ $label }}</td>
-                                        <td class="text-left">
-                                            Rp {{ number_format($data['hitung_gaji']->$field,0,',','.') }}
-                                        </td>
-                                    </tr>
-                                    @endif
-                                @endforeach
-
-                                <tr class="font-bold">
-                                    <td class="pt-4">Total Pendapatan</td>
-                                    <td class="text-left pt-4">
-                                        Rp {{ number_format($data['hitung_gaji']->total_pendapatan,0,',','.') }}
+                        <table class="w-full">
+                            @foreach($pendapatan_fields as $field => $label)
+                                @php $finalValue = $data['hitung_gaji']->getFinalValue($field); @endphp
+                                @if($finalValue > 0)
+                                <tr>
+                                    <td class="py-2">{{ $label }}</td>
+                                    <td class="text-left">
+                                        Rp {{ number_format($finalValue,0,',','.') }}
                                     </td>
                                 </tr>
-                            </table>
+                                @php $total_pendapatan_display += $finalValue; @endphp
+                                @endif
+                            @endforeach
+
+                            <tr class="font-bold">
+                                <td class="pt-4">Total Pendapatan</td>
+                                <td class="text-left pt-4">
+                                    Rp {{ number_format($total_pendapatan_display,0,',','.') }}
+                                </td>
+                            </tr>
+                        </table>
                     </div>
 
                     <!-- Pengeluaran -->
@@ -215,35 +228,41 @@
                         <div class="font-bold text-base text-left mb-6">
                             PENGELUARAN
                         </div>
-                        @php $pengeluaran_fields = [
-                                'bpjs_kesehatan_pengeluaran' => 'BPJS Kesehatan',
-                                'bpjs_jht_pengeluaran' => 'BPJS JHT',
-                                'bpjs_jp_pengeluaran' => 'BPJS JP',
-                                'koperasi' => 'Koperasi',
-                                'kasbon' => 'Kasbon',
-                                'potongan_absensi' => 'Potongan Absensi',
-                                'potongan_kehadiran' => 'Potongan Kehadiran'
-                            ]; @endphp
+                        @php 
+                        $pengeluaran_fields = [
+                            'koperasi' => 'Koperasi',
+                            'kasbon' => 'Kasbon',
+                            'umroh' => 'Umroh',
+                            'kurban' => 'Kurban',
+                            'mutabaah' => 'Mutabaah',
+                            'potongan_absensi' => 'Potongan Absensi',
+                            'potongan_kehadiran' => 'Potongan Kehadiran'
+                        ];
+                        
+                        $total_pengeluaran_display = 0;
+                        @endphp
 
-                            <table class="w-full">
-                                @foreach($pengeluaran_fields as $field => $label)
-                                    @if($data['hitung_gaji']->$field > 0)
-                                    <tr>
-                                        <td class="py-2">{{ $label }}</td>
-                                        <td class="text-left">
-                                            Rp {{ number_format($data['hitung_gaji']->$field,0,',','.') }}
-                                        </td>
-                                    </tr>
-                                    @endif
-                                @endforeach
-
-                                <tr class="font-bold">
-                                    <td class="pt-4">Total Pengeluaran</td>
-                                    <td class="text-left pt-4">
-                                        Rp {{ number_format($data['hitung_gaji']->total_pengeluaran,0,',','.') }}
+                        <table class="w-full">
+                            @foreach($pengeluaran_fields as $field => $label)
+                                @php $finalValue = $data['hitung_gaji']->getFinalValue($field); @endphp
+                                @if($finalValue > 0)
+                                <tr>
+                                    <td class="py-2">{{ $label }}</td>
+                                    <td class="text-left">
+                                        Rp {{ number_format($finalValue,0,',','.') }}
                                     </td>
                                 </tr>
-                            </table>
+                                @php $total_pengeluaran_display += $finalValue; @endphp
+                                @endif
+                            @endforeach
+
+                            <tr class="font-bold">
+                                <td class="pt-4">Total Pengeluaran</td>
+                                <td class="text-left pt-4">
+                                    Rp {{ number_format($total_pengeluaran_display,0,',','.') }}
+                                </td>
+                            </tr>
+                        </table>
                     </div>
 
                 </div>
@@ -257,58 +276,81 @@
                     <div class="text-xs text-gray-700 text-left flex-1">
                         <div class="font-bold text-sm mb-3 text-gray-900">CATATAN & KETERANGAN</div>
                         
+                        @php $hasKeterangan = false; @endphp
+                        
                         @if($data['pengaturan_gaji'] && $data['pengaturan_gaji']->keterangan)
-                        <div class="mb-2">
-                            <span class="font-semibold">Pengaturan Gaji:</span>
-                            <p class="text-gray-600 mt-0.5">{{ $data['pengaturan_gaji']->keterangan }}</p>
-                        </div>
-                        @endif
-                        
-                        @if($data['nki'] && $data['nki']->keterangan)
-                        <div class="mb-2">
-                            <span class="font-semibold">NKI:</span>
-                            <p class="text-gray-600 mt-0.5">{{ $data['nki']->keterangan }}</p>
-                        </div>
-                        @endif
-                        
-                        @if($data['absensi'] && $data['absensi']->keterangan)
-                        <div class="mb-2">
-                            <span class="font-semibold">Absensi:</span>
-                            <p class="text-gray-600 mt-0.5">{{ $data['absensi']->keterangan }}</p>
-                        </div>
+                            @php $hasKeterangan = true; @endphp
+                            <div class="mb-2">
+                                <span class="font-semibold">Pengaturan Gaji:</span>
+                                <p class="text-gray-600 mt-0.5">{{ $data['pengaturan_gaji']->keterangan }}</p>
+                            </div>
                         @endif
                         
                         @if($data['kasbon'])
-                            @if($data['kasbon']->deskripsi)
-                            <div class="mb-2">
-                                <span class="font-semibold">Kasbon (Deskripsi):</span>
-                                <p class="text-gray-600 mt-0.5">{{ $data['kasbon']->deskripsi }}</p>
-                            </div>
+                            @php 
+                            $statusInfo = $data['kasbon']->getPaymentStatusInfo();
+                            $kasbonAmountInSlip = $data['hitung_gaji']->getFinalValue('kasbon');
+                            $showKasbon = $data['kasbon']->deskripsi || $data['kasbon']->keterangan || $data['kasbon']->total_paid != 0;
+                            @endphp
+                            @if($showKasbon)
+                                @php $hasKeterangan = true; @endphp
+                                <div class="mb-2">
+                                    <span class="font-semibold">Kasbon ({{ $data['kasbon']->metode_pembayaran }}):</span>
+                                    @if($data['kasbon']->total_paid != 0 || $kasbonAmountInSlip > 0)
+                                    <p class="text-gray-600 mt-0.5">
+                                        Dibayar bulan ini: Rp {{ number_format($kasbonAmountInSlip, 0, ',', '.') }}
+                                    </p>
+                                    <p class="text-gray-600 mt-0.5">
+                                        Status: {{ $statusInfo['message'] }}
+                                    </p>
+                                    <p class="text-gray-600 mt-0.5">
+                                        Total Dibayar: Rp {{ number_format($data['kasbon']->total_paid, 0, ',', '.') }} / Rp {{ number_format($data['kasbon']->nominal, 0, ',', '.') }}
+                                    </p>
+                                    @endif
+                                    @if($data['kasbon']->deskripsi)
+                                    <p class="text-gray-600 mt-0.5">Deskripsi: {{ $data['kasbon']->deskripsi }}</p>
+                                    @endif
+                                    @if($data['kasbon']->keterangan)
+                                    <p class="text-gray-600 mt-0.5">Keterangan: {{ $data['kasbon']->keterangan }}</p>
+                                    @endif
+                                </div>
                             @endif
-                            @if($data['kasbon']->keterangan)
+                        @endif
+                        
+                        @if($data['nki'] && $data['nki']->keterangan)
+                            @php $hasKeterangan = true; @endphp
                             <div class="mb-2">
-                                <span class="font-semibold">Kasbon (Keterangan):</span>
-                                <p class="text-gray-600 mt-0.5">{{ $data['kasbon']->keterangan }}</p>
+                                <span class="font-semibold">NKI:</span>
+                                <p class="text-gray-600 mt-0.5">{{ $data['nki']->keterangan }}</p>
                             </div>
-                            @endif
+                        @endif
+                        
+                        @if($data['absensi'] && $data['absensi']->keterangan)
+                            @php $hasKeterangan = true; @endphp
+                            <div class="mb-2">
+                                <span class="font-semibold">Absensi:</span>
+                                <p class="text-gray-600 mt-0.5">{{ $data['absensi']->keterangan }}</p>
+                            </div>
                         @endif
                         
                         @if($data['acuan_gaji'] && $data['acuan_gaji']->keterangan)
-                        <div class="mb-2">
-                            <span class="font-semibold">Acuan Gaji:</span>
-                            <p class="text-gray-600 mt-0.5">{{ $data['acuan_gaji']->keterangan }}</p>
-                        </div>
+                            @php $hasKeterangan = true; @endphp
+                            <div class="mb-2">
+                                <span class="font-semibold">Acuan Gaji:</span>
+                                <p class="text-gray-600 mt-0.5">{{ $data['acuan_gaji']->keterangan }}</p>
+                            </div>
                         @endif
                         
                         @if($data['hitung_gaji']->keterangan)
-                        <div class="mb-2">
-                            <span class="font-semibold">Hitung Gaji:</span>
-                            <p class="text-gray-600 mt-0.5">{{ $data['hitung_gaji']->keterangan }}</p>
-                        </div>
+                            @php $hasKeterangan = true; @endphp
+                            <div class="mb-2">
+                                <span class="font-semibold">Hitung Gaji:</span>
+                                <p class="text-gray-600 mt-0.5">{{ $data['hitung_gaji']->keterangan }}</p>
+                            </div>
                         @endif
                         
-                        @if(!$data['pengaturan_gaji']?->keterangan && !$data['nki']?->keterangan && !$data['absensi']?->keterangan && !$data['kasbon']?->deskripsi && !$data['kasbon']?->keterangan && !$data['acuan_gaji']?->keterangan && !$data['hitung_gaji']->keterangan)
-                        <p class="text-gray-500 italic">Tidak ada catatan atau keterangan</p>
+                        @if(!$hasKeterangan)
+                            <p class="text-gray-500 italic">Tidak ada catatan atau keterangan</p>
                         @endif
                     </div>
                     <div class="text-right flex-shrink-0">
@@ -353,26 +395,41 @@ Periode               : {{ $data['periode_formatted'] }}
 INFORMASI KARYAWAN
 ============================================================
 
-Nama                   :{{ $data['karyawan']->nama_karyawan ?? '-' }}
-Jabatan                :{{ $data['karyawan']->jabatan ?? '-' }}
-Jenis Karyawan         :{{ $data['karyawan']->jenis_karyawan ?? '-' }}
-Lokasi Kerja           :{{ $data['karyawan']->lokasi_kerja ?? '-' }}
-No. Rekening           :{{ $data['karyawan']->no_rekening ?? '-' }}
-Bank                   :{{ $data['karyawan']->bank ?? '-' }}
+Nama                   : {{ $data['karyawan']->nama_karyawan ?? '-' }}
+Jabatan                : {{ $data['karyawan']->jabatan ?? '-' }}
+Jenis Karyawan         : {{ $data['karyawan']->jenis_karyawan ?? '-' }}
+Lokasi Kerja           : {{ $data['karyawan']->lokasi_kerja ?? '-' }}
+No. Rekening           : {{ $data['karyawan']->no_rekening ?? '-' }}
+Bank                   : {{ $data['karyawan']->bank ?? '-' }}
 
 ============================================================
-RINCIAN GAJI
+RINCIAN LENGKAP GAJI (TOTAL AKHIR)
 ============================================================
 
 PENDAPATAN
 ------------------------------------------------------------
-Gaji Pokok            : Rp {{ number_format($data['hitung_gaji']->gaji_pokok,0,',','.') }}
-Tunjangan Prestasi    : Rp {{ number_format($data['hitung_gaji']->tunjangan_prestasi,0,',','.') }}
-Benefit Operasional   : Rp {{ number_format($data['hitung_gaji']->benefit_operasional,0,',','.') }}
-Tunjangan Konjungtur  : Rp {{ number_format($data['hitung_gaji']->tunjangan_konjungtur,0,',','.') }}
-Benefit Ibadah        : Rp {{ number_format($data['hitung_gaji']->benefit_ibadah,0,',','.') }}
-Benefit Komunikasi    : Rp {{ number_format($data['hitung_gaji']->benefit_komunikasi,0,',','.') }}
-Reward                : Rp {{ number_format($data['hitung_gaji']->reward,0,',','.') }}
+@php
+$all_pendapatan = [
+    'gaji_pokok' => 'Gaji Pokok',
+    'bpjs_kesehatan_pendapatan' => 'BPJS Kesehatan (P)',
+    'bpjs_kecelakaan_kerja_pendapatan' => 'BPJS Kecelakaan Kerja (P)',
+    'bpjs_kematian_pendapatan' => 'BPJS Kematian (P)',
+    'bpjs_jht_pendapatan' => 'BPJS JHT (P)',
+    'bpjs_jp_pendapatan' => 'BPJS JP (P)',
+    'tunjangan_prestasi' => 'Tunjangan Prestasi',
+    'tunjangan_konjungtur' => 'Tunjangan Konjungtur',
+    'benefit_ibadah' => 'Benefit Ibadah',
+    'benefit_komunikasi' => 'Benefit Komunikasi',
+    'benefit_operasional' => 'Benefit Operasional',
+    'reward' => 'Reward'
+];
+@endphp
+@foreach($all_pendapatan as $field => $label)
+@php $finalValue = $data['hitung_gaji']->getFinalValue($field); @endphp
+@if($finalValue > 0)
+{{ str_pad($label, 26) }}: Rp {{ number_format($finalValue,0,',','.') }}
+@endif
+@endforeach
 
 TOTAL PENDAPATAN      : Rp {{ number_format($data['hitung_gaji']->total_pendapatan,0,',','.') }}
 
@@ -380,19 +437,54 @@ TOTAL PENDAPATAN      : Rp {{ number_format($data['hitung_gaji']->total_pendapat
 
 PENGELUARAN
 ------------------------------------------------------------
-BPJS Kesehatan        : Rp {{ number_format($data['hitung_gaji']->bpjs_kesehatan_pengeluaran,0,',','.') }}
-BPJS JHT              : Rp {{ number_format($data['hitung_gaji']->bpjs_jht_pengeluaran,0,',','.') }}
-BPJS JP               : Rp {{ number_format($data['hitung_gaji']->bpjs_jp_pengeluaran,0,',','.') }}
-Koperasi              : Rp {{ number_format($data['hitung_gaji']->koperasi,0,',','.') }}
-Kasbon                : Rp {{ number_format($data['hitung_gaji']->kasbon,0,',','.') }}
-Potongan Absensi      : Rp {{ number_format($data['hitung_gaji']->potongan_absensi,0,',','.') }}
-Potongan Kehadiran    : Rp {{ number_format($data['hitung_gaji']->potongan_kehadiran,0,',','.') }}
+@php
+$all_pengeluaran = [
+    'bpjs_kesehatan_pengeluaran' => 'BPJS Kesehatan (D)',
+    'bpjs_kecelakaan_kerja_pengeluaran' => 'BPJS Kecelakaan Kerja (D)',
+    'bpjs_kematian_pengeluaran' => 'BPJS Kematian (D)',
+    'bpjs_jht_pengeluaran' => 'BPJS JHT (D)',
+    'bpjs_jp_pengeluaran' => 'BPJS JP (D)',
+    'koperasi' => 'Koperasi',
+    'kasbon' => 'Kasbon',
+    'umroh' => 'Umroh',
+    'kurban' => 'Kurban',
+    'mutabaah' => 'Mutabaah',
+    'potongan_absensi' => 'Potongan Absensi',
+    'potongan_kehadiran' => 'Potongan Kehadiran'
+];
+@endphp
+@foreach($all_pengeluaran as $field => $label)
+@php $finalValue = $data['hitung_gaji']->getFinalValue($field); @endphp
+@if($finalValue > 0)
+{{ str_pad($label, 26) }}: Rp {{ number_format($finalValue,0,',','.') }}
+@endif
+@endforeach
 
 TOTAL PENGELUARAN     : Rp {{ number_format($data['hitung_gaji']->total_pengeluaran,0,',','.') }}
 
 ============================================================
 
 GAJI BERSIH           : Rp {{ number_format($data['hitung_gaji']->gaji_bersih,0,',','.') }}
+
+============================================================
+@if($data['nki'])
+
+NKI INFO
+Nilai NKI             : {{ $data['nki']->nilai_nki }}
+Persentase Tunjangan  : {{ $data['nki']->persentase_tunjangan }}%
+@endif
+@if($data['absensi'])
+
+ABSENSI INFO
+Hadir                 : {{ $data['absensi']->hadir }} hari
+Absence               : {{ $data['absensi']->absence }} hari
+Tanpa Keterangan      : {{ $data['absensi']->tanpa_keterangan }} hari
+@endif
+@if($data['hitung_gaji']->keterangan)
+
+KETERANGAN
+{{ $data['hitung_gaji']->keterangan }}
+@endif
 
 ============================================================
 

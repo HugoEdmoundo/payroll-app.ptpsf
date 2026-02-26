@@ -16,6 +16,7 @@ class NKIImport implements ToModel, WithHeadingRow, WithValidation
         $karyawan = Karyawan::where('nama_karyawan', $row['nama_karyawan'])->first();
         
         if (!$karyawan) {
+            \Log::warning("Karyawan tidak ditemukan: {$row['nama_karyawan']}");
             return null; // Skip if karyawan not found
         }
 
@@ -27,19 +28,20 @@ class NKIImport implements ToModel, WithHeadingRow, WithValidation
         // Check if already exists
         $exists = NKI::where('id_karyawan', $karyawan->id_karyawan)
                     ->where('periode', $row['periode'])
-                    ->exists();
+                    ->first();
         
         if ($exists) {
+            \Log::warning("Data NKI sudah ada untuk: {$row['nama_karyawan']} periode {$row['periode']}");
             return null; // Skip if already exists
         }
 
         return new NKI([
             'id_karyawan' => $karyawan->id_karyawan,
             'periode' => $row['periode'],
-            'kemampuan' => $row['kemampuan_20'],
-            'kontribusi_1' => $row['kontribusi_1_20'],
-            'kontribusi_2' => $row['kontribusi_2_40'],
-            'kedisiplinan' => $row['kedisiplinan_20'],
+            'kemampuan' => $row['kemampuan_20'] ?? 0,
+            'kontribusi_1' => $row['kontribusi_1_20'] ?? 0,
+            'kontribusi_2' => $row['kontribusi_2_40'] ?? 0,
+            'kedisiplinan' => $row['kedisiplinan_20'] ?? 0,
             'keterangan' => $row['keterangan'] ?? null,
         ]);
     }

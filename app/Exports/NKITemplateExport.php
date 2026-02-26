@@ -48,10 +48,10 @@ class NKITemplateExport implements FromArray, WithHeadings, WithStyles
         return [
             'nama_karyawan',
             'periode',
-            'kemampuan (20%)',
-            'kontribusi_1 (20%)',
-            'kontribusi_2 (40%)',
-            'kedisiplinan (20%)',
+            'kemampuan_20',
+            'kontribusi_1_20',
+            'kontribusi_2_40',
+            'kedisiplinan_20',
             'keterangan',
         ];
     }

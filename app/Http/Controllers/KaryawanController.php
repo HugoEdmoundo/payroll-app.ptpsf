@@ -80,6 +80,39 @@ class KaryawanController extends Controller
             'status_karyawan' => 'required|string',
         ]);
 
+        // Check for duplicate by nama_karyawan
+        $exists = Karyawan::where('nama_karyawan', $request->nama_karyawan)->first();
+        
+        if ($exists) {
+            // Check if data is similar (only different in 1 field)
+            $differences = 0;
+            $diffFields = [];
+            
+            $fieldsToCheck = [
+                'email', 'no_telp', 'jenis_karyawan', 'jabatan', 
+                'lokasi_kerja', 'bank', 'no_rekening'
+            ];
+            
+            foreach ($fieldsToCheck as $field) {
+                if ($request->$field && $exists->$field != $request->$field) {
+                    $differences++;
+                    $diffFields[] = $field;
+                }
+            }
+            
+            // If only 1 difference, show warning
+            if ($differences == 1) {
+                return back()->withInput()->with('warning', 
+                    "Data mirip dengan karyawan existing: {$exists->nama_karyawan}, berbeda di: " . implode(', ', $diffFields)
+                );
+            }
+            
+            // If exact duplicate or multiple differences
+            return back()->withInput()->with('error', 
+                "Karyawan dengan nama '{$request->nama_karyawan}' sudah ada dalam sistem."
+            );
+        }
+
         // HAPUS semua logic join_date, biarkan boot method yang handle
         $karyawan = Karyawan::create($request->all());
         

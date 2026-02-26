@@ -1,6 +1,6 @@
 @props(['field', 'label', 'value', 'adjustment' => null])
 
-<div class="bg-white border border-gray-200 rounded-lg p-4">
+<div class="bg-white border border-gray-200 rounded-lg p-4 {{ !empty($adjustment) ? 'ring-2 ring-green-500' : '' }}">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <!-- Left: Field Value (Read-Only) -->
         <div>
@@ -17,7 +17,11 @@
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
                 Adjustment (Optional)
-                <span class="text-xs text-gray-500">- If filled, description is required</span>
+                @if(!empty($adjustment))
+                    <span class="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                        <i class="fas fa-check-circle"></i> Saved
+                    </span>
+                @endif
             </label>
             <div class="grid grid-cols-12 gap-2">
                 <!-- Type -->
