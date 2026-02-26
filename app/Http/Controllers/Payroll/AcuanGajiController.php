@@ -156,11 +156,8 @@ class AcuanGajiController extends Controller
                 continue;
             }
 
-            // Get Pengaturan Gaji
-            $pengaturan = PengaturanGaji::where('jenis_karyawan', $karyawan->jenis_karyawan)
-                                       ->where('jabatan', $karyawan->jabatan)
-                                       ->where('lokasi_kerja', $karyawan->lokasi_kerja)
-                                       ->first();
+            // Get Pengaturan Gaji (automatically handles status_pegawai)
+            $pengaturan = $karyawan->getPengaturanGaji();
             
             if (!$pengaturan) {
                 $skipped++;
@@ -179,40 +176,80 @@ class AcuanGajiController extends Controller
                 $kasbonTotal += $kasbon->getPotonganForPeriode($periode);
             }
 
-            // Create Acuan Gaji - ONLY Kasbon from Komponen, NKI & Absensi will be in Hitung Gaji
-            AcuanGaji::create([
-                'id_karyawan' => $karyawan->id_karyawan,
-                'periode' => $periode,
-                // Pendapatan (from Pengaturan Gaji - READ ONLY)
-                'gaji_pokok' => $pengaturan->gaji_pokok,
-                'bpjs_kesehatan_pendapatan' => $pengaturan->bpjs_kesehatan,
-                'bpjs_kecelakaan_kerja_pendapatan' => $pengaturan->bpjs_kecelakaan_kerja,
-                'bpjs_kematian_pendapatan' => $pengaturan->bpjs_ketenagakerjaan,
-                'benefit_operasional' => $pengaturan->tunjangan_operasional,
-                // Pengeluaran (ONLY Kasbon from Komponen)
-                'bpjs_kesehatan_pengeluaran' => $pengaturan->bpjs_kesehatan,
-                'bpjs_kecelakaan_kerja_pengeluaran' => $pengaturan->bpjs_kecelakaan_kerja,
-                'bpjs_kematian_pengeluaran' => $pengaturan->bpjs_ketenagakerjaan,
-                'koperasi' => $pengaturan->potongan_koperasi,
-                'kasbon' => $kasbonTotal, // From Kasbon (Langsung/Cicilan)
-                // Empty fields - NKI & Absensi will be calculated in Hitung Gaji
-                'tunjangan_prestasi' => 0,
-                'potongan_absensi' => 0,
-                // Empty fields will be filled manually by user
-                'bpjs_jht_pendapatan' => 0,
-                'bpjs_jp_pendapatan' => 0,
-                'tunjangan_konjungtur' => 0,
-                'benefit_ibadah' => 0,
-                'benefit_komunikasi' => 0,
-                'reward' => 0,
-                'bpjs_jht_pengeluaran' => 0,
-                'bpjs_jp_pengeluaran' => 0,
-                'tabungan_koperasi' => 0,
-                'umroh' => 0,
-                'kurban' => 0,
-                'mutabaah' => 0,
-                'potongan_kehadiran' => 0,
-            ]);
+            // Determine if this is status pegawai or regular pengaturan
+            $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT', 'Kontrak']);
+            
+            // Create Acuan Gaji
+            if ($isStatusPegawai) {
+                // For status pegawai: only gaji_pokok, no BPJS or other benefits
+                AcuanGaji::create([
+                    'id_karyawan' => $karyawan->id_karyawan,
+                    'periode' => $periode,
+                    // Pendapatan (only gaji_pokok for status pegawai)
+                    'gaji_pokok' => $pengaturan->gaji_pokok,
+                    'bpjs_kesehatan_pendapatan' => 0,
+                    'bpjs_kecelakaan_kerja_pendapatan' => 0,
+                    'bpjs_kematian_pendapatan' => 0,
+                    'benefit_operasional' => 0,
+                    // Pengeluaran (ONLY Kasbon)
+                    'bpjs_kesehatan_pengeluaran' => 0,
+                    'bpjs_kecelakaan_kerja_pengeluaran' => 0,
+                    'bpjs_kematian_pengeluaran' => 0,
+                    'koperasi' => 0,
+                    'kasbon' => $kasbonTotal,
+                    // Empty fields
+                    'tunjangan_prestasi' => 0,
+                    'potongan_absensi' => 0,
+                    'bpjs_jht_pendapatan' => 0,
+                    'bpjs_jp_pendapatan' => 0,
+                    'tunjangan_konjungtur' => 0,
+                    'benefit_ibadah' => 0,
+                    'benefit_komunikasi' => 0,
+                    'reward' => 0,
+                    'bpjs_jht_pengeluaran' => 0,
+                    'bpjs_jp_pengeluaran' => 0,
+                    'tabungan_koperasi' => 0,
+                    'umroh' => 0,
+                    'kurban' => 0,
+                    'mutabaah' => 0,
+                    'potongan_kehadiran' => 0,
+                ]);
+            } else {
+                // For regular employees: full benefits from PengaturanGaji
+                AcuanGaji::create([
+                    'id_karyawan' => $karyawan->id_karyawan,
+                    'periode' => $periode,
+                    // Pendapatan (from Pengaturan Gaji - READ ONLY)
+                    'gaji_pokok' => $pengaturan->gaji_pokok,
+                    'bpjs_kesehatan_pendapatan' => $pengaturan->bpjs_kesehatan,
+                    'bpjs_kecelakaan_kerja_pendapatan' => $pengaturan->bpjs_kecelakaan_kerja,
+                    'bpjs_kematian_pendapatan' => $pengaturan->bpjs_ketenagakerjaan,
+                    'benefit_operasional' => $pengaturan->tunjangan_operasional,
+                    // Pengeluaran (ONLY Kasbon from Komponen)
+                    'bpjs_kesehatan_pengeluaran' => $pengaturan->bpjs_kesehatan,
+                    'bpjs_kecelakaan_kerja_pengeluaran' => $pengaturan->bpjs_kecelakaan_kerja,
+                    'bpjs_kematian_pengeluaran' => $pengaturan->bpjs_ketenagakerjaan,
+                    'koperasi' => $pengaturan->potongan_koperasi,
+                    'kasbon' => $kasbonTotal, // From Kasbon (Langsung/Cicilan)
+                    // Empty fields - NKI & Absensi will be calculated in Hitung Gaji
+                    'tunjangan_prestasi' => 0,
+                    'potongan_absensi' => 0,
+                    // Empty fields will be filled manually by user
+                    'bpjs_jht_pendapatan' => 0,
+                    'bpjs_jp_pendapatan' => 0,
+                    'tunjangan_konjungtur' => 0,
+                    'benefit_ibadah' => 0,
+                    'benefit_komunikasi' => 0,
+                    'reward' => 0,
+                    'bpjs_jht_pengeluaran' => 0,
+                    'bpjs_jp_pengeluaran' => 0,
+                    'tabungan_koperasi' => 0,
+                    'umroh' => 0,
+                    'kurban' => 0,
+                    'mutabaah' => 0,
+                    'potongan_kehadiran' => 0,
+                ]);
+            }
 
             $generated++;
         }

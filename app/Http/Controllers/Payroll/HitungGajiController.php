@@ -138,30 +138,35 @@ class HitungGajiController extends Controller
             return response()->json(['error' => 'Acuan gaji tidak ditemukan untuk karyawan ini pada periode tersebut.'], 404);
         }
 
-        // Get Pengaturan Gaji for calculations
-        $pengaturan = PengaturanGaji::where('jenis_karyawan', $karyawan->jenis_karyawan)
-                                   ->where('jabatan', $karyawan->jabatan)
-                                   ->where('lokasi_kerja', $karyawan->lokasi_kerja)
-                                   ->first();
+        // Get Pengaturan Gaji for calculations (automatically handles status_pegawai)
+        $pengaturan = $karyawan->getPengaturanGaji();
 
         if (!$pengaturan) {
             return response()->json(['error' => 'Pengaturan gaji tidak ditemukan untuk karyawan ini.'], 404);
         }
+        
+        // Check if this is status pegawai
+        $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT', 'Kontrak']);
 
-        // Calculate NKI (Tunjangan Prestasi)
+        // Calculate NKI (Tunjangan Prestasi) - ONLY for regular employees
         $nki = NKI::where('id_karyawan', $karyawanId)
                  ->where('periode', $periode)
                  ->first();
         
         $tunjanganPrestasi = 0;
         $nkiInfo = null;
-        if ($nki && $pengaturan->tunjangan_operasional > 0) {
-            $tunjanganPrestasi = $pengaturan->tunjangan_operasional * ($nki->persentase_tunjangan / 100);
-            $nkiInfo = [
-                'nilai' => $nki->nilai_nki,
-                'persentase' => $nki->persentase_tunjangan,
-                'acuan' => $pengaturan->tunjangan_operasional
-            ];
+        
+        if (!$isStatusPegawai && $nki) {
+            // For regular employees: calculate based on tunjangan_operasional
+            $tunjanganOperasional = $pengaturan->tunjangan_operasional ?? 0;
+            if ($tunjanganOperasional > 0) {
+                $tunjanganPrestasi = $tunjanganOperasional * ($nki->persentase_tunjangan / 100);
+                $nkiInfo = [
+                    'nilai' => $nki->nilai_nki,
+                    'persentase' => $nki->persentase_tunjangan,
+                    'acuan' => $tunjanganOperasional
+                ];
+            }
         }
 
         // Calculate Absensi (Potongan Absensi)
@@ -173,7 +178,13 @@ class HitungGajiController extends Controller
         $absensiInfo = null;
         if ($absensi) {
             $totalAbsence = $absensi->absence + $absensi->tanpa_keterangan;
-            $baseAmount = $pengaturan->gaji_pokok + $tunjanganPrestasi + $pengaturan->tunjangan_operasional;
+            $baseAmount = $pengaturan->gaji_pokok + $tunjanganPrestasi;
+            
+            // Add tunjangan_operasional only for regular employees
+            if (!$isStatusPegawai) {
+                $baseAmount += ($pengaturan->tunjangan_operasional ?? 0);
+            }
+            
             $potonganAbsensi = ($totalAbsence / $absensi->jumlah_hari_bulan) * $baseAmount;
             $absensiInfo = [
                 'absence' => $absensi->absence,
@@ -257,25 +268,28 @@ class HitungGajiController extends Controller
             return back()->withErrors(['karyawan_id' => 'Acuan gaji tidak ditemukan.'])->withInput();
         }
 
-        // Get Pengaturan Gaji for calculations
+        // Get Pengaturan Gaji for calculations (automatically handles status_pegawai)
         $karyawan = Karyawan::findOrFail($request->karyawan_id);
-        $pengaturan = PengaturanGaji::where('jenis_karyawan', $karyawan->jenis_karyawan)
-                                   ->where('jabatan', $karyawan->jabatan)
-                                   ->where('lokasi_kerja', $karyawan->lokasi_kerja)
-                                   ->first();
+        $pengaturan = $karyawan->getPengaturanGaji();
 
         if (!$pengaturan) {
             return back()->withErrors(['karyawan_id' => 'Pengaturan gaji tidak ditemukan.'])->withInput();
         }
+        
+        // Check if this is status pegawai
+        $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT', 'Kontrak']);
 
-        // Calculate NKI
+        // Calculate NKI - ONLY for regular employees
         $nki = NKI::where('id_karyawan', $request->karyawan_id)
                  ->where('periode', $request->periode)
                  ->first();
         
         $tunjanganPrestasi = 0;
-        if ($nki && $pengaturan->tunjangan_operasional > 0) {
-            $tunjanganPrestasi = $pengaturan->tunjangan_operasional * ($nki->persentase_tunjangan / 100);
+        if (!$isStatusPegawai && $nki) {
+            $tunjanganOperasional = $pengaturan->tunjangan_operasional ?? 0;
+            if ($tunjanganOperasional > 0) {
+                $tunjanganPrestasi = $tunjanganOperasional * ($nki->persentase_tunjangan / 100);
+            }
         }
 
         // Calculate Absensi
@@ -286,7 +300,12 @@ class HitungGajiController extends Controller
         $potonganAbsensi = 0;
         if ($absensi) {
             $totalAbsence = $absensi->absence + $absensi->tanpa_keterangan;
-            $baseAmount = $pengaturan->gaji_pokok + $tunjanganPrestasi + $pengaturan->tunjangan_operasional;
+            $baseAmount = $pengaturan->gaji_pokok + $tunjanganPrestasi;
+            
+            // Add tunjangan_operasional only for regular employees
+            if (!$isStatusPegawai) {
+                $baseAmount += ($pengaturan->tunjangan_operasional ?? 0);
+            }
             $potonganAbsensi = ($totalAbsence / $absensi->jumlah_hari_bulan) * $baseAmount;
         }
 

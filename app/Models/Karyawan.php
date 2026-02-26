@@ -108,6 +108,30 @@ class Karyawan extends Model
         // Always recalculate to ensure it's up to date
         return $this->calculateStatusPegawai();
     }
+    
+    /**
+     * Get appropriate salary configuration based on status_pegawai
+     * Returns PengaturanGaji or PengaturanGajiStatusPegawai
+     */
+    public function getPengaturanGaji()
+    {
+        $statusPegawai = $this->status_pegawai;
+        
+        // Check if status pegawai is Harian, OJT, or Kontrak
+        if (in_array($statusPegawai, ['Harian', 'OJT', 'Kontrak'])) {
+            // Get from PengaturanGajiStatusPegawai
+            return \App\Models\PengaturanGajiStatusPegawai::where('status_pegawai', $statusPegawai)
+                ->where('jabatan', $this->jabatan)
+                ->where('lokasi_kerja', $this->lokasi_kerja)
+                ->first();
+        }
+        
+        // Default: Get from PengaturanGaji (normal employee)
+        return \App\Models\PengaturanGaji::where('jenis_karyawan', $this->jenis_karyawan)
+            ->where('jabatan', $this->jabatan)
+            ->where('lokasi_kerja', $this->lokasi_kerja)
+            ->first();
+    }
 
     // Masa Kerja dalam format readable (X Bulan Y Hari) - KEDUANYA HARUS ADA
     public function getMasaKerjaReadableAttribute()
