@@ -8,199 +8,94 @@ use Carbon\Carbon;
 
 class KaryawanSeeder extends Seeder
 {
-    /**
-     * Seed karyawan dengan data yang sinkron dengan SystemSettingSeeder
-     */
     public function run(): void
     {
-        $this->command->info('Seeding Karyawan...');
-        
-        $karyawans = [
-            [
-                'nama_karyawan' => 'Budi Santoso',
-                'email' => 'budi.santoso@ptpsf.com',
-                'no_telp' => '081234567890',
-                'join_date' => Carbon::now()->subYears(3),
-                'masa_kerja' => 36,
-                'jabatan' => 'Manager',
-                'lokasi_kerja' => 'Central Java',
-                'jenis_karyawan' => 'Organik',
-                'status_pegawai' => 'Kontrak',
-                'npwp' => '12.345.678.9-012.000',
-                'bpjs_kesehatan_no' => '0001234567890',
-                'bpjs_kecelakaan_kerja_no' => '0001234567890',
-                'bpjs_tk_no' => '0001234567890',
-                'no_rekening' => '1234567890',
-                'bank' => 'BCA',
-                'status_perkawinan' => 'Kawin',
-                'nama_istri' => 'Siti Nurhaliza',
-                'jumlah_anak' => 2,
-                'no_telp_istri' => '081234567891',
-                'status_karyawan' => 'Active',
-            ],
-            [
-                'nama_karyawan' => 'Ahmad Fauzi',
-                'email' => 'ahmad.fauzi@ptpsf.com',
-                'no_telp' => '081234567892',
-                'join_date' => Carbon::now()->subYears(2),
-                'masa_kerja' => 24,
-                'jabatan' => 'Senior Engineer',
-                'lokasi_kerja' => 'East Java',
-                'jenis_karyawan' => 'Konsultan',
-                'status_pegawai' => 'Kontrak',
-                'npwp' => '12.345.678.9-013.000',
-                'bpjs_kesehatan_no' => '0001234567891',
-                'bpjs_kecelakaan_kerja_no' => '0001234567891',
-                'bpjs_tk_no' => '0001234567891',
-                'no_rekening' => '2234567890',
-                'bank' => 'Mandiri',
-                'status_perkawinan' => 'Belum Kawin',
-                'nama_istri' => null,
-                'jumlah_anak' => 0,
-                'no_telp_istri' => null,
-                'status_karyawan' => 'Active',
-            ],
-            [
-                'nama_karyawan' => 'Dewi Lestari',
-                'email' => 'dewi.lestari@ptpsf.com',
-                'no_telp' => '081234567893',
-                'join_date' => Carbon::now()->subYears(1)->subMonths(6),
-                'masa_kerja' => 18,
-                'jabatan' => 'Finance',
-                'lokasi_kerja' => 'Central Java',
-                'jenis_karyawan' => 'Organik',
-                'status_pegawai' => 'Kontrak',
-                'npwp' => '12.345.678.9-014.000',
-                'bpjs_kesehatan_no' => '0001234567892',
-                'bpjs_kecelakaan_kerja_no' => '0001234567892',
-                'bpjs_tk_no' => '0001234567892',
-                'no_rekening' => '3234567890',
-                'bank' => 'BNI',
-                'status_perkawinan' => 'Kawin',
-                'nama_istri' => null,
-                'jumlah_anak' => 1,
-                'no_telp_istri' => null,
-                'status_karyawan' => 'Active',
-            ],
-            [
-                'nama_karyawan' => 'Eko Prasetyo',
-                'email' => 'eko.prasetyo@ptpsf.com',
-                'no_telp' => '081234567894',
-                'join_date' => Carbon::now()->subYear(),
-                'masa_kerja' => 12,
-                'jabatan' => 'Junior Engineer',
-                'lokasi_kerja' => 'West Java',
-                'jenis_karyawan' => 'Teknisi',
-                'status_pegawai' => 'OJT',
-                'npwp' => null,
-                'bpjs_kesehatan_no' => '0001234567893',
-                'bpjs_kecelakaan_kerja_no' => '0001234567893',
-                'bpjs_tk_no' => '0001234567893',
-                'no_rekening' => '4234567890',
-                'bank' => 'BRI',
-                'status_perkawinan' => 'Belum Kawin',
-                'nama_istri' => null,
-                'jumlah_anak' => 0,
-                'no_telp_istri' => null,
-                'status_karyawan' => 'Active',
-            ],
-            [
-                'nama_karyawan' => 'Fitri Handayani',
-                'email' => 'fitri.handayani@ptpsf.com',
-                'no_telp' => '081234567895',
-                'join_date' => Carbon::now()->subMonths(8),
-                'masa_kerja' => 8,
-                'jabatan' => 'Senior Installer',
-                'lokasi_kerja' => 'Bali',
-                'jenis_karyawan' => 'Teknisi',
-                'status_pegawai' => 'Harian',
-                'npwp' => null,
-                'bpjs_kesehatan_no' => '0001234567894',
-                'bpjs_kecelakaan_kerja_no' => '0001234567894',
-                'bpjs_tk_no' => '0001234567894',
-                'no_rekening' => '5234567890',
-                'bank' => 'CIMB Niaga',
-                'status_perkawinan' => 'Belum Kawin',
-                'nama_istri' => null,
-                'jumlah_anak' => 0,
-                'no_telp_istri' => null,
-                'status_karyawan' => 'Active',
-            ],
-            [
-                'nama_karyawan' => 'Gunawan Wijaya',
-                'email' => 'gunawan.wijaya@ptpsf.com',
-                'no_telp' => '081234567896',
-                'join_date' => Carbon::now()->subMonths(6),
-                'masa_kerja' => 6,
-                'jabatan' => 'Team Leader (junior)',
-                'lokasi_kerja' => 'Central Java',
-                'jenis_karyawan' => 'Borongan',
-                'status_pegawai' => 'Harian',
-                'npwp' => null,
-                'bpjs_kesehatan_no' => null,
-                'bpjs_kecelakaan_kerja_no' => null,
-                'bpjs_tk_no' => null,
-                'no_rekening' => '6234567890',
-                'bank' => 'BSI',
-                'status_perkawinan' => 'Belum Kawin',
-                'nama_istri' => null,
-                'jumlah_anak' => 0,
-                'no_telp_istri' => null,
-                'status_karyawan' => 'Active',
-            ],
-            [
-                'nama_karyawan' => 'Hendra Kusuma',
-                'email' => 'hendra.kusuma@ptpsf.com',
-                'no_telp' => '081234567897',
-                'join_date' => Carbon::now()->subYears(1)->subMonths(3),
-                'masa_kerja' => 15,
-                'jabatan' => 'Senior Leader',
-                'lokasi_kerja' => 'West Java',
-                'jenis_karyawan' => 'Organik',
-                'status_pegawai' => 'Kontrak',
-                'npwp' => '12.345.678.9-015.000',
-                'bpjs_kesehatan_no' => '0001234567895',
-                'bpjs_kecelakaan_kerja_no' => '0001234567895',
-                'bpjs_tk_no' => '0001234567895',
-                'no_rekening' => '7234567890',
-                'bank' => 'BCA',
-                'status_perkawinan' => 'Kawin',
-                'nama_istri' => 'Rina Wati',
-                'jumlah_anak' => 1,
-                'no_telp_istri' => '081234567898',
-                'status_karyawan' => 'Non-Active',
-            ],
-            [
-                'nama_karyawan' => 'Indra Permana',
-                'email' => 'indra.permana@ptpsf.com',
-                'no_telp' => '081234567899',
-                'join_date' => Carbon::now()->subYears(2)->subMonths(6),
-                'masa_kerja' => 30,
-                'jabatan' => 'Project Manager',
-                'lokasi_kerja' => 'Central Java',
-                'jenis_karyawan' => 'Konsultan',
-                'status_pegawai' => 'Kontrak',
-                'npwp' => '12.345.678.9-016.000',
-                'bpjs_kesehatan_no' => '0001234567896',
-                'bpjs_kecelakaan_kerja_no' => '0001234567896',
-                'bpjs_tk_no' => '0001234567896',
-                'no_rekening' => '8234567890',
-                'bank' => 'Mandiri',
-                'status_perkawinan' => 'Kawin',
-                'nama_istri' => 'Lina Marlina',
-                'jumlah_anak' => 2,
-                'no_telp_istri' => '081234567900',
-                'status_karyawan' => 'Resign',
-            ],
+        $karyawanData = [
+            // Konsultan - Jakarta
+            ['nama' => 'Ahmad Fauzi', 'jenis' => 'Konsultan', 'jabatan' => 'Senior Consultant', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            ['nama' => 'Siti Nurhaliza', 'jenis' => 'Konsultan', 'jabatan' => 'Consultant', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            ['nama' => 'Budi Santoso', 'jenis' => 'Konsultan', 'jabatan' => 'Junior Consultant', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            ['nama' => 'Dewi Lestari', 'jenis' => 'Konsultan', 'jabatan' => 'Senior Consultant', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            ['nama' => 'Eko Prasetyo', 'jenis' => 'Konsultan', 'jabatan' => 'Consultant', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            
+            // Organik - Jakarta
+            ['nama' => 'Fitri Handayani', 'jenis' => 'Organik', 'jabatan' => 'Manager', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            ['nama' => 'Gunawan Wijaya', 'jenis' => 'Organik', 'jabatan' => 'Supervisor', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            ['nama' => 'Hendra Kusuma', 'jenis' => 'Organik', 'jabatan' => 'Staff', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            ['nama' => 'Indah Permata', 'jenis' => 'Organik', 'jabatan' => 'Staff', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            ['nama' => 'Joko Widodo', 'jenis' => 'Organik', 'jabatan' => 'Coordinator', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            
+            // Teknisi - Jakarta
+            ['nama' => 'Kurniawan Adi', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Technician', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            ['nama' => 'Linda Sari', 'jenis' => 'Teknisi', 'jabatan' => 'Technician', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            ['nama' => 'Muhammad Rizki', 'jenis' => 'Teknisi', 'jabatan' => 'Junior Technician', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            ['nama' => 'Nur Azizah', 'jenis' => 'Teknisi', 'jabatan' => 'Technician', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            ['nama' => 'Omar Bakri', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Technician', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
+            
+            // Borongan - Jakarta
+            ['nama' => 'Putra Mahendra', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Jakarta', 'status' => 'Harian'],
+            ['nama' => 'Qori Amalia', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Jakarta', 'status' => 'Harian'],
+            ['nama' => 'Rudi Hartono', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Jakarta', 'status' => 'Harian'],
+            ['nama' => 'Sari Wulandari', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Jakarta', 'status' => 'Harian'],
+            ['nama' => 'Tono Sugiarto', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Jakarta', 'status' => 'Harian'],
+            
+            // Konsultan - Bandung
+            ['nama' => 'Umar Faruq', 'jenis' => 'Konsultan', 'jabatan' => 'Senior Consultant', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
+            ['nama' => 'Vina Melinda', 'jenis' => 'Konsultan', 'jabatan' => 'Consultant', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
+            ['nama' => 'Wawan Setiawan', 'jenis' => 'Konsultan', 'jabatan' => 'Junior Consultant', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
+            
+            // Organik - Bandung
+            ['nama' => 'Xaverius Budi', 'jenis' => 'Organik', 'jabatan' => 'Manager', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
+            ['nama' => 'Yanti Kusuma', 'jenis' => 'Organik', 'jabatan' => 'Supervisor', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
+            ['nama' => 'Zaki Rahman', 'jenis' => 'Organik', 'jabatan' => 'Staff', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
+            
+            // Teknisi - Bandung
+            ['nama' => 'Agus Salim', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Technician', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
+            ['nama' => 'Bella Safira', 'jenis' => 'Teknisi', 'jabatan' => 'Technician', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
+            ['nama' => 'Candra Wijaya', 'jenis' => 'Teknisi', 'jabatan' => 'Junior Technician', 'lokasi' => 'Bandung', 'status' => 'Kontrak'],
+            
+            // Borongan - Bandung
+            ['nama' => 'Dani Pratama', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Bandung', 'status' => 'Harian'],
+            ['nama' => 'Erna Susanti', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Bandung', 'status' => 'Harian'],
+            
+            // Konsultan - Surabaya
+            ['nama' => 'Fajar Nugroho', 'jenis' => 'Konsultan', 'jabatan' => 'Senior Consultant', 'lokasi' => 'Surabaya', 'status' => 'Kontrak'],
+            ['nama' => 'Gita Savitri', 'jenis' => 'Konsultan', 'jabatan' => 'Consultant', 'lokasi' => 'Surabaya', 'status' => 'Kontrak'],
+            
+            // Organik - Surabaya
+            ['nama' => 'Hadi Purnomo', 'jenis' => 'Organik', 'jabatan' => 'Manager', 'lokasi' => 'Surabaya', 'status' => 'Kontrak'],
+            ['nama' => 'Ika Rahmawati', 'jenis' => 'Organik', 'jabatan' => 'Supervisor', 'lokasi' => 'Surabaya', 'status' => 'Kontrak'],
+            
+            // Teknisi - Surabaya
+            ['nama' => 'Jaka Sembung', 'jenis' => 'Teknisi', 'jabatan' => 'Senior Technician', 'lokasi' => 'Surabaya', 'status' => 'Kontrak'],
+            ['nama' => 'Kartika Sari', 'jenis' => 'Teknisi', 'jabatan' => 'Technician', 'lokasi' => 'Surabaya', 'status' => 'Kontrak'],
+            
+            // Borongan - Surabaya
+            ['nama' => 'Lukman Hakim', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Surabaya', 'status' => 'Harian'],
+            ['nama' => 'Maya Anggraini', 'jenis' => 'Borongan', 'jabatan' => 'Contract Worker', 'lokasi' => 'Surabaya', 'status' => 'Harian'],
+            
+            // Additional employees
+            ['nama' => 'Nanda Pratiwi', 'jenis' => 'Organik', 'jabatan' => 'Staff', 'lokasi' => 'Jakarta', 'status' => 'Kontrak'],
         ];
 
-        foreach ($karyawans as $data) {
-            Karyawan::create($data);
+        foreach ($karyawanData as $index => $data) {
+            Karyawan::create([
+                'nama_karyawan' => $data['nama'],
+                'email' => strtolower(str_replace(' ', '.', $data['nama'])) . '@ptpsf.com',
+                'no_telp' => '08' . rand(1000000000, 9999999999),
+                'tanggal_bergabung' => Carbon::now()->subMonths(rand(1, 36)),
+                'jenis_karyawan' => $data['jenis'],
+                'jabatan' => $data['jabatan'],
+                'lokasi_kerja' => $data['lokasi'],
+                'status_pegawai' => $data['status'],
+                'status_karyawan' => 'Active',
+                'bank' => ['BCA', 'Mandiri', 'BNI', 'BRI'][rand(0, 3)],
+                'no_rekening' => rand(1000000000, 9999999999),
+                'npwp' => rand(10, 99) . '.' . rand(100, 999) . '.' . rand(100, 999) . '.' . rand(1, 9) . '-' . rand(100, 999) . '.000',
+                'no_bpjs_kesehatan' => '0001' . str_pad($index + 1, 8, '0', STR_PAD_LEFT),
+                'no_bpjs_ketenagakerjaan' => '1001' . str_pad($index + 1, 8, '0', STR_PAD_LEFT),
+                'jumlah_tanggungan_keluarga' => rand(0, 3),
+            ]);
         }
-
-        $this->command->info('Karyawan seeded successfully! Created ' . count($karyawans) . ' karyawan.');
-        $this->command->info('  - Active: 6 karyawan');
-        $this->command->info('  - Non-Active: 1 karyawan');
-        $this->command->info('  - Resign: 1 karyawan');
     }
 }

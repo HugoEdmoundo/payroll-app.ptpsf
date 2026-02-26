@@ -56,7 +56,9 @@ class DatabaseSeeder extends Seeder
         
         // 6. Komponen Gaji (NKI, Absensi, Kasbon)
         $this->command->info('📊 Step 6: Komponen Gaji (NKI, Absensi, Kasbon)');
-        $this->call(KomponenGajiSeeder::class);
+        $this->call(NKISeeder::class);
+        $this->call(AbsensiSeeder::class);
+        $this->call(KasbonSeeder::class);
         $this->command->newLine();
         
         // 7. Additional Permissions

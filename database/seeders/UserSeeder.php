@@ -11,22 +11,18 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $superadminRole = \App\Models\Role::where('is_superadmin', true)->first();
-        $userRole = \App\Models\Role::where('name', 'user')->first(); // pastikan role 'user' ada
+        $userRole = \App\Models\Role::where('name', 'user')->first();
 
-        if (!$superadminRole) {
-            throw new \Exception('Superadmin role not found. Please run RoleSeeder first.');
-        }
-
-        if (!$userRole) {
-            throw new \Exception('User role not found. Please run RoleSeeder first.');
+        if (!$superadminRole || !$userRole) {
+            throw new \Exception('Roles not found. Please run RoleSeeder first.');
         }
 
         // Superadmin
         DB::table('users')->updateOrInsert(
-            ['email' => 'superadmin@hugoedm.fun'],
+            ['email' => 'superadmin@ptpsf.com'],
             [
-                'name' => 'Superadmin',
-                'email' => 'superadmin@hugoedm.fun',
+                'name' => 'Super Admin',
+                'email' => 'superadmin@ptpsf.com',
                 'password' => Hash::make('password123'),
                 'role_id' => $superadminRole->id,
                 'is_active' => true,
@@ -35,12 +31,26 @@ class UserSeeder extends Seeder
             ]
         );
 
-        // User biasa
+        // Admin User
         DB::table('users')->updateOrInsert(
-            ['email' => 'user@hugoedm.fun'],
+            ['email' => 'admin@ptpsf.com'],
             [
-                'name' => 'User Biasa',
-                'email' => 'user@hugoedm.fun',
+                'name' => 'Admin User',
+                'email' => 'admin@ptpsf.com',
+                'password' => Hash::make('password123'),
+                'role_id' => $userRole->id,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        // Regular User
+        DB::table('users')->updateOrInsert(
+            ['email' => 'user@ptpsf.com'],
+            [
+                'name' => 'Regular User',
+                'email' => 'user@ptpsf.com',
                 'password' => Hash::make('password123'),
                 'role_id' => $userRole->id,
                 'is_active' => true,
