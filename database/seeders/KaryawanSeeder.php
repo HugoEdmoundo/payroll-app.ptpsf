@@ -60,23 +60,27 @@ class KaryawanSeeder extends Seeder
         ];
 
         foreach ($karyawanData as $index => $data) {
-            Karyawan::create([
-                'nama_karyawan' => $data['nama'],
-                'email' => strtolower(str_replace(' ', '.', $data['nama'])) . '@ptpsf.com',
-                'no_telp' => '08' . rand(1000000000, 9999999999),
-                'tanggal_bergabung' => Carbon::now()->subMonths(rand(1, 36)),
-                'jenis_karyawan' => $data['jenis'],
-                'jabatan' => $data['jabatan'],
-                'lokasi_kerja' => $data['lokasi'],
-                'status_pegawai' => $data['status'],
-                'status_karyawan' => 'Active',
-                'bank' => ['BCA', 'Mandiri', 'BNI', 'BRI'][rand(0, 3)],
-                'no_rekening' => rand(1000000000, 9999999999),
-                'npwp' => rand(10, 99) . '.' . rand(100, 999) . '.' . rand(100, 999) . '.' . rand(1, 9) . '-' . rand(100, 999) . '.000',
-                'no_bpjs_kesehatan' => '0001' . str_pad($index + 1, 8, '0', STR_PAD_LEFT),
-                'no_bpjs_ketenagakerjaan' => '1001' . str_pad($index + 1, 8, '0', STR_PAD_LEFT),
-                'jumlah_tanggungan_keluarga' => rand(0, 3),
-            ]);
+            $email = strtolower(str_replace(' ', '.', $data['nama'])) . '@ptpsf.com';
+            
+            Karyawan::updateOrCreate(
+                ['email' => $email],
+                [
+                    'nama_karyawan' => $data['nama'],
+                    'no_telp' => '08' . rand(1000000000, 9999999999),
+                    'tanggal_bergabung' => Carbon::now()->subMonths(rand(1, 36)),
+                    'jenis_karyawan' => $data['jenis'],
+                    'jabatan' => $data['jabatan'],
+                    'lokasi_kerja' => $data['lokasi'],
+                    'status_pegawai' => $data['status'],
+                    'status_karyawan' => 'Active',
+                    'bank' => ['BCA', 'Mandiri', 'BNI', 'BRI'][rand(0, 3)],
+                    'no_rekening' => rand(1000000000, 9999999999),
+                    'npwp' => rand(10, 99) . '.' . rand(100, 999) . '.' . rand(100, 999) . '.' . rand(1, 9) . '-' . rand(100, 999) . '.000',
+                    'no_bpjs_kesehatan' => '0001' . str_pad($index + 1, 8, '0', STR_PAD_LEFT),
+                    'no_bpjs_ketenagakerjaan' => '1001' . str_pad($index + 1, 8, '0', STR_PAD_LEFT),
+                    'jumlah_tanggungan_keluarga' => rand(0, 3),
+                ]
+            );
         }
     }
 }

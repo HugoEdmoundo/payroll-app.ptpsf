@@ -28,6 +28,11 @@ class DatabaseSeeder extends Seeder
         $this->call(SystemSettingSeeder::class);
         $this->command->newLine();
         
+        // 1b. Jabatan Jenis Karyawan Mapping
+        $this->command->info('🔗 Step 1b: Jabatan Jenis Karyawan Mapping');
+        $this->call(JabatanJenisKaryawanSeeder::class);
+        $this->command->newLine();
+        
         // 2. Roles & Permissions
         $this->command->info('🔐 Step 2: Roles & Permissions');
         $this->call(RoleSeeder::class);
