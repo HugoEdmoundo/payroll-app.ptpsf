@@ -70,7 +70,7 @@ class KaryawanController extends Controller
         $request->validate([
             'nama_karyawan' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
-            'no_telp' => 'nullable|string|max:20',
+            'no_telp' => 'nullable|string|max:20',  
             'join_date' => 'required|date',
             'jabatan' => 'required|string',
             'lokasi_kerja' => 'required|string',
@@ -102,7 +102,6 @@ class KaryawanController extends Controller
             'jabatan' => 'required|string',
             'lokasi_kerja' => 'required|string',
             'jenis_karyawan' => 'required|string',
-            'status_pegawai' => 'required|string',
             'no_rekening' => 'required|string|max:20',
             'bank' => 'required|string',
             'status_karyawan' => 'required|string',
