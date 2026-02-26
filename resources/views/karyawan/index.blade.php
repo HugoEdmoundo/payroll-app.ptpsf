@@ -5,6 +5,61 @@
 
 @section('content')
 <div class="space-y-6">
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Total Karyawan -->
+        <div class="card p-4 lg:p-6">
+            <div class="flex items-center gap-3">
+                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-indigo-100 flex items-center justify-center">
+                    <i class="fas fa-users text-indigo-600 text-lg"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-medium text-gray-600">Total Karyawan</p>
+                    <p class="text-xl lg:text-2xl font-bold text-gray-900 truncate">{{ number_format($stats['total']) }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active -->
+        <div class="card p-4 lg:p-6">
+            <div class="flex items-center gap-3">
+                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-green-100 flex items-center justify-center">
+                    <i class="fas fa-user-check text-green-600 text-lg"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-medium text-gray-600">Active</p>
+                    <p class="text-xl lg:text-2xl font-bold text-green-600 truncate">{{ number_format($stats['active']) }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Non-Active -->
+        <div class="card p-4 lg:p-6">
+            <div class="flex items-center gap-3">
+                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-yellow-100 flex items-center justify-center">
+                    <i class="fas fa-user-clock text-yellow-600 text-lg"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-medium text-gray-600">Non-Active</p>
+                    <p class="text-xl lg:text-2xl font-bold text-yellow-600 truncate">{{ number_format($stats['non_active']) }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resign -->
+        <div class="card p-4 lg:p-6">
+            <div class="flex items-center gap-3">
+                <div class="h-12 w-12 flex-shrink-0 rounded-full bg-red-100 flex items-center justify-center">
+                    <i class="fas fa-user-times text-red-600 text-lg"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-medium text-gray-600">Resign</p>
+                    <p class="text-xl lg:text-2xl font-bold text-red-600 truncate">{{ number_format($stats['resign']) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Header with Actions -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div class="min-w-0 flex-1">

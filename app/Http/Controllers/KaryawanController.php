@@ -39,7 +39,16 @@ class KaryawanController extends Controller
         }
 
         $karyawan = $query->orderBy('created_at', 'desc')->paginate(10);
-        return view('karyawan.index', compact('karyawan'));
+        
+        // Stats
+        $stats = [
+            'total' => Karyawan::count(),
+            'active' => Karyawan::where('status_karyawan', 'Active')->count(),
+            'non_active' => Karyawan::where('status_karyawan', 'Non-Active')->count(),
+            'resign' => Karyawan::where('status_karyawan', 'Resign')->count(),
+        ];
+        
+        return view('karyawan.index', compact('karyawan', 'stats'));
     }
 
     public function create()

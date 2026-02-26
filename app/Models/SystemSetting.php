@@ -11,14 +11,39 @@ class SystemSetting extends Model
 
     protected $table = 'system_settings';
     
-    protected $fillable = ['group', 'key', 'value', 'order'];
+    protected $fillable = ['group', 'key', 'value', 'order', 'jenis_karyawan'];
 
-    public static function getOptions($group)
+    public static function getOptions($group, $jenisKaryawan = null)
     {
-        return self::where('group', $group)
-            ->orderBy('order')
+        $query = self::where('group', $group);
+        
+        // Filter by jenis_karyawan if provided (for jabatan_options)
+        if ($jenisKaryawan && $group === 'jabatan_options') {
+            $query->where(function($q) use ($jenisKaryawan) {
+                $q->where('jenis_karyawan', $jenisKaryawan)
+                  ->orWhereNull('jenis_karyawan');
+            });
+        }
+        
+        return $query->orderBy('order')
             ->orderBy('value')
             ->pluck('value', 'key')
+            ->toArray();
+    }
+    
+    public static function getJabatanByJenisKaryawan($jenisKaryawan)
+    {
+        return self::where('group', 'jabatan_options')
+            ->where(function($q) use ($jenisKaryawan) {
+                $q->where('jenis_karyawan', $jenisKaryawan)
+                  ->orWhereNull('jenis_karyawan');
+            })
+            ->orderBy('order')
+            ->orderBy('value')
+            ->get()
+            ->mapWithKeys(function($item) {
+                return [$item->key => $item->value];
+            })
             ->toArray();
     }
 }

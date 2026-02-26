@@ -29,6 +29,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard/stats', [\App\Http\Controllers\Api\DashboardApiController::class, 'stats'])->name('dashboard.stats');
         Route::get('/dashboard/managed-users', [\App\Http\Controllers\Api\DashboardApiController::class, 'managedUsers'])->name('dashboard.managed-users');
         Route::get('/dashboard/pengeluaran', [\App\Http\Controllers\Api\DashboardApiController::class, 'pengeluaran'])->name('dashboard.pengeluaran');
+        
+        // Get jabatan by jenis karyawan
+        Route::get('/jabatan/{jenisKaryawan}', function($jenisKaryawan) {
+            return response()->json([
+                'jabatan' => \App\Models\SystemSetting::getJabatanByJenisKaryawan($jenisKaryawan)
+            ]);
+        })->name('jabatan.by-jenis');
     });
     
     // Global Search
