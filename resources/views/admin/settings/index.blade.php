@@ -123,79 +123,70 @@
                             </div>
                         </div>
                         
-                        <!-- Existing Options List -->
-                        {{-- <div class="space-y-3">
-                            <h4 class="text-sm font-semibold text-gray-700 uppercase tracking-wider">Current Options</h4>
+                        <!-- Current Options -->
+                        @if($groupSettings->count() > 0)
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-semibold text-gray-900 uppercase tracking-wider flex items-center">
+                                    <i class="fas fa-list text-gray-600 mr-2"></i>
+                                    Current Options
+                                </h4>
+                                <span class="text-xs text-gray-500">
+                                    {{ $groupSettings->count() }} {{ $groupSettings->count() === 1 ? 'option' : 'options' }}
+                                </span>
+                            </div>
                             
-                            @forelse($groupSettings as $index => $setting)
-                            <div class="group relative bg-white rounded-lg border-2 border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all duration-200">
-                                <div class="flex items-center p-4">
-                                    <!-- Drag Handle -->
-                                    <div class="flex-shrink-0 mr-4 text-gray-400 group-hover:text-gray-600">
-                                        <i class="fas fa-grip-vertical"></i>
-                                    </div>
-                                    
-                                    <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-4">
-                                        <!-- Key -->
-                                        <div class="md:col-span-4">
-                                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Key</label>
-                                            <div class="relative">
-                                                <input type="text" 
-                                                       name="settings[{{ $index }}][key]" 
-                                                       value="{{ $setting->key }}"
-                                                       class="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-300 rounded-lg font-mono"
-                                                       readonly>
-                                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                                    <i class="fas fa-lock text-gray-400 text-xs"></i>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                @foreach($groupSettings->sortBy('order') as $setting)
+                                <div class="group bg-white rounded-lg border-2 border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all duration-150">
+                                    <div class="p-4">
+                                        <div class="flex items-start justify-between mb-3">
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center mb-1">
+                                                    <i class="fas fa-tag text-indigo-500 text-xs mr-2"></i>
+                                                    <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Key</span>
                                                 </div>
+                                                <p class="text-sm font-mono text-gray-700 break-all">{{ $setting->key }}</p>
                                             </div>
-                                        </div>
-                                        
-                                        <!-- Value -->
-                                        <div class="md:col-span-6">
-                                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Display Value</label>
-                                            <input type="text" 
-                                                   name="settings[{{ $index }}][value]" 
-                                                   value="{{ $setting->value }}"
-                                                   class="w-full px-3 py-2.5 text-sm border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-                                                   required>
-                                            <input type="hidden" name="settings[{{ $index }}][order]" value="{{ $index }}">
-                                        </div>
-                                        
-                                        <!-- Actions -->
-                                        <div class="md:col-span-2 flex items-end justify-end">
-                                            <button type="button" 
+                                            <button type="button"
                                                     onclick="deleteSetting('{{ $key }}', {{ $setting->id }})"
-                                                    class="px-4 py-2.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition duration-150 font-medium"
+                                                    class="ml-2 p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition opacity-0 group-hover:opacity-100"
                                                     title="Delete option">
-                                                <i class="fas fa-trash-alt mr-1"></i>Delete
+                                                <i class="fas fa-trash text-xs"></i>
                                             </button>
                                         </div>
+                                        
+                                        <div class="pt-3 border-t border-gray-100">
+                                            <div class="flex items-center mb-1">
+                                                <i class="fas fa-eye text-purple-500 text-xs mr-2"></i>
+                                                <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Display Value</span>
+                                            </div>
+                                            <input type="text" 
+                                                   name="settings[{{ $loop->index }}][value]" 
+                                                   value="{{ $setting->value }}"
+                                                   class="w-full px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition">
+                                            <input type="hidden" name="settings[{{ $loop->index }}][key]" value="{{ $setting->key }}">
+                                            <input type="hidden" name="settings[{{ $loop->index }}][order]" value="{{ $setting->order }}">
+                                        </div>
                                     </div>
                                 </div>
+                                @endforeach
                             </div>
-                            @empty
-                            <div class="text-center py-16 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border-2 border-dashed border-gray-300">
-                                <div class="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-sm mb-4">
-                                    <i class="fas fa-inbox text-gray-400 text-3xl"></i>
-                                </div>
-                                <h4 class="text-lg font-semibold text-gray-900 mb-2">No Options Yet</h4>
-                                <p class="text-gray-500 mb-6 max-w-sm mx-auto">Get started by adding your first {{ strtolower($label) }} option using the form above.</p>
-                                <div class="inline-flex items-center text-sm text-indigo-600 font-medium">
-                                    <i class="fas fa-arrow-up mr-2"></i>
-                                    Add your first option above
-                                </div>
+                            
+                            <div class="flex justify-end pt-6 border-t border-gray-200">
+                                <button type="submit"
+                                        class="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-150 shadow-md hover:shadow-lg">
+                                    <i class="fas fa-save mr-2"></i>Save All Changes
+                                </button>
                             </div>
-                            @endforelse
-                        </div> --}}
-                        
-                        <!-- Save Button -->
-                        @if($groupSettings->count() > 0)
-                        <div class="flex justify-end pt-6 border-t border-gray-200">
-                            <button type="submit"
-                                    class="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-150 shadow-md hover:shadow-lg">
-                                <i class="fas fa-save mr-2"></i>Save All Changes
-                            </button>
+                        </div>
+                        @else
+                        <div class="text-center py-16 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-200 mb-4">
+                                <i class="fas fa-inbox text-gray-400 text-2xl"></i>
+                            </div>
+                            <h5 class="text-lg font-medium text-gray-900 mb-1">No Options Yet</h5>
+                            <p class="text-sm text-gray-600">Add your first option using the form above.</p>
                         </div>
                         @endif
                     </form>
