@@ -21,24 +21,10 @@ class UserSeeder extends Seeder
         DB::table('users')->updateOrInsert(
             ['email' => 'superadmin@ptpsf.com'],
             [
-                'name' => 'Super Admin',
+                'name' => 'Superadmin',
                 'email' => 'superadmin@ptpsf.com',
                 'password' => Hash::make('password123'),
                 'role_id' => $superadminRole->id,
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        );
-
-        // Admin User
-        DB::table('users')->updateOrInsert(
-            ['email' => 'admin@ptpsf.com'],
-            [
-                'name' => 'Admin User',
-                'email' => 'admin@ptpsf.com',
-                'password' => Hash::make('password123'),
-                'role_id' => $userRole->id,
                 'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
