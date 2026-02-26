@@ -204,13 +204,15 @@ class PengaturanGajiController extends Controller
             ->with('success', 'Pengaturan gaji status pegawai berhasil ditambahkan.');
     }
     
-    public function showStatusPegawai(PengaturanGajiStatusPegawai $pengaturanGaji)
+    public function showStatusPegawai($id)
     {
+        $pengaturanGaji = PengaturanGajiStatusPegawai::findOrFail($id);
         return view('payroll.pengaturan-gaji.status-pegawai.show', compact('pengaturanGaji'));
     }
     
-    public function editStatusPegawai(PengaturanGajiStatusPegawai $pengaturanGaji)
+    public function editStatusPegawai($id)
     {
+        $pengaturanGaji = PengaturanGajiStatusPegawai::findOrFail($id);
         $settings = [
             'status_pegawai' => ['Harian', 'OJT'], // Only Harian and OJT
             'jabatan_options' => SystemSetting::getOptions('jabatan_options'),
@@ -220,8 +222,10 @@ class PengaturanGajiController extends Controller
         return view('payroll.pengaturan-gaji.status-pegawai.edit', compact('pengaturanGaji', 'settings'));
     }
     
-    public function updateStatusPegawai(Request $request, PengaturanGajiStatusPegawai $pengaturanGaji)
+    public function updateStatusPegawai(Request $request, $id)
     {
+        $pengaturanGaji = PengaturanGajiStatusPegawai::findOrFail($id);
+        
         $request->validate([
             'status_pegawai' => 'required|string|in:Harian,OJT', // Only Harian and OJT
             'jabatan' => 'required|string',
@@ -233,7 +237,7 @@ class PengaturanGajiController extends Controller
         $exists = PengaturanGajiStatusPegawai::where('status_pegawai', $request->status_pegawai)
             ->where('jabatan', $request->jabatan)
             ->where('lokasi_kerja', $request->lokasi_kerja)
-            ->where('id_pengaturan', '!=', $pengaturanGaji->id_pengaturan)
+            ->where('id_pengaturan', '!=', $id)
             ->exists();
             
         if ($exists) {
@@ -246,8 +250,9 @@ class PengaturanGajiController extends Controller
             ->with('success', 'Pengaturan gaji status pegawai berhasil diupdate.');
     }
     
-    public function destroyStatusPegawai(PengaturanGajiStatusPegawai $pengaturanGaji)
+    public function destroyStatusPegawai($id)
     {
+        $pengaturanGaji = PengaturanGajiStatusPegawai::findOrFail($id);
         $statusPegawai = $pengaturanGaji->status_pegawai;
         $pengaturanGaji->delete();
         

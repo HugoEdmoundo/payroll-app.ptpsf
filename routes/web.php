@@ -80,10 +80,10 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/', [PengaturanGajiController::class, 'indexStatusPegawai'])->name('index');
                 Route::get('/create', [PengaturanGajiController::class, 'createStatusPegawai'])->name('create');
                 Route::post('/', [PengaturanGajiController::class, 'storeStatusPegawai'])->name('store');
-                Route::get('/{pengaturanGaji}', [PengaturanGajiController::class, 'showStatusPegawai'])->name('show');
-                Route::get('/{pengaturanGaji}/edit', [PengaturanGajiController::class, 'editStatusPegawai'])->name('edit');
-                Route::put('/{pengaturanGaji}', [PengaturanGajiController::class, 'updateStatusPegawai'])->name('update');
-                Route::delete('/{pengaturanGaji}', [PengaturanGajiController::class, 'destroyStatusPegawai'])->name('destroy');
+                Route::get('/{id}', [PengaturanGajiController::class, 'showStatusPegawai'])->name('show');
+                Route::get('/{id}/edit', [PengaturanGajiController::class, 'editStatusPegawai'])->name('edit');
+                Route::put('/{id}', [PengaturanGajiController::class, 'updateStatusPegawai'])->name('update');
+                Route::delete('/{id}', [PengaturanGajiController::class, 'destroyStatusPegawai'])->name('destroy');
             });
         });
 
