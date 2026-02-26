@@ -14,7 +14,7 @@ use App\Exports\SlipGajiExport;
 
 class SlipGajiController extends Controller
 {
-    use GlobalSearchable;
+    use GlobalSearchable, \App\Traits\LogsActivity;
     public function index(Request $request)
     {
         // Get all unique periodes from Hitung Gaji

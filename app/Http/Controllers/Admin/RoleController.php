@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    use GlobalSearchable;
+    use GlobalSearchable, \App\Traits\LogsActivity;
     public function index(Request $request)
     {
         if (!auth()->user()->isSuperadmin()) {

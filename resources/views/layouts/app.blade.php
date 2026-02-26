@@ -17,6 +17,7 @@
     
     <!-- Real-time Auto-Refresh System -->
     <script src="{{ asset('js/realtime.js') }}" defer></script>
+    <script src="{{ asset('js/realtime-universal.js') }}" defer></script>
     
     <style>
         /* Custom styles */

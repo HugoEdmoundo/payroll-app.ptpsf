@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class AbsensiController extends Controller
 {
-    use GlobalSearchable;
+    use GlobalSearchable, \App\Traits\LogsActivity;
 
     public function index(Request $request)
     {

@@ -12,7 +12,7 @@ use Carbon\Carbon;
 
 class KasbonController extends Controller
 {
-    use GlobalSearchable;
+    use GlobalSearchable, \App\Traits\LogsActivity;
 
     public function index(Request $request)
     {
