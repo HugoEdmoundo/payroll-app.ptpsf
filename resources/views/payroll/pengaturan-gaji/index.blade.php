@@ -56,9 +56,17 @@
         </form>
     </div>
 
-    <!-- Pengaturan Gaji Table -->
-    <div class="card p-0 overflow-hidden">
-        @include('components.pengaturan-gaji.table', ['pengaturanGaji' => $pengaturanGaji])
+    <!-- Pengaturan Gaji Table with Real-Time Auto-Refresh -->
+    <div class="card p-0 overflow-hidden" x-data="realtimeTable({ interval: 'slow' })">
+        <div x-show="loading" class="absolute top-2 right-2 z-10">
+            <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-indigo-600 bg-indigo-50 rounded-full">
+                <i class="fas fa-sync fa-spin mr-1"></i> Updating...
+            </span>
+        </div>
+        
+        <div data-realtime-content>
+            @include('components.pengaturan-gaji.table', ['pengaturanGaji' => $pengaturanGaji])
+        </div>
     </div>
 
     <!-- Pagination -->

@@ -170,10 +170,17 @@
         </form>
     </div>
 
-    <!-- Table -->
-    <div class="card overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
+    <!-- Table with Real-Time Auto-Refresh -->
+    <div class="card overflow-hidden" x-data="realtimeTable({ interval: 'normal' })">
+        <div x-show="loading" class="absolute top-2 right-2 z-10">
+            <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-indigo-600 bg-indigo-50 rounded-full">
+                <i class="fas fa-sync fa-spin mr-1"></i> Updating...
+            </span>
+        </div>
+        
+        <div data-realtime-content>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-64">Nama Karyawan</th>
@@ -256,6 +263,7 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
         </div>
     </div>
 

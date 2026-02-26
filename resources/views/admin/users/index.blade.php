@@ -19,8 +19,15 @@
         </div>
     </div>
 
-    <!-- Users Table -->
-    <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+    <!-- Users Table with Real-Time Auto-Refresh -->
+    <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden" x-data="realtimeTable({ interval: 'slow' })">
+        <div x-show="loading" class="absolute top-2 right-2 z-10">
+            <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-indigo-600 bg-indigo-50 rounded-full">
+                <i class="fas fa-sync fa-spin mr-1"></i> Updating...
+            </span>
+        </div>
+        
+        <div data-realtime-content>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
@@ -123,6 +130,7 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
         </div>
     </div>
 
