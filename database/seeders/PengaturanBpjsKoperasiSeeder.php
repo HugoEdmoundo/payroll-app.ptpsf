@@ -9,24 +9,32 @@ class PengaturanBpjsKoperasiSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create or update single active configuration
-        PengaturanBpjsKoperasi::updateOrCreate(
-            ['is_active' => true],
+        $data = [
             [
-                // BPJS Components (Pendapatan)
-                'bpjs_kesehatan' => 400000,
-                'bpjs_ketenagakerjaan' => 250000,
-                'bpjs_kecelakaan_kerja' => 150000,
-                'bpjs_jht' => 200000,
-                'bpjs_jp' => 100000,
-                
-                // Koperasi (Potongan)
-                'koperasi' => 100000,
-                
-                'keterangan' => 'Default BPJS & Koperasi configuration',
-            ]
-        );
-        
-        $this->command->info('✓ Pengaturan BPJS & Koperasi seeded successfully!');
+                'status_pegawai' => 'Kontrak',
+                'bpjs_kesehatan' => 50000,
+                'bpjs_kecelakaan_kerja' => 25000,
+                'bpjs_kematian' => 15000,
+                'bpjs_jht' => 100000,
+                'bpjs_jp' => 50000,
+                'koperasi' => 50000,
+            ],
+            [
+                'status_pegawai' => 'OJT',
+                'bpjs_kesehatan' => 0, // OJT tidak dapat BPJS
+                'bpjs_kecelakaan_kerja' => 0,
+                'bpjs_kematian' => 0,
+                'bpjs_jht' => 0,
+                'bpjs_jp' => 0,
+                'koperasi' => 30000, // OJT dapat koperasi
+            ],
+        ];
+
+        foreach ($data as $item) {
+            PengaturanBpjsKoperasi::updateOrCreate(
+                ['status_pegawai' => $item['status_pegawai']],
+                $item
+            );
+        }
     }
 }
