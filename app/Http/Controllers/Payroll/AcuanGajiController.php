@@ -164,17 +164,15 @@ class AcuanGajiController extends Controller
                 continue; // Skip if no salary configuration
             }
 
-            // Get BPJS & Koperasi from PengaturanBpjsKoperasi module
-            $bpjsKoperasi = \App\Models\PengaturanBpjsKoperasi::where('jenis_karyawan', $karyawan->jenis_karyawan)
-                                                               ->where('status_pegawai', $karyawan->status_pegawai)
-                                                               ->first();
+            // Get BPJS & Koperasi from PengaturanBpjsKoperasi module (per status_pegawai only)
+            $bpjsKoperasi = \App\Models\PengaturanBpjsKoperasi::where('status_pegawai', $karyawan->status_pegawai)->first();
 
             // Get NKI for tunjangan prestasi calculation
             $nki = \App\Models\NKI::where('id_karyawan', $karyawan->id_karyawan)
                                   ->where('periode', $periode)
                                   ->first();
             
-            // Calculate tunjangan prestasi = tunjangan_operasional × NKI%
+            // Calculate tunjangan prestasi = tunjangan_prestasi × NKI%
             $tunjanganPrestasi = 0;
             if ($nki && $pengaturan->tunjangan_prestasi > 0) {
                 $tunjanganPrestasi = $pengaturan->tunjangan_prestasi * ($nki->persentase_tunjangan / 100);
@@ -197,31 +195,55 @@ class AcuanGajiController extends Controller
                 }
             }
 
-            // Determine if this is status pegawai (Harian/OJT) or regular employee (Kontrak)
-            $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT']);
-            
-            // Determine BPJS & Koperasi eligibility
+            // Determine BPJS & Koperasi based on status_pegawai
             $bpjsPendapatan = 0;
-            $bpjsPengeluaran = 0;
             $koperasiPengeluaran = 0;
             
             if ($bpjsKoperasi) {
-                // BPJS: Only for Kontrak (not OJT, not Harian)
+                // BPJS Pendapatan: Only for Kontrak
                 if ($karyawan->status_pegawai === 'Kontrak') {
-                    $bpjsPendapatan = $bpjsKoperasi->bpjs_kesehatan_pendapatan + 
-                                     $bpjsKoperasi->bpjs_kecelakaan_kerja_pendapatan + 
-                                     $bpjsKoperasi->bpjs_kematian_pendapatan + 
-                                     $bpjsKoperasi->bpjs_jht_pendapatan + 
-                                     $bpjsKoperasi->bpjs_jp_pendapatan;
-                    
-                    $bpjsPengeluaran = $bpjsKoperasi->bpjs_kesehatan_pengeluaran + 
-                                      $bpjsKoperasi->bpjs_kecelakaan_kerja_pengeluaran + 
-                                      $bpjsKoperasi->bpjs_kematian_pengeluaran + 
-                                      $bpjsKoperasi->bpjs_jht_pengeluaran + 
-                                      $bpjsKoperasi->bpjs_jp_pengeluaran;
+                    $bpjsPendapatan = $bpjsKoperasi->total_bpjs; // Uses accessor
                 }
                 
-                // Koperasi: All Active except Harian
+                // Koperasi: For Kontrak and OJT (not Harian)
+                if (in_array($karyawan->status_pegawai, ['Kontrak', 'OJT'])) {
+                    $koperasiPengeluaran = $bpjsKoperasi->koperasi;
+                }
+            }
+            
+            // Create Acuan Gaji
+            AcuanGaji::create([
+                'id_karyawan' => $karyawan->id_karyawan,
+                'periode' => $periode,
+                // Pendapatan
+                'gaji_pokok' => $pengaturan->gaji_pokok,
+                'bpjs_kesehatan' => $bpjsKoperasi && $karyawan->status_pegawai === 'Kontrak' ? $bpjsKoperasi->bpjs_kesehatan : 0,
+                'bpjs_kecelakaan_kerja' => $bpjsKoperasi && $karyawan->status_pegawai === 'Kontrak' ? $bpjsKoperasi->bpjs_kecelakaan_kerja : 0,
+                'bpjs_kematian' => $bpjsKoperasi && $karyawan->status_pegawai === 'Kontrak' ? $bpjsKoperasi->bpjs_kematian : 0,
+                'bpjs_jht' => $bpjsKoperasi && $karyawan->status_pegawai === 'Kontrak' ? $bpjsKoperasi->bpjs_jht : 0,
+                'bpjs_jp' => $bpjsKoperasi && $karyawan->status_pegawai === 'Kontrak' ? $bpjsKoperasi->bpjs_jp : 0,
+                'tunjangan_prestasi' => $tunjanganPrestasi,
+                'tunjangan_konjungtur' => 0,
+                'benefit_ibadah' => 0,
+                'benefit_komunikasi' => 0,
+                'benefit_operasional' => 0,
+                'reward' => 0,
+                // Pengeluaran
+                'koperasi' => $koperasiPengeluaran,
+                'kasbon' => $kasbonTotal,
+                'umroh' => 0,
+                'kurban' => 0,
+                'mutabaah' => 0,
+                'potongan_absensi' => 0,
+                'potongan_kehadiran' => 0,
+            ]);
+
+            $generated++;
+        }
+
+        return redirect()->route('payroll.acuan-gaji.index', ['periode' => $periode])
+                        ->with('success', "Berhasil generate {$generated} acuan gaji. {$skipped} dilewati (sudah ada atau tidak ada pengaturan gaji).");
+    }
                 if ($karyawan->status_karyawan === 'Active' && $karyawan->status_pegawai !== 'Harian') {
                     $koperasiPengeluaran = $bpjsKoperasi->koperasi;
                 }
