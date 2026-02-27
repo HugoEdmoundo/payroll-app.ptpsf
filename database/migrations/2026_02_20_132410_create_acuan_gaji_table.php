@@ -18,11 +18,11 @@ return new class extends Migration
             
             // Pendapatan
             $table->decimal('gaji_pokok', 15, 2)->default(0);
-            $table->decimal('bpjs_kesehatan_pendapatan', 15, 2)->default(0);
-            $table->decimal('bpjs_kecelakaan_kerja_pendapatan', 15, 2)->default(0);
-            $table->decimal('bpjs_kematian_pendapatan', 15, 2)->default(0);
-            $table->decimal('bpjs_jht_pendapatan', 15, 2)->default(0);
-            $table->decimal('bpjs_jp_pendapatan', 15, 2)->default(0);
+            $table->decimal('bpjs_kesehatan', 15, 2)->default(0);
+            $table->decimal('bpjs_kecelakaan_kerja', 15, 2)->default(0);
+            $table->decimal('bpjs_kematian', 15, 2)->default(0);
+            $table->decimal('bpjs_jht', 15, 2)->default(0);
+            $table->decimal('bpjs_jp', 15, 2)->default(0);
             $table->decimal('tunjangan_prestasi', 15, 2)->default(0);
             $table->decimal('tunjangan_konjungtur', 15, 2)->default(0);
             $table->decimal('benefit_ibadah', 15, 2)->default(0);
@@ -32,11 +32,6 @@ return new class extends Migration
             $table->decimal('total_pendapatan', 15, 2)->default(0);
             
             // Pengeluaran
-            $table->decimal('bpjs_kesehatan_pengeluaran', 15, 2)->default(0);
-            $table->decimal('bpjs_kecelakaan_kerja_pengeluaran', 15, 2)->default(0);
-            $table->decimal('bpjs_kematian_pengeluaran', 15, 2)->default(0);
-            $table->decimal('bpjs_jht_pengeluaran', 15, 2)->default(0);
-            $table->decimal('bpjs_jp_pengeluaran', 15, 2)->default(0);
             $table->decimal('koperasi', 15, 2)->default(0);
             $table->decimal('kasbon', 15, 2)->default(0);
             $table->decimal('umroh', 15, 2)->default(0);

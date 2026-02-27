@@ -14,11 +14,11 @@ class HitungGaji extends Model
         'periode',
         // Pendapatan
         'gaji_pokok',
-        'bpjs_kesehatan_pendapatan',
-        'bpjs_kecelakaan_kerja_pendapatan',
-        'bpjs_kematian_pendapatan',
-        'bpjs_jht_pendapatan',
-        'bpjs_jp_pendapatan',
+        'bpjs_kesehatan',
+        'bpjs_kecelakaan_kerja',
+        'bpjs_kematian',
+        'bpjs_jht',
+        'bpjs_jp',
         'tunjangan_prestasi',
         'tunjangan_konjungtur',
         'benefit_ibadah',
@@ -26,11 +26,6 @@ class HitungGaji extends Model
         'benefit_operasional',
         'reward',
         // Pengeluaran
-        'bpjs_kesehatan_pengeluaran',
-        'bpjs_kecelakaan_kerja_pengeluaran',
-        'bpjs_kematian_pengeluaran',
-        'bpjs_jht_pengeluaran',
-        'bpjs_jp_pengeluaran',
         'koperasi',
         'kasbon',
         'umroh',
@@ -52,22 +47,17 @@ class HitungGaji extends Model
     protected $casts = [
         'adjustments' => 'array',
         'gaji_pokok' => 'decimal:2',
-        'bpjs_kesehatan_pendapatan' => 'decimal:2',
-        'bpjs_kecelakaan_kerja_pendapatan' => 'decimal:2',
-        'bpjs_kematian_pendapatan' => 'decimal:2',
-        'bpjs_jht_pendapatan' => 'decimal:2',
-        'bpjs_jp_pendapatan' => 'decimal:2',
+        'bpjs_kesehatan' => 'decimal:2',
+        'bpjs_kecelakaan_kerja' => 'decimal:2',
+        'bpjs_kematian' => 'decimal:2',
+        'bpjs_jht' => 'decimal:2',
+        'bpjs_jp' => 'decimal:2',
         'tunjangan_prestasi' => 'decimal:2',
         'tunjangan_konjungtur' => 'decimal:2',
         'benefit_ibadah' => 'decimal:2',
         'benefit_komunikasi' => 'decimal:2',
         'benefit_operasional' => 'decimal:2',
         'reward' => 'decimal:2',
-        'bpjs_kesehatan_pengeluaran' => 'decimal:2',
-        'bpjs_kecelakaan_kerja_pengeluaran' => 'decimal:2',
-        'bpjs_kematian_pengeluaran' => 'decimal:2',
-        'bpjs_jht_pengeluaran' => 'decimal:2',
-        'bpjs_jp_pengeluaran' => 'decimal:2',
         'koperasi' => 'decimal:2',
         'kasbon' => 'decimal:2',
         'umroh' => 'decimal:2',
@@ -89,8 +79,8 @@ class HitungGaji extends Model
         static::saving(function ($model) {
             // Calculate total pendapatan with adjustments
             $pendapatanFields = [
-                'gaji_pokok', 'bpjs_kesehatan_pendapatan', 'bpjs_kecelakaan_kerja_pendapatan',
-                'bpjs_kematian_pendapatan', 'bpjs_jht_pendapatan', 'bpjs_jp_pendapatan',
+                'gaji_pokok', 'bpjs_kesehatan', 'bpjs_kecelakaan_kerja',
+                'bpjs_kematian', 'bpjs_jht', 'bpjs_jp',
                 'tunjangan_prestasi', 'tunjangan_konjungtur', 'benefit_ibadah',
                 'benefit_komunikasi', 'benefit_operasional', 'reward'
             ];
@@ -112,8 +102,6 @@ class HitungGaji extends Model
             
             // Calculate total pengeluaran with adjustments
             $pengeluaranFields = [
-                'bpjs_kesehatan_pengeluaran', 'bpjs_kecelakaan_kerja_pengeluaran',
-                'bpjs_kematian_pengeluaran', 'bpjs_jht_pengeluaran', 'bpjs_jp_pengeluaran',
                 'koperasi', 'kasbon', 'umroh', 'kurban',
                 'mutabaah', 'potongan_absensi', 'potongan_kehadiran'
             ];

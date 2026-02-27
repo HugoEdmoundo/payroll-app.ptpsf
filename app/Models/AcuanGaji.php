@@ -17,11 +17,11 @@ class AcuanGaji extends Model
         'periode',
         // Pendapatan
         'gaji_pokok',
-        'bpjs_kesehatan_pendapatan',
-        'bpjs_kecelakaan_kerja_pendapatan',
-        'bpjs_kematian_pendapatan',
-        'bpjs_jht_pendapatan',
-        'bpjs_jp_pendapatan',
+        'bpjs_kesehatan',
+        'bpjs_kecelakaan_kerja',
+        'bpjs_kematian',
+        'bpjs_jht',
+        'bpjs_jp',
         'tunjangan_prestasi',
         'tunjangan_konjungtur',
         'benefit_ibadah',
@@ -30,11 +30,6 @@ class AcuanGaji extends Model
         'reward',
         'total_pendapatan',
         // Pengeluaran
-        'bpjs_kesehatan_pengeluaran',
-        'bpjs_kecelakaan_kerja_pengeluaran',
-        'bpjs_kematian_pengeluaran',
-        'bpjs_jht_pengeluaran',
-        'bpjs_jp_pengeluaran',
         'koperasi',
         'kasbon',
         'umroh',
@@ -49,11 +44,11 @@ class AcuanGaji extends Model
 
     protected $casts = [
         'gaji_pokok' => 'decimal:2',
-        'bpjs_kesehatan_pendapatan' => 'decimal:2',
-        'bpjs_kecelakaan_kerja_pendapatan' => 'decimal:2',
-        'bpjs_kematian_pendapatan' => 'decimal:2',
-        'bpjs_jht_pendapatan' => 'decimal:2',
-        'bpjs_jp_pendapatan' => 'decimal:2',
+        'bpjs_kesehatan' => 'decimal:2',
+        'bpjs_kecelakaan_kerja' => 'decimal:2',
+        'bpjs_kematian' => 'decimal:2',
+        'bpjs_jht' => 'decimal:2',
+        'bpjs_jp' => 'decimal:2',
         'tunjangan_prestasi' => 'decimal:2',
         'tunjangan_konjungtur' => 'decimal:2',
         'benefit_ibadah' => 'decimal:2',
@@ -61,11 +56,6 @@ class AcuanGaji extends Model
         'benefit_operasional' => 'decimal:2',
         'reward' => 'decimal:2',
         'total_pendapatan' => 'decimal:2',
-        'bpjs_kesehatan_pengeluaran' => 'decimal:2',
-        'bpjs_kecelakaan_kerja_pengeluaran' => 'decimal:2',
-        'bpjs_kematian_pengeluaran' => 'decimal:2',
-        'bpjs_jht_pengeluaran' => 'decimal:2',
-        'bpjs_jp_pengeluaran' => 'decimal:2',
         'koperasi' => 'decimal:2',
         'kasbon' => 'decimal:2',
         'umroh' => 'decimal:2',
@@ -85,11 +75,11 @@ class AcuanGaji extends Model
         static::saving(function ($model) {
             // Calculate Total Pendapatan
             $model->total_pendapatan = $model->gaji_pokok +
-                $model->bpjs_kesehatan_pendapatan +
-                $model->bpjs_kecelakaan_kerja_pendapatan +
-                $model->bpjs_kematian_pendapatan +
-                $model->bpjs_jht_pendapatan +
-                $model->bpjs_jp_pendapatan +
+                $model->bpjs_kesehatan +
+                $model->bpjs_kecelakaan_kerja +
+                $model->bpjs_kematian +
+                $model->bpjs_jht +
+                $model->bpjs_jp +
                 $model->tunjangan_prestasi +
                 $model->tunjangan_konjungtur +
                 $model->benefit_ibadah +
@@ -98,12 +88,7 @@ class AcuanGaji extends Model
                 $model->reward;
             
             // Calculate Total Pengeluaran
-            $model->total_pengeluaran = $model->bpjs_kesehatan_pengeluaran +
-                $model->bpjs_kecelakaan_kerja_pengeluaran +
-                $model->bpjs_kematian_pengeluaran +
-                $model->bpjs_jht_pengeluaran +
-                $model->bpjs_jp_pengeluaran +
-                $model->koperasi +
+            $model->total_pengeluaran = $model->koperasi +
                 $model->kasbon +
                 $model->umroh +
                 $model->kurban +
@@ -125,5 +110,4 @@ class AcuanGaji extends Model
     {
         return $this->hasOne(HitungGaji::class, 'acuan_gaji_id', 'id_acuan');
     }
-
 }
