@@ -37,7 +37,6 @@ return new class extends Migration
             $table->decimal('bpjs_kematian_pengeluaran', 15, 2)->default(0);
             $table->decimal('bpjs_jht_pengeluaran', 15, 2)->default(0);
             $table->decimal('bpjs_jp_pengeluaran', 15, 2)->default(0);
-            $table->decimal('tabungan_koperasi', 15, 2)->default(0);
             $table->decimal('koperasi', 15, 2)->default(0);
             $table->decimal('kasbon', 15, 2)->default(0);
             $table->decimal('umroh', 15, 2)->default(0);

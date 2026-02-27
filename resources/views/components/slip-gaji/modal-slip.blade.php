@@ -169,6 +169,18 @@
                             <td>:</td>
                             <td>{{ $data['karyawan']->bank ?? '-' }}</td>
                         </tr>
+                        
+                        @if($data['nki'])
+                        <tr>
+                            <td class="py-2">NKI</td>
+                            <td>:</td>
+                            <td>{{ number_format($data['nki']->nilai_nki, 2) }} ({{ $data['nki']->persentase_tunjangan }}%)</td>
+
+                            <td class="pl-10"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        @endif
                     </table>
 
                 </div>
@@ -290,28 +302,28 @@
                             @php 
                             $statusInfo = $data['kasbon']->getPaymentStatusInfo();
                             $kasbonAmountInSlip = $data['hitung_gaji']->getFinalValue('kasbon');
-                            $showKasbon = $data['kasbon']->deskripsi || $data['kasbon']->keterangan || $data['kasbon']->total_paid != 0;
+                            $showKasbon = $data['kasbon']->deskripsi || $data['kasbon']->keterangan || $kasbonAmountInSlip > 0;
                             @endphp
                             @if($showKasbon)
                                 @php $hasKeterangan = true; @endphp
                                 <div class="mb-2">
                                     <span class="font-semibold">Kasbon ({{ $data['kasbon']->metode_pembayaran }}):</span>
-                                    @if($data['kasbon']->total_paid != 0 || $kasbonAmountInSlip > 0)
+                                    @if($data['kasbon']->deskripsi)
+                                    <p class="text-gray-600 mt-0.5">Keterangan: {{ $data['kasbon']->deskripsi }}</p>
+                                    @endif
+                                    @if($kasbonAmountInSlip > 0)
                                     <p class="text-gray-600 mt-0.5">
                                         Dibayar bulan ini: Rp {{ number_format($kasbonAmountInSlip, 0, ',', '.') }}
                                     </p>
+                                    @endif
+                                    @if($data['kasbon']->metode_pembayaran === 'Cicilan')
                                     <p class="text-gray-600 mt-0.5">
                                         Status: {{ $statusInfo['message'] }}
                                     </p>
+                                    @else
                                     <p class="text-gray-600 mt-0.5">
-                                        Total Dibayar: Rp {{ number_format($data['kasbon']->total_paid, 0, ',', '.') }} / Rp {{ number_format($data['kasbon']->nominal, 0, ',', '.') }}
+                                        Status: {{ $statusInfo['status'] }}
                                     </p>
-                                    @endif
-                                    @if($data['kasbon']->deskripsi)
-                                    <p class="text-gray-600 mt-0.5">Deskripsi: {{ $data['kasbon']->deskripsi }}</p>
-                                    @endif
-                                    @if($data['kasbon']->keterangan)
-                                    <p class="text-gray-600 mt-0.5">Keterangan: {{ $data['kasbon']->keterangan }}</p>
                                     @endif
                                 </div>
                             @endif
@@ -351,6 +363,21 @@
                         
                         @if(!$hasKeterangan)
                             <p class="text-gray-500 italic">Tidak ada catatan atau keterangan</p>
+                        @endif
+                        
+                        @if($data['hitung_gaji']->adjustments && count($data['hitung_gaji']->adjustments) > 0)
+                        <div class="mt-4 pt-3 border-t border-gray-300">
+                            <div class="font-semibold text-sm mb-2">ADJUSTMENTS</div>
+                            @foreach($data['hitung_gaji']->adjustments as $field => $adj)
+                                @if($adj['nominal'] > 0)
+                                <div class="text-xs text-gray-700 mb-1">
+                                    <span class="font-medium">{{ ucwords(str_replace('_', ' ', $field)) }}</span>
+                                    <span class="text-gray-600">({{ $adj['type'] }})</span>: 
+                                    Rp {{ number_format($adj['nominal'], 0, ',', '.') }}
+                                </div>
+                                @endif
+                            @endforeach
+                        </div>
                         @endif
                     </div>
                     <div class="text-right flex-shrink-0">

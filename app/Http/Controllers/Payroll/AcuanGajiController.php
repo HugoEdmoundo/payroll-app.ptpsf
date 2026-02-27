@@ -164,6 +164,22 @@ class AcuanGajiController extends Controller
                 continue; // Skip if no salary configuration
             }
 
+            // Get BPJS & Koperasi from PengaturanBpjsKoperasi module
+            $bpjsKoperasi = \App\Models\PengaturanBpjsKoperasi::where('jenis_karyawan', $karyawan->jenis_karyawan)
+                                                               ->where('status_pegawai', $karyawan->status_pegawai)
+                                                               ->first();
+
+            // Get NKI for tunjangan prestasi calculation
+            $nki = \App\Models\NKI::where('id_karyawan', $karyawan->id_karyawan)
+                                  ->where('periode', $periode)
+                                  ->first();
+            
+            // Calculate tunjangan prestasi = tunjangan_operasional × NKI%
+            $tunjanganPrestasi = 0;
+            if ($nki && $pengaturan->tunjangan_prestasi > 0) {
+                $tunjanganPrestasi = $pengaturan->tunjangan_prestasi * ($nki->persentase_tunjangan / 100);
+            }
+
             // Get Kasbon - handle both Langsung and Cicilan
             $kasbonTotal = 0;
             
@@ -184,9 +200,36 @@ class AcuanGajiController extends Controller
             // Determine if this is status pegawai (Harian/OJT) or regular employee (Kontrak)
             $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT']);
             
+            // Determine BPJS & Koperasi eligibility
+            $bpjsPendapatan = 0;
+            $bpjsPengeluaran = 0;
+            $koperasiPengeluaran = 0;
+            
+            if ($bpjsKoperasi) {
+                // BPJS: Only for Kontrak (not OJT, not Harian)
+                if ($karyawan->status_pegawai === 'Kontrak') {
+                    $bpjsPendapatan = $bpjsKoperasi->bpjs_kesehatan_pendapatan + 
+                                     $bpjsKoperasi->bpjs_kecelakaan_kerja_pendapatan + 
+                                     $bpjsKoperasi->bpjs_kematian_pendapatan + 
+                                     $bpjsKoperasi->bpjs_jht_pendapatan + 
+                                     $bpjsKoperasi->bpjs_jp_pendapatan;
+                    
+                    $bpjsPengeluaran = $bpjsKoperasi->bpjs_kesehatan_pengeluaran + 
+                                      $bpjsKoperasi->bpjs_kecelakaan_kerja_pengeluaran + 
+                                      $bpjsKoperasi->bpjs_kematian_pengeluaran + 
+                                      $bpjsKoperasi->bpjs_jht_pengeluaran + 
+                                      $bpjsKoperasi->bpjs_jp_pengeluaran;
+                }
+                
+                // Koperasi: All Active except Harian
+                if ($karyawan->status_karyawan === 'Active' && $karyawan->status_pegawai !== 'Harian') {
+                    $koperasiPengeluaran = $bpjsKoperasi->koperasi;
+                }
+            }
+            
             // Create Acuan Gaji
             if ($isStatusPegawai) {
-                // For Harian/OJT: only gaji_pokok, no BPJS or other benefits
+                // For Harian/OJT: only gaji_pokok, no BPJS, koperasi based on eligibility
                 AcuanGaji::create([
                     'id_karyawan' => $karyawan->id_karyawan,
                     'periode' => $periode,
@@ -195,61 +238,58 @@ class AcuanGajiController extends Controller
                     'bpjs_kesehatan_pendapatan' => 0,
                     'bpjs_kecelakaan_kerja_pendapatan' => 0,
                     'bpjs_kematian_pendapatan' => 0,
+                    'bpjs_jht_pendapatan' => 0,
+                    'bpjs_jp_pendapatan' => 0,
+                    'tunjangan_prestasi' => $tunjanganPrestasi,
+                    'tunjangan_konjungtur' => 0,
+                    'benefit_ibadah' => 0,
+                    'benefit_komunikasi' => 0,
                     'benefit_operasional' => 0,
-                    // Pengeluaran (ONLY Kasbon)
+                    'reward' => 0,
+                    // Pengeluaran (Koperasi if eligible + Kasbon)
                     'bpjs_kesehatan_pengeluaran' => 0,
                     'bpjs_kecelakaan_kerja_pengeluaran' => 0,
                     'bpjs_kematian_pengeluaran' => 0,
-                    'koperasi' => 0,
-                    'kasbon' => $kasbonTotal,
-                    // Empty fields
-                    'tunjangan_prestasi' => 0,
-                    'potongan_absensi' => 0,
-                    'bpjs_jht_pendapatan' => 0,
-                    'bpjs_jp_pendapatan' => 0,
-                    'tunjangan_konjungtur' => 0,
-                    'benefit_ibadah' => 0,
-                    'benefit_komunikasi' => 0,
-                    'reward' => 0,
                     'bpjs_jht_pengeluaran' => 0,
                     'bpjs_jp_pengeluaran' => 0,
+                    'koperasi' => $koperasiPengeluaran,
+                    'kasbon' => $kasbonTotal,
                     'umroh' => 0,
                     'kurban' => 0,
                     'mutabaah' => 0,
+                    'potongan_absensi' => 0,
                     'potongan_kehadiran' => 0,
                 ]);
             } else {
-                // For Kontrak (normal employees): full benefits from PengaturanGaji
+                // For Kontrak (normal employees): full benefits from PengaturanGaji + BPJS & Koperasi from module
                 AcuanGaji::create([
                     'id_karyawan' => $karyawan->id_karyawan,
                     'periode' => $periode,
-                    // Pendapatan (from Pengaturan Gaji - READ ONLY)
+                    // Pendapatan (from Pengaturan Gaji + BPJS from module)
                     'gaji_pokok' => $pengaturan->gaji_pokok,
-                    'bpjs_kesehatan_pendapatan' => $pengaturan->bpjs_kesehatan,
-                    'bpjs_kecelakaan_kerja_pendapatan' => $pengaturan->bpjs_kecelakaan_kerja,
-                    'bpjs_kematian_pendapatan' => $pengaturan->bpjs_ketenagakerjaan,
-                    'benefit_operasional' => $pengaturan->tunjangan_operasional,
-                    // Pengeluaran (ONLY Kasbon from Komponen)
-                    'bpjs_kesehatan_pengeluaran' => $pengaturan->bpjs_kesehatan,
-                    'bpjs_kecelakaan_kerja_pengeluaran' => $pengaturan->bpjs_kecelakaan_kerja,
-                    'bpjs_kematian_pengeluaran' => $pengaturan->bpjs_ketenagakerjaan,
-                    'koperasi' => $pengaturan->potongan_koperasi,
-                    'kasbon' => $kasbonTotal, // From Kasbon (Langsung/Cicilan)
-                    // Empty fields - NKI & Absensi will be calculated in Hitung Gaji
-                    'tunjangan_prestasi' => 0,
-                    'potongan_absensi' => 0,
-                    // Empty fields will be filled manually by user
-                    'bpjs_jht_pendapatan' => 0,
-                    'bpjs_jp_pendapatan' => 0,
+                    'bpjs_kesehatan_pendapatan' => $bpjsKoperasi ? $bpjsKoperasi->bpjs_kesehatan_pendapatan : 0,
+                    'bpjs_kecelakaan_kerja_pendapatan' => $bpjsKoperasi ? $bpjsKoperasi->bpjs_kecelakaan_kerja_pendapatan : 0,
+                    'bpjs_kematian_pendapatan' => $bpjsKoperasi ? $bpjsKoperasi->bpjs_kematian_pendapatan : 0,
+                    'bpjs_jht_pendapatan' => $bpjsKoperasi ? $bpjsKoperasi->bpjs_jht_pendapatan : 0,
+                    'bpjs_jp_pendapatan' => $bpjsKoperasi ? $bpjsKoperasi->bpjs_jp_pendapatan : 0,
+                    'tunjangan_prestasi' => $tunjanganPrestasi,
                     'tunjangan_konjungtur' => 0,
                     'benefit_ibadah' => 0,
                     'benefit_komunikasi' => 0,
+                    'benefit_operasional' => 0,
                     'reward' => 0,
-                    'bpjs_jht_pengeluaran' => 0,
-                    'bpjs_jp_pengeluaran' => 0,
+                    // Pengeluaran (BPJS + Koperasi from module + Kasbon)
+                    'bpjs_kesehatan_pengeluaran' => $bpjsKoperasi ? $bpjsKoperasi->bpjs_kesehatan_pengeluaran : 0,
+                    'bpjs_kecelakaan_kerja_pengeluaran' => $bpjsKoperasi ? $bpjsKoperasi->bpjs_kecelakaan_kerja_pengeluaran : 0,
+                    'bpjs_kematian_pengeluaran' => $bpjsKoperasi ? $bpjsKoperasi->bpjs_kematian_pengeluaran : 0,
+                    'bpjs_jht_pengeluaran' => $bpjsKoperasi ? $bpjsKoperasi->bpjs_jht_pengeluaran : 0,
+                    'bpjs_jp_pengeluaran' => $bpjsKoperasi ? $bpjsKoperasi->bpjs_jp_pengeluaran : 0,
+                    'koperasi' => $koperasiPengeluaran,
+                    'kasbon' => $kasbonTotal,
                     'umroh' => 0,
                     'kurban' => 0,
                     'mutabaah' => 0,
+                    'potongan_absensi' => 0,
                     'potongan_kehadiran' => 0,
                 ]);
             }

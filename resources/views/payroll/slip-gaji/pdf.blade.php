@@ -207,6 +207,16 @@
             <td>:</td>
             <td>{{ $data['karyawan']->bank ?? '-' }}</td>
         </tr>
+        @if($data['nki'])
+        <tr>
+            <td>NKI</td>
+            <td>:</td>
+            <td>{{ number_format($data['nki']->nilai_nki, 2) }} ({{ $data['nki']->persentase_tunjangan }}%)</td>
+            <td style="padding-left: 20px; font-weight: 500;"></td>
+            <td></td>
+            <td></td>
+        </tr>
+        @endif
     </table>
 
     <!-- Pendapatan & Pengeluaran -->
@@ -361,6 +371,20 @@
                             <span>Rp {{ number_format($data['hitung_gaji']->total_pengeluaran,0,',','.') }}</span>
                         </div>
                     </div>
+                    
+                    @if($data['hitung_gaji']->adjustments && count($data['hitung_gaji']->adjustments) > 0)
+                    <div style="border-top: 1px solid #ddd; padding-top: 8px; margin-top: 8px;">
+                        <div style="font-weight: bold; font-size: 10px; margin-bottom: 5px; color: #000;">ADJUSTMENTS:</div>
+                        @foreach($data['hitung_gaji']->adjustments as $field => $adj)
+                            @if($adj['nominal'] > 0)
+                            <div style="font-size: 8px; padding: 2px 0; display: flex; justify-content: space-between;">
+                                <span>{{ ucwords(str_replace('_', ' ', $field)) }} ({{ $adj['type'] }})</span>
+                                <span>Rp {{ number_format($adj['nominal'],0,',','.') }}</span>
+                            </div>
+                            @endif
+                        @endforeach
+                    </div>
+                    @endif
                 </td>
                 <td class="right-col">
                     <div class="gaji-bersih-label">GAJI BERSIH</div>
@@ -383,23 +407,23 @@
                             @php 
                             $statusInfo = $data['kasbon']->getPaymentStatusInfo();
                             $kasbonAmountInSlip = $data['hitung_gaji']->getFinalValue('kasbon');
-                            $showKasbon = $data['kasbon']->deskripsi || $data['kasbon']->keterangan || $data['kasbon']->total_paid != 0;
+                            $showKasbon = $data['kasbon']->deskripsi || $data['kasbon']->keterangan || $kasbonAmountInSlip > 0;
                             @endphp
                             @if($showKasbon)
                                 @php $hasKeterangan = true; @endphp
                                 <div class="catatan-item" style="font-size: 8px;">
-                                    <div class="catatan-label">Kasbon:</div>
+                                    <div class="catatan-label">Kasbon ({{ $data['kasbon']->metode_pembayaran }}):</div>
                                     <div class="catatan-text">
-                                        @if($data['kasbon']->total_paid != 0 || $kasbonAmountInSlip > 0)
-                                        Dibayar bulan ini: Rp {{ number_format($kasbonAmountInSlip,0,',','.') }}<br>
-                                        Status: {{ $statusInfo['message'] }}<br>
-                                        Total Dibayar: Rp {{ number_format($data['kasbon']->total_paid,0,',','.') }} / Rp {{ number_format($data['kasbon']->nominal,0,',','.') }}
-                                        @endif
                                         @if($data['kasbon']->deskripsi)
-                                        <br>Deskripsi: {{ $data['kasbon']->deskripsi }}
+                                        Keterangan: {{ $data['kasbon']->deskripsi }}<br>
                                         @endif
-                                        @if($data['kasbon']->keterangan)
-                                        <br>Keterangan: {{ $data['kasbon']->keterangan }}
+                                        @if($kasbonAmountInSlip > 0)
+                                        Dibayar bulan ini: Rp {{ number_format($kasbonAmountInSlip,0,',','.') }}<br>
+                                        @endif
+                                        @if($data['kasbon']->metode_pembayaran === 'Cicilan')
+                                        Status: {{ $statusInfo['message'] }}
+                                        @else
+                                        Status: {{ $statusInfo['status'] }}
                                         @endif
                                     </div>
                                 </div>

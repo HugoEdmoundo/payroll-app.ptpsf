@@ -17,26 +17,16 @@ class PengaturanGaji extends Model
         'jabatan',
         'lokasi_kerja',
         'gaji_pokok',
-        'tunjangan_operasional',
-        'potongan_koperasi',
+        'tunjangan_prestasi',
         'gaji_nett',
-        'bpjs_kesehatan',
-        'bpjs_ketenagakerjaan',
-        'bpjs_kecelakaan_kerja',
-        'bpjs_total',
         'total_gaji',
         'keterangan',
     ];
 
     protected $casts = [
         'gaji_pokok' => 'decimal:2',
-        'tunjangan_operasional' => 'decimal:2',
-        'potongan_koperasi' => 'decimal:2',
+        'tunjangan_prestasi' => 'decimal:2',
         'gaji_nett' => 'decimal:2',
-        'bpjs_kesehatan' => 'decimal:2',
-        'bpjs_ketenagakerjaan' => 'decimal:2',
-        'bpjs_kecelakaan_kerja' => 'decimal:2',
-        'bpjs_total' => 'decimal:2',
         'total_gaji' => 'decimal:2',
     ];
 
@@ -46,14 +36,11 @@ class PengaturanGaji extends Model
         parent::boot();
 
         static::saving(function ($model) {
-            // Calculate BPJS Total
-            $model->bpjs_total = $model->bpjs_kesehatan + $model->bpjs_ketenagakerjaan + $model->bpjs_kecelakaan_kerja;
+            // Calculate Gaji Nett (Gaji Pokok + Tunjangan Prestasi)
+            $model->gaji_nett = $model->gaji_pokok + $model->tunjangan_prestasi;
             
-            // Calculate Gaji Nett (Gaji Pokok + Tunjangan - Potongan)
-            $model->gaji_nett = $model->gaji_pokok + $model->tunjangan_operasional - $model->potongan_koperasi;
-            
-            // Calculate Total Gaji (Gaji Nett + BPJS Total)
-            $model->total_gaji = $model->gaji_nett + $model->bpjs_total;
+            // Total Gaji = Gaji Nett (BPJS & Koperasi handled separately)
+            $model->total_gaji = $model->gaji_nett;
         });
     }
 }

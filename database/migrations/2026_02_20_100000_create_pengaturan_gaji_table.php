@@ -10,18 +10,18 @@ return new class extends Migration
     {
         Schema::create('pengaturan_gaji', function (Blueprint $table) {
             $table->id('id_pengaturan');
-            $table->string('jenis_karyawan'); // Konsultan, Organik, Teknisi, Borongan
+            $table->string('jenis_karyawan'); // Teknisi, Borongan
             $table->string('jabatan');
             $table->string('lokasi_kerja');
+            
+            // Komponen Gaji
             $table->decimal('gaji_pokok', 15, 2)->default(0);
-            $table->decimal('tunjangan_operasional', 15, 2)->default(0);
-            $table->decimal('potongan_koperasi', 15, 2)->default(0);
+            $table->decimal('tunjangan_prestasi', 15, 2)->default(0); // Ganti dari tunjangan_operasional
+            
+            // Calculated fields
             $table->decimal('gaji_nett', 15, 2)->default(0);
-            $table->decimal('bpjs_kesehatan', 15, 2)->default(0);
-            $table->decimal('bpjs_ketenagakerjaan', 15, 2)->default(0);
-            $table->decimal('bpjs_kecelakaan_kerja', 15, 2)->default(0);
-            $table->decimal('bpjs_total', 15, 2)->default(0);
             $table->decimal('total_gaji', 15, 2)->default(0);
+            
             $table->text('keterangan')->nullable();
             $table->timestamps();
             
