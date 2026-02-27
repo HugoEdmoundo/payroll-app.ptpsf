@@ -9,44 +9,57 @@ class PengaturanBpjsKoperasi extends Model
     protected $table = 'pengaturan_bpjs_koperasi';
     
     protected $fillable = [
-        'bpjs_kesehatan',
-        'bpjs_ketenagakerjaan',
-        'bpjs_kecelakaan_kerja',
-        'bpjs_jht',
-        'bpjs_jp',
+        'jenis_karyawan',
+        'status_pegawai',
+        'bpjs_kesehatan_pendapatan',
+        'bpjs_kesehatan_pengeluaran',
+        'bpjs_kecelakaan_kerja_pendapatan',
+        'bpjs_kecelakaan_kerja_pengeluaran',
+        'bpjs_kematian_pendapatan',
+        'bpjs_kematian_pengeluaran',
+        'bpjs_jht_pendapatan',
+        'bpjs_jht_pengeluaran',
+        'bpjs_jp_pendapatan',
+        'bpjs_jp_pengeluaran',
         'koperasi',
-        'keterangan',
-        'is_active',
     ];
     
     protected $casts = [
-        'bpjs_kesehatan' => 'decimal:2',
-        'bpjs_ketenagakerjaan' => 'decimal:2',
-        'bpjs_kecelakaan_kerja' => 'decimal:2',
-        'bpjs_jht' => 'decimal:2',
-        'bpjs_jp' => 'decimal:2',
+        'bpjs_kesehatan_pendapatan' => 'decimal:2',
+        'bpjs_kesehatan_pengeluaran' => 'decimal:2',
+        'bpjs_kecelakaan_kerja_pendapatan' => 'decimal:2',
+        'bpjs_kecelakaan_kerja_pengeluaran' => 'decimal:2',
+        'bpjs_kematian_pendapatan' => 'decimal:2',
+        'bpjs_kematian_pengeluaran' => 'decimal:2',
+        'bpjs_jht_pendapatan' => 'decimal:2',
+        'bpjs_jht_pengeluaran' => 'decimal:2',
+        'bpjs_jp_pendapatan' => 'decimal:2',
+        'bpjs_jp_pengeluaran' => 'decimal:2',
         'koperasi' => 'decimal:2',
-        'is_active' => 'boolean',
     ];
     
     /**
-     * Get active BPJS & Koperasi configuration
+     * Get total BPJS Pendapatan
      */
-    public static function getActive()
+    public function getTotalBpjsPendapatanAttribute()
     {
-        return self::where('is_active', true)->first();
+        return $this->bpjs_kesehatan_pendapatan + 
+               $this->bpjs_kecelakaan_kerja_pendapatan + 
+               $this->bpjs_kematian_pendapatan + 
+               $this->bpjs_jht_pendapatan + 
+               $this->bpjs_jp_pendapatan;
     }
     
     /**
-     * Get total BPJS (pendapatan)
+     * Get total BPJS Pengeluaran
      */
-    public function getTotalBpjsAttribute()
+    public function getTotalBpjsPengeluaranAttribute()
     {
-        return $this->bpjs_kesehatan + 
-               $this->bpjs_ketenagakerjaan + 
-               $this->bpjs_kecelakaan_kerja + 
-               $this->bpjs_jht + 
-               $this->bpjs_jp;
+        return $this->bpjs_kesehatan_pengeluaran + 
+               $this->bpjs_kecelakaan_kerja_pengeluaran + 
+               $this->bpjs_kematian_pengeluaran + 
+               $this->bpjs_jht_pengeluaran + 
+               $this->bpjs_jp_pengeluaran;
     }
     
     /**

@@ -7,6 +7,7 @@ use App\Models\PengaturanBpjsKoperasi;
 use App\Models\SystemSetting;
 use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PengaturanBpjsKoperasiController extends Controller
 {
@@ -138,5 +139,25 @@ class PengaturanBpjsKoperasiController extends Controller
         
         return redirect()->route('payroll.pengaturan-bpjs-koperasi.index')
             ->with('success', 'Pengaturan BPJS & Koperasi berhasil dihapus.');
+    }
+
+    public function export(Request $request)
+    {
+        $jenisKaryawan = $request->get('jenis_karyawan');
+        $statusPegawai = $request->get('status_pegawai');
+        
+        $filename = 'pengaturan_bpjs_koperasi';
+        if ($jenisKaryawan) {
+            $filename .= '_' . strtolower($jenisKaryawan);
+        }
+        if ($statusPegawai) {
+            $filename .= '_' . strtolower($statusPegawai);
+        }
+        $filename .= '_' . date('YmdHis') . '.xlsx';
+        
+        return Excel::download(
+            new \App\Exports\PengaturanBpjsKoperasiExport($jenisKaryawan, $statusPegawai),
+            $filename
+        );
     }
 }

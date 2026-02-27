@@ -12,6 +12,13 @@
             <p class="mt-1 text-xs sm:text-sm text-gray-600">Configuration for BPJS and Koperasi by employee type and status</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
+            @if(auth()->user()->hasPermission('pengaturan_gaji.export'))
+            <a href="{{ route('payroll.pengaturan-bpjs-koperasi.export', request()->only(['jenis_karyawan', 'status_pegawai'])) }}" 
+               class="px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition duration-150 whitespace-nowrap">
+                <i class="fas fa-download mr-1.5"></i>Export
+            </a>
+            @endif
+            
             @if(auth()->user()->hasPermission('pengaturan_gaji.create'))
             <a href="{{ route('payroll.pengaturan-bpjs-koperasi.create') }}" 
                class="px-3 py-2 text-xs sm:text-sm bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 whitespace-nowrap">
