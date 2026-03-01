@@ -124,7 +124,6 @@ class AcuanGajiController extends Controller
     }
 
     // Generate Acuan Gaji for all employees in a periode
-    // Generate Acuan Gaji for all employees in a periode
     public function generate(Request $request)
     {
         $request->validate([
@@ -162,6 +161,18 @@ class AcuanGajiController extends Controller
 
             // Get Pengaturan Gaji (automatically handles status_pegawai)
             $pengaturan = $karyawan->getPengaturanGaji();
+
+            // FALLBACK: If no pengaturan found for Harian/OJT, create default
+            if (!$pengaturan && in_array($karyawan->status_pegawai, ['Harian', 'OJT'])) {
+                // Auto-create pengaturan for Harian/OJT
+                $defaultGaji = $karyawan->status_pegawai === 'Harian' ? 90000 : 5000000;
+                
+                $pengaturan = \App\Models\PengaturanGajiStatusPegawai::create([
+                    'status_pegawai' => $karyawan->status_pegawai,
+                    'lokasi_kerja' => $karyawan->lokasi_kerja,
+                    'gaji_pokok' => $defaultGaji,
+                ]);
+            }
 
             if (!$pengaturan) {
                 $skipped++;

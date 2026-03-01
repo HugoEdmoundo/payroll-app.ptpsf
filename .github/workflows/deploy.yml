@@ -40,14 +40,17 @@ jobs:
         run: zip -r release.zip . -x "node_modules/*" ".git/*" ".env"
 
       # 6️⃣ Upload zip ke VPS
-      - name: Upload to VPS
+      - name: Copy Release to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VPS_HOST }}
           username: root
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: "release.zip"
-          target: "/opt/"
+          source: release.zip
+          target: /opt/just-atesting
+          overwrite: true
+          rm: true
+          debug: true
 
       # 7️⃣ Deploy & setup di VPS (production safe)
       - name: Deploy & Setup on VPS
@@ -57,42 +60,34 @@ jobs:
           username: root
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            # Pastikan unzip & PHP driver ada
-            apt update && apt install unzip -y
-
-            cd /opt/just-atesting || mkdir /opt/just-atesting && cd /opt/just-atesting
+            mkdir -p /opt/just-atesting
+            cd /opt/just-atesting
 
             # Backup .env
             if [ -f .env ]; then
-              cp .env ../.env.backup
+              cp .env .env.backup
             fi
 
-            # Unzip project (overwrite file tapi .env aman)
-            unzip -o /opt/release.zip -d /opt/just-atesting
-            rm /opt/release.zip
+            unzip -o release.zip
+            rm release.zip
+
+            composer install --no-dev --optimize-autoloader
 
             # Restore .env
-            if [ -f ../.env.backup ]; then
-              mv ../.env.backup .env
+            if [ -f .env.backup ]; then
+              mv .env.backup .env
             fi
 
-            # Fix permissions
             chown -R www-data:www-data storage bootstrap/cache
             chmod -R 775 storage bootstrap/cache
 
-            # Generate APP_KEY jika belum ada
             if ! grep -q "APP_KEY=base64" .env; then
               php artisan key:generate --force
             fi
 
-            # Run migrations only, DB tidak di-reset
             php artisan migrate --force
 
-            # Clear cache
-            php artisan config:clear
-            php artisan route:clear
-            php artisan view:clear
-            php artisan cache:clear
+            php artisan optimize:clear
 
             # Restart services
             systemctl restart php8.3-fpm

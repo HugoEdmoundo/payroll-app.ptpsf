@@ -163,104 +163,99 @@
         </div>
         
         <div data-realtime-content>
-            <div class="overflow-x-auto">
-                <table class="min-w-full table-fixed divide-y divide-gray-200">
-                    
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-72">Nama Karyawan</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase w-48">Jenis Karyawan</th>
-                            <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase w-40">Gaji Pokok</th>
-                            <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase w-40">Total Pendapatan</th>
-                            <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase w-40">Total Pengeluaran</th>
-                            <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase w-40">Gaji Bersih</th>
-                            <th class="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase w-28">Actions</th>
+            <div class="overflow-x-auto bg-white rounded-xl shadow-sm">
+                <table class="min-w-full table-fixed">
+
+                    <!-- HEADER -->
+                    <thead class="bg-gray-100">
+                        <tr class="text-xs uppercase tracking-wider text-gray-600">
+                            <th class="px-6 py-4 text-left w-72">Nama Karyawan</th>
+                            <th class="px-6 py-4 text-left w-40">Jenis Karyawan</th>
+                            <th class="px-6 py-4 text-right w-40">Gaji Pokok</th>
+                            <th class="px-6 py-4 text-right w-40">Total Pendapatan</th>
+                            <th class="px-6 py-4 text-right w-40">Total Pengeluaran</th>
+                            <th class="px-6 py-4 text-right w-40">Gaji Bersih</th>
+                            <th class="px-6 py-4 text-center w-28">Actions</th>
                         </tr>
                     </thead>
 
-                    <tbody class="bg-white divide-y divide-gray-200 text-sm tabular-nums">
+                    <!-- BODY -->
+                    <tbody class="divide-y divide-gray-200 text-sm tabular-nums">
                         @forelse($acuanGajiList as $acuan)
-                        <tr class="hover:bg-gray-50 transition align-top">
-                            
-                            <!-- Nama -->
-                            <td class="px-6 py-4 align-top leading-tight">
-                                <div class="font-semibold text-gray-900">
-                                    {{ $acuan->karyawan->nama_karyawan }}
-                                </div>
-                                <div class="text-gray-500 text-sm">
-                                    {{ $acuan->karyawan->jabatan }}
+                        <tr class="hover:bg-gray-50 transition">
+
+                            <!-- NAMA -->
+                            <td class="px-6 py-5">
+                                <div class="flex items-center gap-4">
+                                    <div class="h-12 w-12 rounded-full bg-emerald-500 
+                                                flex items-center justify-center 
+                                                text-white font-semibold text-sm">
+                                        {{ strtoupper(substr($acuan->karyawan->nama_karyawan, 0, 2)) }}
+                                    </div>
+
+                                    <div>
+                                        <div class="font-semibold text-gray-900">
+                                            {{ $acuan->karyawan->nama_karyawan }}
+                                        </div>
+                                        <div class="text-gray-500 text-sm">
+                                            {{ $acuan->karyawan->jabatan }}
+                                        </div>
+                                    </div>
                                 </div>
                             </td>
 
-                            <!-- Jenis -->
-                            <td class="px-6 py-4 align-top leading-tight">
-                                <div class="text-gray-900">
-                                    {{ $acuan->karyawan->jenis_karyawan }}
-                                </div>
-                                <div class="mt-1">
-                                    <span class="px-2 py-0.5 text-xs font-semibold rounded-full whitespace-nowrap
-                                        @if($acuan->karyawan->status_pegawai === 'Kontrak') 
-                                            bg-green-100 text-green-800
-                                        @elseif($acuan->karyawan->status_pegawai === 'OJT') 
-                                            bg-blue-100 text-blue-800
-                                        @else 
-                                            bg-yellow-100 text-yellow-800
-                                        @endif">
-                                        {{ $acuan->karyawan->status_pegawai }}
-                                    </span>
-                                </div>
+                            <!-- JENIS -->
+                            <td class="px-6 py-5 text-gray-800">
+                                {{ $acuan->karyawan->jenis_karyawan }}
                             </td>
 
-                            <!-- Gaji Pokok -->
-                            <td class="px-6 py-4 text-right whitespace-nowrap text-gray-900">
+                            <!-- GAJI POKOK -->
+                            <td class="px-6 py-5 text-right whitespace-nowrap text-gray-900">
                                 Rp {{ number_format($acuan->gaji_pokok, 0, ',', '.') }}
                             </td>
 
-                            <!-- Total Pendapatan -->
-                            <td class="px-6 py-4 text-right whitespace-nowrap text-green-600 font-medium">
+                            <!-- TOTAL PENDAPATAN -->
+                            <td class="px-6 py-5 text-right whitespace-nowrap text-green-600 font-semibold">
                                 Rp {{ number_format($acuan->total_pendapatan, 0, ',', '.') }}
                             </td>
 
-                            <!-- Total Pengeluaran -->
-                            <td class="px-6 py-4 text-right whitespace-nowrap text-red-600 font-medium">
+                            <!-- TOTAL PENGELUARAN -->
+                            <td class="px-6 py-5 text-right whitespace-nowrap text-red-500 font-semibold">
                                 Rp {{ number_format($acuan->total_pengeluaran, 0, ',', '.') }}
                             </td>
 
-                            <!-- Gaji Bersih -->
-                            <td class="px-6 py-4 text-right whitespace-nowrap text-indigo-600 font-bold">
+                            <!-- GAJI BERSIH -->
+                            <td class="px-6 py-5 text-right whitespace-nowrap text-indigo-600 font-bold">
                                 Rp {{ number_format($acuan->gaji_bersih, 0, ',', '.') }}
                             </td>
 
-                            <!-- Actions -->
-                            <td class="px-6 py-4 text-center align-top">
-                                <div class="flex justify-center space-x-3">
-                                    
+                            <!-- ACTIONS -->
+                            <td class="px-6 py-5">
+                                <div class="flex justify-center items-center gap-3 text-base">
                                     <a href="{{ route('payroll.acuan-gaji.show', $acuan) }}"
-                                    class="text-indigo-600 hover:text-indigo-900">
+                                    class="text-indigo-500 hover:text-indigo-700">
                                         <i class="fas fa-eye"></i>
                                     </a>
 
                                     @if(auth()->user()->hasPermission('acuan_gaji.edit'))
                                     <a href="{{ route('payroll.acuan-gaji.edit', $acuan) }}"
-                                    class="text-blue-600 hover:text-blue-900">
-                                        <i class="fas fa-edit"></i>
+                                    class="text-blue-500 hover:text-blue-700">
+                                        <i class="fas fa-pen"></i>
                                     </a>
                                     @endif
 
                                     @if(auth()->user()->hasPermission('acuan_gaji.delete'))
                                     <form action="{{ route('payroll.acuan-gaji.destroy', $acuan) }}"
                                         method="POST"
-                                        onsubmit="return confirm('Yakin ingin menghapus data ini?')"
-                                        class="inline">
+                                        onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                                class="text-red-600 hover:text-red-900">
+                                                class="text-red-500 hover:text-red-700">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
                                     @endif
-
                                 </div>
                             </td>
 
@@ -268,19 +263,12 @@
 
                         @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-12 text-center">
-                                <i class="fas fa-file-invoice-dollar text-gray-400 text-5xl mb-4"></i>
-                                <h3 class="text-lg font-medium text-gray-900 mb-2">
-                                    Belum Ada Data
-                                </h3>
-                                <p class="text-gray-500">
-                                    Belum ada data acuan gaji untuk periode ini.
-                                </p>
+                            <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                                Belum ada data acuan gaji.
                             </td>
                         </tr>
                         @endforelse
                     </tbody>
-
                 </table>
             </div>
         </div>
