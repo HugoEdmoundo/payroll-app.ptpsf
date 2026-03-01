@@ -85,11 +85,6 @@
             Pengeluaran (Deductions)
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            @include('components.acuan-gaji.show-field', ['label' => 'BPJS Kesehatan', 'value' => $acuanGaji->bpjs_kesehatan_pengeluaran])
-            @include('components.acuan-gaji.show-field', ['label' => 'BPJS Kecelakaan Kerja', 'value' => $acuanGaji->bpjs_kecelakaan_kerja_pengeluaran])
-            @include('components.acuan-gaji.show-field', ['label' => 'BPJS Kematian', 'value' => $acuanGaji->bpjs_kematian_pengeluaran])
-            @include('components.acuan-gaji.show-field', ['label' => 'BPJS JHT', 'value' => $acuanGaji->bpjs_jht_pengeluaran])
-            @include('components.acuan-gaji.show-field', ['label' => 'BPJS JP', 'value' => $acuanGaji->bpjs_jp_pengeluaran])
             @include('components.acuan-gaji.show-field', ['label' => 'Koperasi', 'value' => $acuanGaji->koperasi])
             @include('components.acuan-gaji.show-field', ['label' => 'Kasbon', 'value' => $acuanGaji->kasbon])
             @include('components.acuan-gaji.show-field', ['label' => 'Umroh', 'value' => $acuanGaji->umroh])

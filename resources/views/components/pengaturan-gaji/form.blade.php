@@ -1,11 +1,27 @@
 @props(['pengaturanGaji' => null, 'settings' => []])
 
+<!-- Info Box -->
+<div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+    <div class="flex items-start">
+        <i class="fas fa-info-circle text-blue-600 mt-0.5 mr-3"></i>
+        <div class="text-sm text-blue-800">
+            <p class="font-semibold mb-1">Pengaturan Gaji untuk Karyawan Kontrak</p>
+            <ul class="list-disc list-inside space-y-1">
+                <li>BPJS & Koperasi diatur di menu <strong>BPJS & Koperasi</strong> (data global)</li>
+                <li>Tunjangan Prestasi akan dikalikan dengan NKI per karyawan</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <!-- Jenis Karyawan -->
     <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Karyawan *</label>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            Jenis Karyawan <span class="text-red-500">*</span>
+        </label>
         <select name="jenis_karyawan" required
-                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @error('jenis_karyawan') border-red-500 @enderror">
             <option value="">Pilih Jenis Karyawan</option>
             @foreach($settings['jenis_karyawan'] ?? [] as $key => $value)
                 <option value="{{ $value }}" {{ old('jenis_karyawan', $pengaturanGaji->jenis_karyawan ?? '') == $value ? 'selected' : '' }}>
@@ -20,9 +36,11 @@
 
     <!-- Jabatan -->
     <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Jabatan *</label>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            Jabatan <span class="text-red-500">*</span>
+        </label>
         <select name="jabatan" required
-                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @error('jabatan') border-red-500 @enderror">
             <option value="">Pilih Jabatan</option>
             @foreach($settings['jabatan_options'] ?? [] as $key => $value)
                 <option value="{{ $value }}" {{ old('jabatan', $pengaturanGaji->jabatan ?? '') == $value ? 'selected' : '' }}>
@@ -37,9 +55,11 @@
 
     <!-- Lokasi Kerja -->
     <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi Kerja *</label>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            Lokasi Kerja <span class="text-red-500">*</span>
+        </label>
         <select name="lokasi_kerja" required
-                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @error('lokasi_kerja') border-red-500 @enderror">
             <option value="">Pilih Lokasi Kerja</option>
             @foreach($settings['lokasi_kerja'] ?? [] as $key => $value)
                 <option value="{{ $value }}" {{ old('lokasi_kerja', $pengaturanGaji->lokasi_kerja ?? '') == $value ? 'selected' : '' }}>
@@ -54,11 +74,15 @@
 
     <!-- Gaji Pokok -->
     <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Gaji Pokok *</label>
-        <input type="number" name="gaji_pokok" step="0.01" min="0" 
-               value="{{ old('gaji_pokok', $pengaturanGaji->gaji_pokok ?? 0) }}" required
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-               placeholder="0.00">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            Gaji Pokok <span class="text-red-500">*</span>
+        </label>
+        <div class="relative">
+            <input type="number" name="gaji_pokok" step="0.01" min="0" 
+                   value="{{ old('gaji_pokok', $pengaturanGaji->gaji_pokok ?? 0) }}" required
+                   class="w-full pl-12 pr-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @error('gaji_pokok') border-red-500 @enderror"
+                   placeholder="0.00">
+        </div>
         @error('gaji_pokok')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
@@ -66,60 +90,36 @@
 
     <!-- Tunjangan Operasional -->
     <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Tunjangan Operasional</label>
-        <input type="number" name="tunjangan_operasional" step="0.01" min="0" 
-               value="{{ old('tunjangan_operasional', $pengaturanGaji->tunjangan_operasional ?? 0) }}"
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-               placeholder="0.00">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            Tunjangan Operasional
+        </label>
+        <div class="relative">
+            <input type="number" name="tunjangan_operasional" step="0.01" min="0" 
+                   value="{{ old('tunjangan_operasional', $pengaturanGaji->tunjangan_operasional ?? 0) }}"
+                   class="w-full pl-12 pr-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                   placeholder="0.00">
+        </div>
         @error('tunjangan_operasional')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
     </div>
 
-    <!-- Potongan Koperasi -->
+    <!-- Tunjangan Prestasi (Base untuk NKI) -->
     <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Potongan Koperasi</label>
-        <input type="number" name="potongan_koperasi" step="0.01" min="0" 
-               value="{{ old('potongan_koperasi', $pengaturanGaji->potongan_koperasi ?? 0) }}"
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-               placeholder="0.00">
-        @error('potongan_koperasi')
-        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-        @enderror
-    </div>
-
-    <!-- BPJS Kesehatan -->
-    <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Kesehatan</label>
-        <input type="number" name="bpjs_kesehatan" step="0.01" min="0" 
-               value="{{ old('bpjs_kesehatan', $pengaturanGaji->bpjs_kesehatan ?? 0) }}"
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-               placeholder="0.00">
-        @error('bpjs_kesehatan')
-        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-        @enderror
-    </div>
-
-    <!-- BPJS Ketenagakerjaan -->
-    <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Ketenagakerjaan</label>
-        <input type="number" name="bpjs_ketenagakerjaan" step="0.01" min="0" 
-               value="{{ old('bpjs_ketenagakerjaan', $pengaturanGaji->bpjs_ketenagakerjaan ?? 0) }}"
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-               placeholder="0.00">
-        @error('bpjs_ketenagakerjaan')
-        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-        @enderror
-    </div>
-
-    <!-- BPJS Kecelakaan Kerja -->
-    <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Kecelakaan Kerja</label>
-        <input type="number" name="bpjs_kecelakaan_kerja" step="0.01" min="0" 
-               value="{{ old('bpjs_kecelakaan_kerja', $pengaturanGaji->bpjs_kecelakaan_kerja ?? 0) }}"
-               class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-               placeholder="0.00">
-        @error('bpjs_kecelakaan_kerja')
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            Tunjangan Prestasi (Base untuk NKI)
+        </label>
+        <div class="relative">
+            <input type="number" name="tunjangan_prestasi" step="0.01" min="0" 
+                   value="{{ old('tunjangan_prestasi', $pengaturanGaji->tunjangan_prestasi ?? 0) }}"
+                   class="w-full pl-12 pr-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                   placeholder="0.00">
+        </div>
+        <p class="mt-1 text-xs text-gray-500">
+            <i class="fas fa-info-circle mr-1"></i>
+            Nilai ini akan dikalikan dengan persentase NKI per karyawan
+        </p>
+        @error('tunjangan_prestasi')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
     </div>
@@ -134,12 +134,4 @@
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
     </div>
-</div>
-
-<!-- Auto-calculated fields info -->
-<div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-    <p class="text-sm text-blue-800">
-        <i class="fas fa-info-circle mr-2"></i>
-        <strong>Catatan:</strong> Gaji Nett, BPJS Total, dan Total Gaji akan dihitung otomatis berdasarkan input di atas.
-    </p>
 </div>

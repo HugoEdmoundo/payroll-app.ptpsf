@@ -9,32 +9,20 @@ class PengaturanBpjsKoperasiSeeder extends Seeder
 {
     public function run(): void
     {
-        $data = [
+        // Global configuration - only one record
+        PengaturanBpjsKoperasi::updateOrCreate(
+            ['id' => 1],
             [
-                'status_pegawai' => 'Kontrak',
-                'bpjs_kesehatan' => 50000,
-                'bpjs_kecelakaan_kerja' => 25000,
-                'bpjs_kematian' => 15000,
-                'bpjs_jht' => 100000,
-                'bpjs_jp' => 50000,
-                'koperasi' => 50000,
-            ],
-            [
-                'status_pegawai' => 'OJT',
-                'bpjs_kesehatan' => 0, // OJT tidak dapat BPJS
-                'bpjs_kecelakaan_kerja' => 0,
-                'bpjs_kematian' => 0,
-                'bpjs_jht' => 0,
-                'bpjs_jp' => 0,
-                'koperasi' => 30000, // OJT dapat koperasi
-            ],
-        ];
-
-        foreach ($data as $item) {
-            PengaturanBpjsKoperasi::updateOrCreate(
-                ['status_pegawai' => $item['status_pegawai']],
-                $item
-            );
-        }
+                // BPJS Pendapatan (Auto for Kontrak)
+                'bpjs_kesehatan_pendapatan' => 100000,
+                'bpjs_kecelakaan_kerja_pendapatan' => 50000,
+                'bpjs_kematian_pendapatan' => 25000,
+                'bpjs_jht_pendapatan' => 150000,
+                'bpjs_jp_pendapatan' => 75000,
+                
+                // Koperasi (Auto for Kontrak & OJT)
+                'koperasi' => 100000,
+            ]
+        );
     }
 }

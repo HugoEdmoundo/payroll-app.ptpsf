@@ -119,9 +119,8 @@ class Karyawan extends Model
         
         // Check if status pegawai is Harian or OJT (special cases)
         if (in_array($statusPegawai, ['Harian', 'OJT'])) {
-            // Get from PengaturanGajiStatusPegawai
+            // Get from PengaturanGajiStatusPegawai (only status_pegawai + lokasi_kerja, NO jabatan!)
             return \App\Models\PengaturanGajiStatusPegawai::where('status_pegawai', $statusPegawai)
-                ->where('jabatan', $this->jabatan)
                 ->where('lokasi_kerja', $this->lokasi_kerja)
                 ->first();
         }

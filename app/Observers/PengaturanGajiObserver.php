@@ -31,9 +31,6 @@ class PengaturanGajiObserver
                 'bpjs_kecelakaan_kerja_pendapatan' => $pengaturan->bpjs_kecelakaan_kerja,
                 'bpjs_kematian_pendapatan' => $pengaturan->bpjs_ketenagakerjaan,
                 'benefit_operasional' => $pengaturan->tunjangan_operasional,
-                'bpjs_kesehatan_pengeluaran' => $pengaturan->bpjs_kesehatan,
-                'bpjs_kecelakaan_kerja_pengeluaran' => $pengaturan->bpjs_kecelakaan_kerja,
-                'bpjs_kematian_pengeluaran' => $pengaturan->bpjs_ketenagakerjaan,
                 'koperasi' => $pengaturan->potongan_koperasi,
             ]);
             
@@ -83,9 +80,6 @@ class PengaturanGajiObserver
             'benefit_operasional' => $acuan->benefit_operasional,
             'tunjangan_prestasi' => $tunjanganPrestasi,
             'potongan_absensi' => $potonganAbsensi,
-            'bpjs_kesehatan_pengeluaran' => $acuan->bpjs_kesehatan_pengeluaran,
-            'bpjs_kecelakaan_kerja_pengeluaran' => $acuan->bpjs_kecelakaan_kerja_pengeluaran,
-            'bpjs_kematian_pengeluaran' => $acuan->bpjs_kematian_pengeluaran,
             'koperasi' => $acuan->koperasi,
         ]);
     }

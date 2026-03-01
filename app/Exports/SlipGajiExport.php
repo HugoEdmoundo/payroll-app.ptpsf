@@ -71,9 +71,7 @@ class SlipGajiExport implements FromCollection, WithHeadings, WithMapping, WithS
                     'Tunjangan Prestasi',
                     'Benefit Operasional',
                     'Total Pendapatan',
-                    'BPJS Kesehatan',
-                    'BPJS JHT',
-                    'BPJS JP',
+                    'Koperasi',
                     'Kasbon',
                     'Potongan Absensi',
                     'Total Pengeluaran',
@@ -102,9 +100,7 @@ class SlipGajiExport implements FromCollection, WithHeadings, WithMapping, WithS
                 $hitungGaji->tunjangan_prestasi,
                 $hitungGaji->benefit_operasional,
                 $hitungGaji->total_pendapatan,
-                $hitungGaji->bpjs_kesehatan_pengeluaran,
-                $hitungGaji->bpjs_jht_pengeluaran,
-                $hitungGaji->bpjs_jp_pengeluaran,
+                $hitungGaji->koperasi,
                 $hitungGaji->kasbon,
                 $hitungGaji->potongan_absensi,
                 $hitungGaji->total_pengeluaran,
@@ -141,11 +137,11 @@ class SlipGajiExport implements FromCollection, WithHeadings, WithMapping, WithS
         ];
         
         $pengeluaran = [
-            ['BPJS Kesehatan', $hitungGaji->bpjs_kesehatan_pengeluaran],
-            ['BPJS JHT', $hitungGaji->bpjs_jht_pengeluaran],
-            ['BPJS JP', $hitungGaji->bpjs_jp_pengeluaran],
             ['Koperasi', $hitungGaji->koperasi],
             ['Kasbon', $hitungGaji->kasbon],
+            ['Umroh', $hitungGaji->umroh],
+            ['Kurban', $hitungGaji->kurban],
+            ['Mutabaah', $hitungGaji->mutabaah],
             ['Potongan Absensi', $hitungGaji->potongan_absensi],
             ['Potongan Kehadiran', $hitungGaji->potongan_kehadiran],
         ];

@@ -39,23 +39,6 @@
                     @enderror
                 </div>
 
-                <!-- Jabatan -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Jabatan *</label>
-                    <select name="jabatan" required
-                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500">
-                        <option value="">Pilih Jabatan</option>
-                        @foreach($settings['jabatan_options'] as $key => $value)
-                            <option value="{{ $value }}" {{ old('jabatan') == $value ? 'selected' : '' }}>
-                                {{ $value }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('jabatan')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
                 <!-- Lokasi Kerja -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi Kerja *</label>

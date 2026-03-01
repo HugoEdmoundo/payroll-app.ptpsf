@@ -55,10 +55,7 @@ class PengaturanGajiController extends Controller
             'lokasi_kerja' => 'required|string',
             'gaji_pokok' => 'required|numeric|min:0',
             'tunjangan_operasional' => 'nullable|numeric|min:0',
-            'potongan_koperasi' => 'nullable|numeric|min:0',
-            'bpjs_kesehatan' => 'nullable|numeric|min:0',
-            'bpjs_ketenagakerjaan' => 'nullable|numeric|min:0',
-            'bpjs_kecelakaan_kerja' => 'nullable|numeric|min:0',
+            'tunjangan_prestasi' => 'nullable|numeric|min:0',
         ]);
         
         // Check unique
@@ -101,10 +98,7 @@ class PengaturanGajiController extends Controller
             'lokasi_kerja' => 'required|string',
             'gaji_pokok' => 'required|numeric|min:0',
             'tunjangan_operasional' => 'nullable|numeric|min:0',
-            'potongan_koperasi' => 'nullable|numeric|min:0',
-            'bpjs_kesehatan' => 'nullable|numeric|min:0',
-            'bpjs_ketenagakerjaan' => 'nullable|numeric|min:0',
-            'bpjs_kecelakaan_kerja' => 'nullable|numeric|min:0',
+            'tunjangan_prestasi' => 'nullable|numeric|min:0',
         ]);
         
         // Check unique (except current)
@@ -160,12 +154,12 @@ class PengaturanGajiController extends Controller
         // Global search
         if ($request->has('search') && $request->search) {
             $query = $this->applyGlobalSearch($query, $request->search, [
-                'status_pegawai', 'jabatan', 'lokasi_kerja'
+                'status_pegawai', 'lokasi_kerja'
             ]);
         }
         
         $pengaturanGaji = $query->orderBy('status_pegawai')
-                                ->orderBy('jabatan')
+                                ->orderBy('lokasi_kerja')
                                 ->paginate(15);
         
         return view('payroll.pengaturan-gaji.status-pegawai.index', compact('pengaturanGaji'));
@@ -175,7 +169,6 @@ class PengaturanGajiController extends Controller
     {
         $settings = [
             'status_pegawai' => ['Harian', 'OJT'], // Only Harian and OJT, Kontrak = Normal
-            'jabatan_options' => SystemSetting::getOptions('jabatan_options'),
             'lokasi_kerja' => SystemSetting::getOptions('lokasi_kerja'),
         ];
         
@@ -186,14 +179,12 @@ class PengaturanGajiController extends Controller
     {
         $request->validate([
             'status_pegawai' => 'required|string|in:Harian,OJT', // Only Harian and OJT
-            'jabatan' => 'required|string',
             'lokasi_kerja' => 'required|string',
             'gaji_pokok' => 'required|numeric|min:0',
         ]);
         
         // Check unique
         $exists = PengaturanGajiStatusPegawai::where('status_pegawai', $request->status_pegawai)
-            ->where('jabatan', $request->jabatan)
             ->where('lokasi_kerja', $request->lokasi_kerja)
             ->exists();
             
@@ -218,7 +209,6 @@ class PengaturanGajiController extends Controller
         $pengaturanGaji = PengaturanGajiStatusPegawai::findOrFail($id);
         $settings = [
             'status_pegawai' => ['Harian', 'OJT'], // Only Harian and OJT
-            'jabatan_options' => SystemSetting::getOptions('jabatan_options'),
             'lokasi_kerja' => SystemSetting::getOptions('lokasi_kerja'),
         ];
         
@@ -231,14 +221,12 @@ class PengaturanGajiController extends Controller
         
         $request->validate([
             'status_pegawai' => 'required|string|in:Harian,OJT', // Only Harian and OJT
-            'jabatan' => 'required|string',
             'lokasi_kerja' => 'required|string',
             'gaji_pokok' => 'required|numeric|min:0',
         ]);
         
         // Check unique (except current)
         $exists = PengaturanGajiStatusPegawai::where('status_pegawai', $request->status_pegawai)
-            ->where('jabatan', $request->jabatan)
             ->where('lokasi_kerja', $request->lokasi_kerja)
             ->where('id_pengaturan', '!=', $id)
             ->exists();

@@ -17,6 +17,7 @@ class PengaturanGaji extends Model
         'jabatan',
         'lokasi_kerja',
         'gaji_pokok',
+        'tunjangan_operasional',
         'tunjangan_prestasi',
         'gaji_nett',
         'total_gaji',
@@ -25,6 +26,7 @@ class PengaturanGaji extends Model
 
     protected $casts = [
         'gaji_pokok' => 'decimal:2',
+        'tunjangan_operasional' => 'decimal:2',
         'tunjangan_prestasi' => 'decimal:2',
         'gaji_nett' => 'decimal:2',
         'total_gaji' => 'decimal:2',
@@ -37,9 +39,9 @@ class PengaturanGaji extends Model
 
         static::saving(function ($model) {
             // Calculate Gaji Nett (Gaji Pokok + Tunjangan Prestasi)
-            $model->gaji_nett = $model->gaji_pokok + $model->tunjangan_prestasi;
+            $model->gaji_nett = $model->gaji_pokok + ($model->tunjangan_prestasi ?? 0);
             
-            // Total Gaji = Gaji Nett (BPJS & Koperasi handled separately)
+            // Total Gaji = Gaji Nett (BPJS & Koperasi handled separately in Acuan Gaji)
             $model->total_gaji = $model->gaji_nett;
         });
     }

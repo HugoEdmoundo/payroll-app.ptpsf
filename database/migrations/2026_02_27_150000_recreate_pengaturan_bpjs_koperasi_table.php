@@ -11,24 +11,21 @@ return new class extends Migration
         // Drop old table
         Schema::dropIfExists('pengaturan_bpjs_koperasi');
         
-        // Create new structure
+        // Create new structure - GLOBAL configuration (no status_pegawai)
         Schema::create('pengaturan_bpjs_koperasi', function (Blueprint $table) {
             $table->id();
-            $table->enum('status_pegawai', ['Kontrak', 'OJT']); // Only Kontrak and OJT
             
-            // BPJS Pendapatan (Only for Kontrak)
-            $table->decimal('bpjs_kesehatan', 15, 2)->default(0);
-            $table->decimal('bpjs_kecelakaan_kerja', 15, 2)->default(0);
-            $table->decimal('bpjs_kematian', 15, 2)->default(0);
-            $table->decimal('bpjs_jht', 15, 2)->default(0);
-            $table->decimal('bpjs_jp', 15, 2)->default(0);
+            // BPJS Pendapatan (Auto applied to Kontrak employees)
+            $table->decimal('bpjs_kesehatan_pendapatan', 15, 2)->default(0);
+            $table->decimal('bpjs_kecelakaan_kerja_pendapatan', 15, 2)->default(0);
+            $table->decimal('bpjs_kematian_pendapatan', 15, 2)->default(0);
+            $table->decimal('bpjs_jht_pendapatan', 15, 2)->default(0);
+            $table->decimal('bpjs_jp_pendapatan', 15, 2)->default(0);
             
-            // Koperasi (For Kontrak and OJT)
+            // Koperasi (Auto applied to Kontrak and OJT employees)
             $table->decimal('koperasi', 15, 2)->default(0);
             
             $table->timestamps();
-            
-            $table->unique('status_pegawai');
         });
     }
 

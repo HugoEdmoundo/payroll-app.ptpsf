@@ -28,7 +28,7 @@ class PengaturanGajiStatusPegawaiExport implements FromCollection, WithHeadings,
         }
         
         return $query->orderBy('status_pegawai')
-                    ->orderBy('jabatan')
+                    ->orderBy('lokasi_kerja')
                     ->get();
     }
 
@@ -36,14 +36,8 @@ class PengaturanGajiStatusPegawaiExport implements FromCollection, WithHeadings,
     {
         return [
             'Status Pegawai',
-            'Jabatan',
             'Lokasi Kerja',
             'Gaji Pokok',
-            'BPJS Kesehatan',
-            'BPJS Kecelakaan Kerja',
-            'BPJS Ketenagakerjaan',
-            'Tunjangan Operasional',
-            'Potongan Koperasi',
             'Keterangan',
         ];
     }
@@ -52,14 +46,8 @@ class PengaturanGajiStatusPegawaiExport implements FromCollection, WithHeadings,
     {
         return [
             $pengaturan->status_pegawai,
-            $pengaturan->jabatan,
             $pengaturan->lokasi_kerja,
             $pengaturan->gaji_pokok,
-            $pengaturan->bpjs_kesehatan,
-            $pengaturan->bpjs_kecelakaan_kerja,
-            $pengaturan->bpjs_ketenagakerjaan,
-            $pengaturan->tunjangan_operasional,
-            $pengaturan->potongan_koperasi,
             $pengaturan->keterangan ?? '-',
         ];
     }
@@ -75,15 +63,9 @@ class PengaturanGajiStatusPegawaiExport implements FromCollection, WithHeadings,
     {
         return [
             'A' => 20,
-            'B' => 25,
-            'C' => 20,
-            'D' => 15,
-            'E' => 18,
-            'F' => 25,
-            'G' => 25,
-            'H' => 25,
-            'I' => 20,
-            'J' => 30,
+            'B' => 20,
+            'C' => 15,
+            'D' => 30,
         ];
     }
 }

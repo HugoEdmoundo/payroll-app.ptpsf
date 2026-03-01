@@ -37,52 +37,39 @@
     <!-- Tunjangan Operasional -->
     <div class="bg-gray-50 p-4 rounded-lg">
         <label class="block text-sm font-medium text-gray-500 mb-1">Tunjangan Operasional</label>
-        <p class="text-base font-semibold text-gray-900 font-mono">Rp {{ number_format($pengaturanGaji->tunjangan_operasional, 0, ',', '.') }}</p>
+        <p class="text-base font-semibold text-gray-900 font-mono">Rp {{ number_format($pengaturanGaji->tunjangan_operasional ?? 0, 0, ',', '.') }}</p>
     </div>
 
-    <!-- Potongan Koperasi -->
+    <!-- Tunjangan Prestasi -->
     <div class="bg-gray-50 p-4 rounded-lg">
-        <label class="block text-sm font-medium text-gray-500 mb-1">Potongan Koperasi</label>
-        <p class="text-base font-semibold text-red-600 font-mono">- Rp {{ number_format($pengaturanGaji->potongan_koperasi, 0, ',', '.') }}</p>
+        <label class="block text-sm font-medium text-gray-500 mb-1">Tunjangan Prestasi</label>
+        <p class="text-base font-semibold text-green-600 font-mono">Rp {{ number_format($pengaturanGaji->tunjangan_prestasi ?? 0, 0, ',', '.') }}</p>
+        <p class="text-xs text-gray-500 mt-1">Base untuk perhitungan NKI</p>
     </div>
 
     <!-- Gaji Nett -->
     <div class="bg-indigo-50 p-4 rounded-lg border-2 border-indigo-200">
         <label class="block text-sm font-medium text-indigo-700 mb-1">Gaji Nett</label>
         <p class="text-lg font-bold text-indigo-900 font-mono">Rp {{ number_format($pengaturanGaji->gaji_nett, 0, ',', '.') }}</p>
-        <p class="text-xs text-indigo-600 mt-1">Gaji Pokok + Tunjangan - Potongan</p>
-    </div>
-
-    <!-- BPJS Kesehatan -->
-    <div class="bg-gray-50 p-4 rounded-lg">
-        <label class="block text-sm font-medium text-gray-500 mb-1">BPJS Kesehatan</label>
-        <p class="text-base font-semibold text-gray-900 font-mono">Rp {{ number_format($pengaturanGaji->bpjs_kesehatan, 0, ',', '.') }}</p>
-    </div>
-
-    <!-- BPJS Ketenagakerjaan -->
-    <div class="bg-gray-50 p-4 rounded-lg">
-        <label class="block text-sm font-medium text-gray-500 mb-1">BPJS Ketenagakerjaan</label>
-        <p class="text-base font-semibold text-gray-900 font-mono">Rp {{ number_format($pengaturanGaji->bpjs_ketenagakerjaan, 0, ',', '.') }}</p>
-    </div>
-
-    <!-- BPJS Kecelakaan Kerja -->
-    <div class="bg-gray-50 p-4 rounded-lg">
-        <label class="block text-sm font-medium text-gray-500 mb-1">BPJS Kecelakaan Kerja</label>
-        <p class="text-base font-semibold text-gray-900 font-mono">Rp {{ number_format($pengaturanGaji->bpjs_kecelakaan_kerja, 0, ',', '.') }}</p>
-    </div>
-
-    <!-- BPJS Total -->
-    <div class="bg-green-50 p-4 rounded-lg border-2 border-green-200">
-        <label class="block text-sm font-medium text-green-700 mb-1">BPJS Total</label>
-        <p class="text-lg font-bold text-green-900 font-mono">Rp {{ number_format($pengaturanGaji->bpjs_total, 0, ',', '.') }}</p>
-        <p class="text-xs text-green-600 mt-1">Total semua BPJS</p>
+        <p class="text-xs text-indigo-600 mt-1">Gaji Pokok + Tunjangan Prestasi</p>
     </div>
 
     <!-- Total Gaji -->
-    <div class="bg-purple-50 p-4 rounded-lg border-2 border-purple-200 md:col-span-2">
+    <div class="bg-purple-50 p-4 rounded-lg border-2 border-purple-200">
         <label class="block text-sm font-medium text-purple-700 mb-1">Total Gaji</label>
         <p class="text-2xl font-bold text-purple-900 font-mono">Rp {{ number_format($pengaturanGaji->total_gaji, 0, ',', '.') }}</p>
-        <p class="text-xs text-purple-600 mt-1">Gaji Nett + BPJS Total</p>
+        <p class="text-xs text-purple-600 mt-1">Total keseluruhan</p>
+    </div>
+
+    <!-- Info Box -->
+    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 md:col-span-2">
+        <div class="flex items-start">
+            <i class="fas fa-info-circle text-blue-500 mt-0.5 mr-2"></i>
+            <div class="text-sm text-blue-700">
+                <p class="font-medium mb-1">Informasi BPJS & Koperasi</p>
+                <p>BPJS dan Koperasi dikelola di modul terpisah (BPJS & Koperasi). Sistem akan otomatis menerapkan konfigurasi tersebut saat generate Acuan Gaji.</p>
+            </div>
+        </div>
     </div>
 
     <!-- Keterangan -->

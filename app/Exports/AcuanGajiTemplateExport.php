@@ -28,11 +28,6 @@ class AcuanGajiTemplateExport implements FromArray, WithHeadings, WithStyles
                 150000, // benefit_komunikasi
                 300000, // benefit_operasional
                 0, // reward
-                50000, // bpjs_kesehatan_pengeluaran
-                25000, // bpjs_kecelakaan_kerja_pengeluaran
-                15000, // bpjs_kematian_pengeluaran
-                100000, // bpjs_jht_pengeluaran
-                50000, // bpjs_jp_pengeluaran
                 100000, // koperasi
                 0, // kasbon
                 0, // umroh
@@ -62,11 +57,6 @@ class AcuanGajiTemplateExport implements FromArray, WithHeadings, WithStyles
             'benefit_komunikasi',
             'benefit_operasional',
             'reward',
-            'bpjs_kesehatan_pengeluaran',
-            'bpjs_kecelakaan_kerja_pengeluaran',
-            'bpjs_kematian_pengeluaran',
-            'bpjs_jht_pengeluaran',
-            'bpjs_jp_pengeluaran',
             'koperasi',
             'kasbon',
             'umroh',

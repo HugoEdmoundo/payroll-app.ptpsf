@@ -10,8 +10,8 @@
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jabatan</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi</th>
                 <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Gaji Pokok</th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">BPJS Total</th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Gaji Nett</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Tunj. Operasional</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Tunj. Prestasi</th>
                 <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Gaji</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
@@ -43,11 +43,11 @@
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right font-mono">
                     Rp {{ number_format($pg->gaji_pokok, 0, ',', '.') }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 text-right font-mono font-semibold">
-                    Rp {{ number_format($pg->bpjs_total, 0, ',', '.') }}
-                </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right font-mono">
-                    Rp {{ number_format($pg->gaji_nett, 0, ',', '.') }}
+                    Rp {{ number_format($pg->tunjangan_operasional ?? 0, 0, ',', '.') }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 text-right font-mono">
+                    Rp {{ number_format($pg->tunjangan_prestasi ?? 0, 0, ',', '.') }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-indigo-600 text-right font-mono">
                     Rp {{ number_format($pg->total_gaji, 0, ',', '.') }}

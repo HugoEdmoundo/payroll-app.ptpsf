@@ -17,7 +17,7 @@
                class="px-3 py-2 text-xs sm:text-sm border-2 border-indigo-500 text-indigo-600 rounded-lg font-medium hover:bg-indigo-50 transition duration-150 whitespace-nowrap">
                 <i class="fas fa-user-clock mr-1.5"></i>Status Pegawai
             </a>
-            <a href="{{ route('payroll.pengaturan-bpjs-koperasi.index') }}" 
+            <a href="{{ route('payroll.pengaturan-bpjs-koperasi.edit') }}" 
                class="px-3 py-2 text-xs sm:text-sm border-2 border-green-500 text-green-600 rounded-lg font-medium hover:bg-green-50 transition duration-150 whitespace-nowrap">
                 <i class="fas fa-shield-alt mr-1.5"></i>BPJS & Koperasi
             </a>

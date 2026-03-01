@@ -10,11 +10,11 @@ class PengaturanGajiStatusPegawaiSeeder extends Seeder
 {
     public function run(): void
     {
-        // Get all jabatan and lokasi kerja options
-        $jabatanOptions = SystemSetting::where('group', 'jabatan_options')->pluck('value')->toArray();
+        // Get all lokasi kerja options
         $lokasiKerjaOptions = SystemSetting::where('group', 'lokasi_kerja')->pluck('value')->toArray();
         
         // Status Pegawai configurations (only Harian and OJT)
+        // NO JABATAN - applies to all positions
         $statusPegawaiConfigs = [
             'Harian' => [
                 'gaji_pokok' => 90000, // 90rb per hari
@@ -26,22 +26,19 @@ class PengaturanGajiStatusPegawaiSeeder extends Seeder
             ],
         ];
         
-        // Create configurations for each combination
+        // Create configurations for each combination (status_pegawai + lokasi_kerja only)
         foreach ($statusPegawaiConfigs as $status => $config) {
-            foreach ($jabatanOptions as $jabatan) {
-                foreach ($lokasiKerjaOptions as $lokasi) {
-                    PengaturanGajiStatusPegawai::updateOrCreate(
-                        [
-                            'status_pegawai' => $status,
-                            'jabatan' => $jabatan,
-                            'lokasi_kerja' => $lokasi,
-                        ],
-                        [
-                            'gaji_pokok' => $config['gaji_pokok'],
-                            'keterangan' => $config['keterangan'],
-                        ]
-                    );
-                }
+            foreach ($lokasiKerjaOptions as $lokasi) {
+                PengaturanGajiStatusPegawai::updateOrCreate(
+                    [
+                        'status_pegawai' => $status,
+                        'lokasi_kerja' => $lokasi,
+                    ],
+                    [
+                        'gaji_pokok' => $config['gaji_pokok'],
+                        'keterangan' => $config['keterangan'],
+                    ]
+                );
             }
         }
         

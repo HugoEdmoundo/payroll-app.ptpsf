@@ -90,16 +90,10 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{pengaturanGaji}', [PengaturanGajiController::class, 'destroy'])->name('destroy');
         });
 
-        // Pengaturan BPJS & Koperasi
+        // Pengaturan BPJS & Koperasi (Global Configuration)
         Route::prefix('pengaturan-bpjs-koperasi')->name('pengaturan-bpjs-koperasi.')->group(function () {
-            Route::get('/', [\App\Http\Controllers\Payroll\PengaturanBpjsKoperasiController::class, 'index'])->name('index');
-            Route::get('/create', [\App\Http\Controllers\Payroll\PengaturanBpjsKoperasiController::class, 'create'])->name('create');
-            Route::post('/', [\App\Http\Controllers\Payroll\PengaturanBpjsKoperasiController::class, 'store'])->name('store');
-            Route::get('/export', [\App\Http\Controllers\Payroll\PengaturanBpjsKoperasiController::class, 'export'])->name('export');
-            Route::get('/{pengaturanBpjsKoperasi}', [\App\Http\Controllers\Payroll\PengaturanBpjsKoperasiController::class, 'show'])->name('show');
-            Route::get('/{pengaturanBpjsKoperasi}/edit', [\App\Http\Controllers\Payroll\PengaturanBpjsKoperasiController::class, 'edit'])->name('edit');
-            Route::put('/{pengaturanBpjsKoperasi}', [\App\Http\Controllers\Payroll\PengaturanBpjsKoperasiController::class, 'update'])->name('update');
-            Route::delete('/{pengaturanBpjsKoperasi}', [\App\Http\Controllers\Payroll\PengaturanBpjsKoperasiController::class, 'destroy'])->name('destroy');
+            Route::get('/edit', [\App\Http\Controllers\Payroll\PengaturanBpjsKoperasiController::class, 'edit'])->name('edit');
+            Route::put('/update', [\App\Http\Controllers\Payroll\PengaturanBpjsKoperasiController::class, 'update'])->name('update');
         });
 
         // NKI (Tunjangan Prestasi)

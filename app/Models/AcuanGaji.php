@@ -14,6 +14,7 @@ class AcuanGaji extends Model
 
     protected $fillable = [
         'id_karyawan',
+        'lokasi_kerja',
         'periode',
         // Pendapatan
         'gaji_pokok',

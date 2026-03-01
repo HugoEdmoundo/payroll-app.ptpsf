@@ -336,11 +336,6 @@
                         <div style="font-weight: bold; font-size: 10px; margin-bottom: 5px; color: #000;">PENGELUARAN:</div>
                         @php 
                         $all_pengeluaran = [
-                            'bpjs_kesehatan_pengeluaran' => 'BPJS Kesehatan (D)',
-                            'bpjs_kecelakaan_kerja_pengeluaran' => 'BPJS Kecelakaan Kerja (D)',
-                            'bpjs_kematian_pengeluaran' => 'BPJS Kematian (D)',
-                            'bpjs_jht_pengeluaran' => 'BPJS JHT (D)',
-                            'bpjs_jp_pengeluaran' => 'BPJS JP (D)',
                             'koperasi' => 'Koperasi',
                             'kasbon' => 'Kasbon',
                             'umroh' => 'Umroh',

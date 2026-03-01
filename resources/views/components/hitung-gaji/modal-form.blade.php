@@ -85,11 +85,6 @@
         <div class="space-y-4">
             @php
             $pengeluaranFields = [
-                'bpjs_kesehatan_pengeluaran' => 'BPJS Kesehatan (Pengeluaran)',
-                'bpjs_kecelakaan_kerja_pengeluaran' => 'BPJS Kecelakaan Kerja (Pengeluaran)',
-                'bpjs_kematian_pengeluaran' => 'BPJS Kematian (Pengeluaran)',
-                'bpjs_jht_pengeluaran' => 'BPJS JHT (Pengeluaran)',
-                'bpjs_jp_pengeluaran' => 'BPJS JP (Pengeluaran)',
                 'koperasi' => 'Koperasi',
                 'kasbon' => 'Kasbon',
                 'umroh' => 'Umroh',
