@@ -54,40 +54,40 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Kesehatan (Pendapatan)</label>
                 <input type="number" 
-                       name="bpjs_kesehatan_pendapatan" 
-                       value="{{ old('bpjs_kesehatan_pendapatan', isset($acuanGaji) ? $acuanGaji->bpjs_kesehatan_pendapatan : 0) }}"
+                       name="bpjs_kesehatan" 
+                       value="{{ old('bpjs_kesehatan', isset($acuanGaji) ? $acuanGaji->bpjs_kesehatan : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Kecelakaan Kerja (Pendapatan)</label>
                 <input type="number" 
-                       name="bpjs_kecelakaan_kerja_pendapatan" 
-                       value="{{ old('bpjs_kecelakaan_kerja_pendapatan', isset($acuanGaji) ? $acuanGaji->bpjs_kecelakaan_kerja_pendapatan : 0) }}"
+                       name="bpjs_kecelakaan_kerja" 
+                       value="{{ old('bpjs_kecelakaan_kerja', isset($acuanGaji) ? $acuanGaji->bpjs_kecelakaan_kerja : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Kematian (Pendapatan)</label>
                 <input type="number" 
-                       name="bpjs_kematian_pendapatan" 
-                       value="{{ old('bpjs_kematian_pendapatan', isset($acuanGaji) ? $acuanGaji->bpjs_kematian_pendapatan : 0) }}"
+                       name="bpjs_kematian" 
+                       value="{{ old('bpjs_kematian', isset($acuanGaji) ? $acuanGaji->bpjs_kematian : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">BPJS JHT (Pendapatan)</label>
                 <input type="number" 
-                       name="bpjs_jht_pendapatan" 
-                       value="{{ old('bpjs_jht_pendapatan', isset($acuanGaji) ? $acuanGaji->bpjs_jht_pendapatan : 0) }}"
+                       name="bpjs_jht" 
+                       value="{{ old('bpjs_jht', isset($acuanGaji) ? $acuanGaji->bpjs_jht : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">BPJS JP (Pendapatan)</label>
                 <input type="number" 
-                       name="bpjs_jp_pendapatan" 
-                       value="{{ old('bpjs_jp_pendapatan', isset($acuanGaji) ? $acuanGaji->bpjs_jp_pendapatan : 0) }}"
+                       name="bpjs_jp" 
+                       value="{{ old('bpjs_jp', isset($acuanGaji) ? $acuanGaji->bpjs_jp : 0) }}"
                        step="0.01"
                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>

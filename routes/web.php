@@ -71,16 +71,10 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/', [PengaturanGajiController::class, 'store'])->name('store');
             Route::get('/export', [PengaturanGajiController::class, 'export'])->name('export');
             
-            // Status Pegawai Routes - MUST BE BEFORE WILDCARD ROUTES
+            // Status Pegawai Routes (Single Form like BPJS & Koperasi)
             Route::prefix('status-pegawai')->name('status-pegawai.')->group(function () {
-                Route::get('/', [PengaturanGajiController::class, 'indexStatusPegawai'])->name('index');
-                Route::get('/create', [PengaturanGajiController::class, 'createStatusPegawai'])->name('create');
-                Route::post('/', [PengaturanGajiController::class, 'storeStatusPegawai'])->name('store');
-                Route::get('/export', [PengaturanGajiController::class, 'exportStatusPegawai'])->name('export');
-                Route::get('/{id}', [PengaturanGajiController::class, 'showStatusPegawai'])->name('show');
-                Route::get('/{id}/edit', [PengaturanGajiController::class, 'editStatusPegawai'])->name('edit');
-                Route::put('/{id}', [PengaturanGajiController::class, 'updateStatusPegawai'])->name('update');
-                Route::delete('/{id}', [PengaturanGajiController::class, 'destroyStatusPegawai'])->name('destroy');
+                Route::get('/edit', [PengaturanGajiController::class, 'editStatusPegawai'])->name('edit');
+                Route::put('/update', [PengaturanGajiController::class, 'updateStatusPegawai'])->name('update');
             });
             
             // Wildcard routes - MUST BE AFTER SPECIFIC ROUTES

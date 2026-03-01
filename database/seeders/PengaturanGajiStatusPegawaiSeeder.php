@@ -8,40 +8,48 @@ use App\Models\SystemSetting;
 
 class PengaturanGajiStatusPegawaiSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        // Get all lokasi kerja options
-        $lokasiKerjaOptions = SystemSetting::where('group', 'lokasi_kerja')->pluck('value')->toArray();
+        // Get all lokasi kerja
+        $lokasiKerjaList = SystemSetting::getOptions('lokasi_kerja');
         
-        // Status Pegawai configurations (only Harian and OJT)
-        // NO JABATAN - applies to all positions
-        $statusPegawaiConfigs = [
-            'Harian' => [
-                'gaji_pokok' => 90000, // 90rb per hari
-                'keterangan' => '14 hari pertama sejak join date',
-            ],
-            'OJT' => [
-                'gaji_pokok' => 3100000, // 3.1 juta per bulan
-                'keterangan' => '3 bulan setelah fase harian',
-            ],
-        ];
-        
-        // Create configurations for each combination (status_pegawai + lokasi_kerja only)
-        foreach ($statusPegawaiConfigs as $status => $config) {
-            foreach ($lokasiKerjaOptions as $lokasi) {
-                PengaturanGajiStatusPegawai::updateOrCreate(
-                    [
-                        'status_pegawai' => $status,
-                        'lokasi_kerja' => $lokasi,
-                    ],
-                    [
-                        'gaji_pokok' => $config['gaji_pokok'],
-                        'keterangan' => $config['keterangan'],
-                    ]
-                );
-            }
+        if (empty($lokasiKerjaList)) {
+            $this->command->warn('⚠️  No lokasi_kerja found in system settings. Using defaults.');
+            $lokasiKerjaList = ['Jakarta', 'Bandung', 'Surabaya'];
         }
         
-        $this->command->info('Pengaturan Gaji Status Pegawai seeded successfully!');
+        // Create Harian configuration for each lokasi
+        foreach ($lokasiKerjaList as $lokasi) {
+            PengaturanGajiStatusPegawai::updateOrCreate(
+                [
+                    'status_pegawai' => 'Harian',
+                    'lokasi_kerja' => $lokasi,
+                ],
+                [
+                    'gaji_pokok' => 90000.00, // 90k per day
+                ]
+            );
+        }
+        
+        // Create OJT configuration for each lokasi
+        foreach ($lokasiKerjaList as $lokasi) {
+            PengaturanGajiStatusPegawai::updateOrCreate(
+                [
+                    'status_pegawai' => 'OJT',
+                    'lokasi_kerja' => $lokasi,
+                ],
+                [
+                    'gaji_pokok' => 3100000.00, // 3.1M per month
+                ]
+            );
+        }
+        
+        $this->command->info('✅ Pengaturan Gaji Status Pegawai (Harian & OJT) created successfully!');
+        $this->command->info('   - Harian: 90,000 per day');
+        $this->command->info('   - OJT: 3,100,000 per month');
+        $this->command->info('   - Locations: ' . implode(', ', $lokasiKerjaList));
     }
 }

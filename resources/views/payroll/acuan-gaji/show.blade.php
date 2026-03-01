@@ -58,11 +58,11 @@
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             @include('components.acuan-gaji.show-field', ['label' => 'Gaji Pokok', 'value' => $acuanGaji->gaji_pokok])
-            @include('components.acuan-gaji.show-field', ['label' => 'BPJS Kesehatan', 'value' => $acuanGaji->bpjs_kesehatan_pendapatan])
-            @include('components.acuan-gaji.show-field', ['label' => 'BPJS Kecelakaan Kerja', 'value' => $acuanGaji->bpjs_kecelakaan_kerja_pendapatan])
-            @include('components.acuan-gaji.show-field', ['label' => 'BPJS Kematian', 'value' => $acuanGaji->bpjs_kematian_pendapatan])
-            @include('components.acuan-gaji.show-field', ['label' => 'BPJS JHT', 'value' => $acuanGaji->bpjs_jht_pendapatan])
-            @include('components.acuan-gaji.show-field', ['label' => 'BPJS JP', 'value' => $acuanGaji->bpjs_jp_pendapatan])
+            @include('components.acuan-gaji.show-field', ['label' => 'BPJS Kesehatan (Pendapatan)', 'value' => $acuanGaji->bpjs_kesehatan])
+            @include('components.acuan-gaji.show-field', ['label' => 'BPJS Kecelakaan Kerja (Pendapatan)', 'value' => $acuanGaji->bpjs_kecelakaan_kerja])
+            @include('components.acuan-gaji.show-field', ['label' => 'BPJS Kematian (Pendapatan)', 'value' => $acuanGaji->bpjs_kematian])
+            @include('components.acuan-gaji.show-field', ['label' => 'BPJS JHT (Pendapatan)', 'value' => $acuanGaji->bpjs_jht])
+            @include('components.acuan-gaji.show-field', ['label' => 'BPJS JP (Pendapatan)', 'value' => $acuanGaji->bpjs_jp])
             @include('components.acuan-gaji.show-field', ['label' => 'Tunjangan Prestasi', 'value' => $acuanGaji->tunjangan_prestasi])
             @include('components.acuan-gaji.show-field', ['label' => 'Tunjangan Konjungtur', 'value' => $acuanGaji->tunjangan_konjungtur])
             @include('components.acuan-gaji.show-field', ['label' => 'Benefit Ibadah', 'value' => $acuanGaji->benefit_ibadah])

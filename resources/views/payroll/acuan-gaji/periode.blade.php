@@ -167,55 +167,51 @@
                 <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jabatan</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-64">Nama Karyawan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40">Jenis Karyawan</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Gaji Pokok</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pendapatan</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pengeluaran</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Gaji Bersih</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-36">Gaji Pokok</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-36">Total Pendapatan</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-36">Total Pengeluaran</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-36">Gaji Bersih</th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($acuanGajiList as $acuan)
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="px-6 py-4 whitespace-nowrap">
+                    <tr class="hover:bg-gray-50 cursor-pointer transition">
+                        <td class="px-6 py-4">
                             <div class="text-sm font-medium text-gray-900">{{ $acuan->karyawan->nama_karyawan }}</div>
+                            <div class="text-sm text-gray-500">{{ $acuan->karyawan->jabatan }}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {{ $acuan->karyawan->jabatan }}
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900">{{ $acuan->karyawan->jenis_karyawan }}</div>
+                            <!-- <div class="mt-1"> -->
+                                <span class="px-2 py-0.5 text-xs font-semibold rounded-full 
+                                    @if($acuan->karyawan->status_pegawai === 'Kontrak') bg-green-100 text-green-800
+                                    @elseif($acuan->karyawan->status_pegawai === 'OJT') bg-blue-100 text-blue-800
+                                    @else bg-yellow-100 text-yellow-800
+                                    @endif">
+                                    {{ $acuan->karyawan->status_pegawai }}
+                                </span>
+                            </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {{ $acuan->karyawan->jenis_karyawan }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                @if($acuan->karyawan->status_pegawai === 'Kontrak') bg-green-100 text-green-800
-                                @elseif($acuan->karyawan->status_pegawai === 'OJT') bg-blue-100 text-blue-800
-                                @else bg-yellow-100 text-yellow-800
-                                @endif">
-                                {{ $acuan->karyawan->status_pegawai }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td class="px-6 py-4 text-sm text-gray-900">
                             {{ $acuan->lokasi_kerja }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900 font-mono">
+                        <td class="px-6 py-4 text-sm text-right text-gray-900">
                             Rp {{ number_format($acuan->gaji_pokok, 0, ',', '.') }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-medium font-mono">
+                        <td class="px-6 py-4 text-sm text-right text-green-600 font-medium">
                             Rp {{ number_format($acuan->total_pendapatan, 0, ',', '.') }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium font-mono">
+                        <td class="px-6 py-4 text-sm text-right text-red-600 font-medium">
                             Rp {{ number_format($acuan->total_pengeluaran, 0, ',', '.') }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-indigo-600 font-bold font-mono">
+                        <td class="px-6 py-4 text-sm text-right text-indigo-600 font-bold">
                             Rp {{ number_format($acuan->gaji_bersih, 0, ',', '.') }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                        <td class="px-6 py-4 text-center text-sm font-medium">
                             <div class="flex items-center justify-center space-x-2">
                                 <a href="{{ route('payroll.acuan-gaji.show', $acuan) }}" 
                                    class="text-indigo-600 hover:text-indigo-900" title="View">
@@ -246,7 +242,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="10" class="px-6 py-12 text-center">
+                        <td colspan="8" class="px-6 py-12 text-center">
                             <i class="fas fa-file-invoice-dollar text-gray-400 text-5xl mb-4"></i>
                             <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Data</h3>
                             <p class="text-gray-500">Belum ada data acuan gaji untuk periode ini.</p>
