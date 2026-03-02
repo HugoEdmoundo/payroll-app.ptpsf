@@ -76,60 +76,7 @@ class HitungGajiController extends Controller
     {
         $karyawan = Karyawan::findOrFail($karyawanId);
         
-        // Check if hitung gaji already exists
-        $hitungGaji = HitungGaji::where('karyawan_id', $karyawanId)
-                               ->where('periode', $periode)
-                               ->first();
-        
-        if ($hitungGaji) {
-            // Return existing data for edit
-            \Log::info('Loading existing hitung gaji for edit', [
-                'id' => $hitungGaji->id,
-                'adjustments_raw' => $hitungGaji->getAttributes()['adjustments'] ?? 'NULL',
-                'adjustments_cast' => $hitungGaji->adjustments,
-            ]);
-            
-            $data = [
-                'mode' => 'edit',
-                'hitung_gaji_id' => $hitungGaji->id,
-                'karyawan' => [
-                    'id' => $karyawan->id_karyawan,
-                    'nama' => $karyawan->nama_karyawan,
-                    'jabatan' => $karyawan->jabatan,
-                    'jenis' => $karyawan->jenis_karyawan
-                ],
-                'periode' => $periode,
-                'fields' => [
-                    'gaji_pokok' => $hitungGaji->gaji_pokok,
-                    'bpjs_kesehatan_pendapatan' => $hitungGaji->bpjs_kesehatan_pendapatan,
-                    'bpjs_kecelakaan_kerja_pendapatan' => $hitungGaji->bpjs_kecelakaan_kerja_pendapatan,
-                    'bpjs_kematian_pendapatan' => $hitungGaji->bpjs_kematian_pendapatan,
-                    'bpjs_jht_pendapatan' => $hitungGaji->bpjs_jht_pendapatan,
-                    'bpjs_jp_pendapatan' => $hitungGaji->bpjs_jp_pendapatan,
-                    'tunjangan_prestasi' => $hitungGaji->tunjangan_prestasi,
-                    'tunjangan_konjungtur' => $hitungGaji->tunjangan_konjungtur,
-                    'benefit_ibadah' => $hitungGaji->benefit_ibadah,
-                    'benefit_komunikasi' => $hitungGaji->benefit_komunikasi,
-                    'benefit_operasional' => $hitungGaji->benefit_operasional,
-                    'reward' => $hitungGaji->reward,
-                    'koperasi' => $hitungGaji->koperasi,
-                    'kasbon' => $hitungGaji->kasbon,
-                    'umroh' => $hitungGaji->umroh,
-                    'kurban' => $hitungGaji->kurban,
-                    'mutabaah' => $hitungGaji->mutabaah,
-                    'potongan_absensi' => $hitungGaji->potongan_absensi,
-                    'potongan_kehadiran' => $hitungGaji->potongan_kehadiran,
-                ],
-                'adjustments' => $hitungGaji->adjustments ?? [],
-                'keterangan' => $hitungGaji->keterangan,
-                'nki_info' => null,
-                'absensi_info' => null
-            ];
-            
-            return view('components.hitung-gaji.modal-form', compact('data'))->render();
-        }
-        
-        // Get acuan gaji for this karyawan and periode
+        // Get acuan gaji for this karyawan and periode (ALWAYS needed for sync)
         $acuanGaji = AcuanGaji::where('id_karyawan', $karyawanId)
                              ->where('periode', $periode)
                              ->first();
@@ -197,6 +144,60 @@ class HitungGajiController extends Controller
                 'base_amount' => $baseAmount
             ];
         }
+        
+        // Check if hitung gaji already exists
+        $hitungGaji = HitungGaji::where('karyawan_id', $karyawanId)
+                               ->where('periode', $periode)
+                               ->first();
+        
+        if ($hitungGaji) {
+            // Return existing data for edit BUT with SYNCED values from acuan gaji
+            \Log::info('Loading existing hitung gaji for edit with synced acuan gaji data', [
+                'id' => $hitungGaji->id,
+                'adjustments_raw' => $hitungGaji->getAttributes()['adjustments'] ?? 'NULL',
+                'adjustments_cast' => $hitungGaji->adjustments,
+            ]);
+            
+            $data = [
+                'mode' => 'edit',
+                'hitung_gaji_id' => $hitungGaji->id,
+                'karyawan' => [
+                    'id' => $karyawan->id_karyawan,
+                    'nama' => $karyawan->nama_karyawan,
+                    'jabatan' => $karyawan->jabatan,
+                    'jenis' => $karyawan->jenis_karyawan
+                ],
+                'periode' => $periode,
+                'fields' => [
+                    // SYNC with acuan gaji (latest data)
+                    'gaji_pokok' => $acuanGaji->gaji_pokok,
+                    'bpjs_kesehatan_pendapatan' => $acuanGaji->bpjs_kesehatan,
+                    'bpjs_kecelakaan_kerja_pendapatan' => $acuanGaji->bpjs_kecelakaan_kerja,
+                    'bpjs_kematian_pendapatan' => $acuanGaji->bpjs_kematian,
+                    'bpjs_jht_pendapatan' => $acuanGaji->bpjs_jht,
+                    'bpjs_jp_pendapatan' => $acuanGaji->bpjs_jp,
+                    'tunjangan_prestasi' => $tunjanganPrestasi,
+                    'tunjangan_konjungtur' => $acuanGaji->tunjangan_konjungtur,
+                    'benefit_ibadah' => $acuanGaji->benefit_ibadah,
+                    'benefit_komunikasi' => $acuanGaji->benefit_komunikasi,
+                    'benefit_operasional' => $acuanGaji->benefit_operasional,
+                    'reward' => $acuanGaji->reward,
+                    'koperasi' => $acuanGaji->koperasi,
+                    'kasbon' => $acuanGaji->kasbon,
+                    'umroh' => $acuanGaji->umroh,
+                    'kurban' => $acuanGaji->kurban,
+                    'mutabaah' => $acuanGaji->mutabaah,
+                    'potongan_absensi' => $potonganAbsensi,
+                    'potongan_kehadiran' => $acuanGaji->potongan_kehadiran,
+                ],
+                'adjustments' => $hitungGaji->adjustments ?? [],
+                'keterangan' => $hitungGaji->keterangan,
+                'nki_info' => $nkiInfo,
+                'absensi_info' => $absensiInfo
+            ];
+            
+            return view('components.hitung-gaji.modal-form', compact('data'))->render();
+        }
 
         // Prepare data for new hitung gaji
         $data = [
@@ -211,11 +212,11 @@ class HitungGajiController extends Controller
             'periode' => $periode,
             'fields' => [
                 'gaji_pokok' => $acuanGaji->gaji_pokok,
-                'bpjs_kesehatan_pendapatan' => $acuanGaji->bpjs_kesehatan_pendapatan,
-                'bpjs_kecelakaan_kerja_pendapatan' => $acuanGaji->bpjs_kecelakaan_kerja_pendapatan,
-                'bpjs_kematian_pendapatan' => $acuanGaji->bpjs_kematian_pendapatan,
-                'bpjs_jht_pendapatan' => $acuanGaji->bpjs_jht_pendapatan,
-                'bpjs_jp_pendapatan' => $acuanGaji->bpjs_jp_pendapatan,
+                'bpjs_kesehatan_pendapatan' => $acuanGaji->bpjs_kesehatan,
+                'bpjs_kecelakaan_kerja_pendapatan' => $acuanGaji->bpjs_kecelakaan_kerja,
+                'bpjs_kematian_pendapatan' => $acuanGaji->bpjs_kematian,
+                'bpjs_jht_pendapatan' => $acuanGaji->bpjs_jht,
+                'bpjs_jp_pendapatan' => $acuanGaji->bpjs_jp,
                 'tunjangan_prestasi' => $tunjanganPrestasi,
                 'tunjangan_konjungtur' => $acuanGaji->tunjangan_konjungtur,
                 'benefit_ibadah' => $acuanGaji->benefit_ibadah,

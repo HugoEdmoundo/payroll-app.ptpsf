@@ -372,9 +372,14 @@
                         <div style="font-weight: bold; font-size: 10px; margin-bottom: 5px; color: #000;">ADJUSTMENTS:</div>
                         @foreach($data['hitung_gaji']->adjustments as $field => $adj)
                             @if($adj['nominal'] > 0)
-                            <div style="font-size: 8px; padding: 2px 0; display: flex; justify-content: space-between;">
-                                <span>{{ ucwords(str_replace('_', ' ', $field)) }} ({{ $adj['type'] }})</span>
-                                <span>Rp {{ number_format($adj['nominal'],0,',','.') }}</span>
+                            <div style="font-size: 8px; padding: 2px 0;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>{{ ucwords(str_replace('_', ' ', $field)) }} ({{ $adj['type'] }})</span>
+                                    <span>Rp {{ number_format($adj['nominal'],0,',','.') }}</span>
+                                </div>
+                                @if(!empty($adj['description']))
+                                <div style="color: #666; margin-top: 2px; margin-left: 10px;">{{ $adj['description'] }}</div>
+                                @endif
                             </div>
                             @endif
                         @endforeach
@@ -413,7 +418,7 @@
                                         Keterangan: {{ $data['kasbon']->deskripsi }}<br>
                                         @endif
                                         @if($kasbonAmountInSlip > 0)
-                                        Dibayar bulan ini: Rp {{ number_format($kasbonAmountInSlip,0,',','.') }}<br>
+                                        Dibayar bulan ini: Rp {{ number_format($kasbonAmountInSlip,0,',','.') }} / Rp {{ number_format($data['kasbon']->sisa_cicilan,0,',','.') }} (sisa)<br>
                                         @endif
                                         @if($data['kasbon']->metode_pembayaran === 'Cicilan')
                                         Status: {{ $statusInfo['message'] }}
@@ -424,6 +429,7 @@
                                 </div>
                             @endif
                         @endif
+                        
                         
                         @if($data['nki'] && $data['nki']->keterangan)
                             @php $hasKeterangan = true; @endphp
@@ -438,22 +444,6 @@
                             <div class="catatan-item" style="font-size: 8px;">
                                 <div class="catatan-label">Absensi:</div>
                                 <div class="catatan-text">{{ $data['absensi']->keterangan }}</div>
-                            </div>
-                        @endif
-                        
-                        @if($data['acuan_gaji'] && $data['acuan_gaji']->keterangan)
-                            @php $hasKeterangan = true; @endphp
-                            <div class="catatan-item" style="font-size: 8px;">
-                                <div class="catatan-label">Acuan Gaji:</div>
-                                <div class="catatan-text">{{ $data['acuan_gaji']->keterangan }}</div>
-                            </div>
-                        @endif
-                        
-                        @if($data['hitung_gaji']->keterangan)
-                            @php $hasKeterangan = true; @endphp
-                            <div class="catatan-item" style="font-size: 8px;">
-                                <div class="catatan-label">Hitung Gaji:</div>
-                                <div class="catatan-text">{{ $data['hitung_gaji']->keterangan }}</div>
                             </div>
                         @endif
                         

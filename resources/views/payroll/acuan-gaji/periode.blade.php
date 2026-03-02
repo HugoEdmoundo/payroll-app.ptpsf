@@ -186,8 +186,8 @@
 
                             <!-- NAMA -->
                             <td class="px-6 py-5">
+                                <div class="h-12 w-12 rounded-full bg-emerald-500 
                                 <div class="flex items-center gap-4">
-                                    <div class="h-12 w-12 rounded-full bg-emerald-500 
                                                 flex items-center justify-center 
                                                 text-white font-semibold text-sm">
                                         {{ strtoupper(substr($acuan->karyawan->nama_karyawan, 0, 2)) }}

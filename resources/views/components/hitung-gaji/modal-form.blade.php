@@ -107,13 +107,13 @@
     </div>
 
     <!-- Keterangan -->
-    <div class="mb-6">
+    {{-- <div class="mb-6">
         <label class="block text-sm font-medium text-gray-700 mb-2">Keterangan (Optional)</label>
         <textarea name="keterangan" 
                   rows="3"
                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
                   placeholder="Additional notes...">{{ $data['keterangan'] ?? '' }}</textarea>
-    </div>
+    </div> --}}
 
     <!-- Action Buttons -->
     <div class="flex justify-end space-x-3 pt-6 border-t">

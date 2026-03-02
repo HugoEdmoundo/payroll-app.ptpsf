@@ -313,7 +313,7 @@
                                     @endif
                                     @if($kasbonAmountInSlip > 0)
                                     <p class="text-gray-600 mt-0.5">
-                                        Dibayar bulan ini: Rp {{ number_format($kasbonAmountInSlip, 0, ',', '.') }}
+                                        Dibayar bulan ini: Rp {{ number_format($kasbonAmountInSlip, 0, ',', '.') }} / Rp {{ number_format($data['kasbon']->sisa_cicilan, 0, ',', '.') }} (sisa)
                                     </p>
                                     @endif
                                     @if($data['kasbon']->metode_pembayaran === 'Cicilan')
@@ -345,22 +345,6 @@
                             </div>
                         @endif
                         
-                        @if($data['acuan_gaji'] && $data['acuan_gaji']->keterangan)
-                            @php $hasKeterangan = true; @endphp
-                            <div class="mb-2">
-                                <span class="font-semibold">Acuan Gaji:</span>
-                                <p class="text-gray-600 mt-0.5">{{ $data['acuan_gaji']->keterangan }}</p>
-                            </div>
-                        @endif
-                        
-                        @if($data['hitung_gaji']->keterangan)
-                            @php $hasKeterangan = true; @endphp
-                            <div class="mb-2">
-                                <span class="font-semibold">Hitung Gaji:</span>
-                                <p class="text-gray-600 mt-0.5">{{ $data['hitung_gaji']->keterangan }}</p>
-                            </div>
-                        @endif
-                        
                         @if(!$hasKeterangan)
                             <p class="text-gray-500 italic">Tidak ada catatan atau keterangan</p>
                         @endif
@@ -370,10 +354,13 @@
                             <div class="font-semibold text-sm mb-2">ADJUSTMENTS</div>
                             @foreach($data['hitung_gaji']->adjustments as $field => $adj)
                                 @if($adj['nominal'] > 0)
-                                <div class="text-xs text-gray-700 mb-1">
+                                <div class="text-xs text-gray-700 mb-2">
                                     <span class="font-medium">{{ ucwords(str_replace('_', ' ', $field)) }}</span>
                                     <span class="text-gray-600">({{ $adj['type'] }})</span>: 
                                     Rp {{ number_format($adj['nominal'], 0, ',', '.') }}
+                                    @if(!empty($adj['description']))
+                                    <p class="text-gray-600 mt-0.5 ml-2">{{ $adj['description'] }}</p>
+                                    @endif
                                 </div>
                                 @endif
                             @endforeach
@@ -425,9 +412,17 @@ INFORMASI KARYAWAN
 Nama                   : {{ $data['karyawan']->nama_karyawan ?? '-' }}
 Jabatan                : {{ $data['karyawan']->jabatan ?? '-' }}
 Jenis Karyawan         : {{ $data['karyawan']->jenis_karyawan ?? '-' }}
+Status Pegawai         : {{ $data['karyawan']->status_pegawai ?? '-' }}
 Lokasi Kerja           : {{ $data['karyawan']->lokasi_kerja ?? '-' }}
 No. Rekening           : {{ $data['karyawan']->no_rekening ?? '-' }}
 Bank                   : {{ $data['karyawan']->bank ?? '-' }}
+@if($data['nki'])
+NKI                    : {{ number_format($data['nki']->nilai_nki, 2) }}
+Persentase Tunjangan   : {{ $data['nki']->persentase_tunjangan }}%
+@if($data['nki']->keterangan)
+Keterangan NKI         : {{ $data['nki']->keterangan }}
+@endif
+@endif
 
 ============================================================
 RINCIAN LENGKAP GAJI (TOTAL AKHIR)
@@ -454,11 +449,11 @@ $all_pendapatan = [
 @foreach($all_pendapatan as $field => $label)
 @php $finalValue = $data['hitung_gaji']->getFinalValue($field); @endphp
 @if($finalValue > 0)
-{{ str_pad($label, 26) }}: Rp {{ number_format($finalValue,0,',','.') }}
+{{ str_pad($label, 30) }}: Rp {{ number_format($finalValue,0,',','.') }}
 @endif
 @endforeach
 
-TOTAL PENDAPATAN      : Rp {{ number_format($data['hitung_gaji']->total_pendapatan,0,',','.') }}
+TOTAL PENDAPATAN       : Rp {{ number_format($data['hitung_gaji']->total_pendapatan,0,',','.') }}
 
 ------------------------------------------------------------
 
@@ -478,39 +473,86 @@ $all_pengeluaran = [
 @foreach($all_pengeluaran as $field => $label)
 @php $finalValue = $data['hitung_gaji']->getFinalValue($field); @endphp
 @if($finalValue > 0)
-{{ str_pad($label, 26) }}: Rp {{ number_format($finalValue,0,',','.') }}
+{{ str_pad($label, 30) }}: Rp {{ number_format($finalValue,0,',','.') }}
 @endif
 @endforeach
 
-TOTAL PENGELUARAN     : Rp {{ number_format($data['hitung_gaji']->total_pengeluaran,0,',','.') }}
+TOTAL PENGELUARAN      : Rp {{ number_format($data['hitung_gaji']->total_pengeluaran,0,',','.') }}
 
 ============================================================
 
-GAJI BERSIH           : Rp {{ number_format($data['hitung_gaji']->gaji_bersih,0,',','.') }}
+GAJI BERSIH            : Rp {{ number_format($data['hitung_gaji']->gaji_bersih,0,',','.') }}
 
 ============================================================
-@if($data['nki'])
-
-NKI INFO
-Nilai NKI             : {{ $data['nki']->nilai_nki }}
-Persentase Tunjangan  : {{ $data['nki']->persentase_tunjangan }}%
-@endif
 @if($data['absensi'])
 
-ABSENSI INFO
-Hadir                 : {{ $data['absensi']->hadir }} hari
-Absence               : {{ $data['absensi']->absence }} hari
-Tanpa Keterangan      : {{ $data['absensi']->tanpa_keterangan }} hari
+INFORMASI ABSENSI
+------------------------------------------------------------
+Hadir                  : {{ $data['absensi']->hadir }} hari
+Absence                : {{ $data['absensi']->absence }} hari
+Tanpa Keterangan       : {{ $data['absensi']->tanpa_keterangan }} hari
+@if($data['absensi']->keterangan)
+Keterangan             : {{ $data['absensi']->keterangan }}
+@endif
+@endif
+@if($data['hitung_gaji']->adjustments && count($data['hitung_gaji']->adjustments) > 0)
+
+ADJUSTMENTS
+------------------------------------------------------------
+@foreach($data['hitung_gaji']->adjustments as $field => $adj)
+@if($adj['nominal'] > 0)
+{{ str_pad(ucwords(str_replace('_', ' ', $field)), 30) }}: Rp {{ number_format($adj['nominal'],0,',','.') }} ({{ $adj['type'] }})
+@if(!empty($adj['description']))
+  Deskripsi            : {{ $adj['description'] }}
+@endif
+@endif
+@endforeach
+@endif
+@if($data['pengaturan_gaji'] && $data['pengaturan_gaji']->keterangan)
+
+KETERANGAN PENGATURAN GAJI
+------------------------------------------------------------
+{{ $data['pengaturan_gaji']->keterangan }}
+@endif
+@if($data['kasbon'])
+@php 
+$statusInfo = $data['kasbon']->getPaymentStatusInfo();
+$kasbonAmountInSlip = $data['hitung_gaji']->getFinalValue('kasbon');
+$showKasbon = $data['kasbon']->deskripsi || $kasbonAmountInSlip > 0;
+@endphp
+@if($showKasbon)
+
+INFORMASI KASBON ({{ $data['kasbon']->metode_pembayaran }})
+------------------------------------------------------------
+@if($data['kasbon']->deskripsi)
+Keterangan             : {{ $data['kasbon']->deskripsi }}
+@endif
+@if($kasbonAmountInSlip > 0)
+Dibayar Bulan Ini      : Rp {{ number_format($kasbonAmountInSlip,0,',','.') }} / Rp {{ number_format($data['kasbon']->sisa_cicilan,0,',','.') }} (sisa)
+@endif
+@if($data['kasbon']->metode_pembayaran === 'Cicilan')
+Status                 : {{ $statusInfo['message'] }}
+@else
+Status                 : {{ $statusInfo['status'] }}
+@endif
+@endif
+@endif
+@if($data['acuan_gaji'] && $data['acuan_gaji']->keterangan)
+
+KETERANGAN ACUAN GAJI
+------------------------------------------------------------
+{{ $data['acuan_gaji']->keterangan }}
 @endif
 @if($data['hitung_gaji']->keterangan)
 
-KETERANGAN
+KETERANGAN HITUNG GAJI
+------------------------------------------------------------
 {{ $data['hitung_gaji']->keterangan }}
 @endif
 
 ============================================================
 
-Dicetak pada          : {{ now()->format('d F Y H:i') }} WIB
+Dicetak pada           : {{ now()->format('d F Y H:i') }} WIB
 </pre>
     </div>
 </div>
