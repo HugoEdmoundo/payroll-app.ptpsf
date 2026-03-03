@@ -416,6 +416,7 @@ Status Pegawai         : {{ $data['karyawan']->status_pegawai ?? '-' }}
 Lokasi Kerja           : {{ $data['karyawan']->lokasi_kerja ?? '-' }}
 No. Rekening           : {{ $data['karyawan']->no_rekening ?? '-' }}
 Bank                   : {{ $data['karyawan']->bank ?? '-' }}
+Tanggal Bergabung      : {{ $data['karyawan']->tanggal_bergabung ? \Carbon\Carbon::parse($data['karyawan']->tanggal_bergabung)->format('d F Y') : '-' }}
 @if($data['nki'])
 NKI                    : {{ number_format($data['nki']->nilai_nki, 2) }}
 Persentase Tunjangan   : {{ $data['nki']->persentase_tunjangan }}%
@@ -482,6 +483,14 @@ TOTAL PENGELUARAN      : Rp {{ number_format($data['hitung_gaji']->total_pengelu
 ============================================================
 
 GAJI BERSIH            : Rp {{ number_format($data['hitung_gaji']->gaji_bersih,0,',','.') }}
+
+============================================================
+RINGKASAN PERHITUNGAN
+============================================================
+
+Total Pendapatan       : Rp {{ number_format($data['hitung_gaji']->total_pendapatan,0,',','.') }}
+Total Pengeluaran      : Rp {{ number_format($data['hitung_gaji']->total_pengeluaran,0,',','.') }}
+Gaji Bersih            : Rp {{ number_format($data['hitung_gaji']->gaji_bersih,0,',','.') }}
 
 ============================================================
 @if($data['absensi'])
