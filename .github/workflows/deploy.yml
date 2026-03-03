@@ -10,33 +10,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout Repository
       - name: Checkout Repo
         uses: actions/checkout@v4
 
+      # 2️⃣ Setup PHP 8.3
       - name: Setup PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
           extensions: mbstring, bcmath, pdo_mysql, openssl, tokenizer, xml
 
+      # 3️⃣ Install Composer Dependencies
       - name: Install Composer Dependencies
         run: composer install --no-dev --optimize-autoloader
 
+      # 4️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install NPM
+      # 5️⃣ Install & Build Frontend
+      - name: Install NPM Dependencies
         run: npm ci
 
       - name: Build Assets
         run: npm run build
 
+      # 6️⃣ Zip Project (exclude .env & node_modules)
       - name: Zip Project
         run: zip -r release.zip . -x "node_modules/*" ".git/*" ".env"
 
-      - name: Copy Release to VPS
+      # 7️⃣ Upload to VPS
+      - name: Upload Release to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -45,41 +52,49 @@ jobs:
           source: release.zip
           target: /opt
           overwrite: true
-          debug: true
+          tar_exec: tar
 
+      # 8️⃣ Deploy on VPS
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: root
           key: ${{ secrets.VPS_SSH_KEY }}
+          request_pty: true
           script: |
             cd /opt
 
-            # create dir if not exist
+            # create directory if not exists
             mkdir -p just-atesting
             cd just-atesting
 
-            # backup env BEFORE replace
+            # backup existing .env
             if [ -f .env ]; then
               cp .env /opt/.env.backup
             fi
 
+            # unzip new release
             unzip -o ../release.zip
             rm ../release.zip
 
-            # restore env
+            # restore .env
             if [ -f /opt/.env.backup ]; then
               mv /opt/.env.backup .env
             fi
 
+            # fix permissions
             chown -R www-data:www-data storage bootstrap/cache
             chmod -R 775 storage bootstrap/cache
 
+            # run migrations
             php artisan migrate --force
+
+            # optimize
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
 
+            # restart services
             systemctl restart php8.3-fpm
             systemctl restart nginx
