@@ -1,25 +1,30 @@
 <?php
 
-// Konfigurasi path untuk folder writable di Vercel (/tmp)
+// 1. Buat folder temporary di /tmp (satu-satunya tempat yang bisa ditulis di Vercel)
 $storagePath = '/tmp/storage';
-$paths = [
+$cachePath = '/tmp/bootstrap/cache';
+
+$dirs = [
     $storagePath . '/framework/views',
     $storagePath . '/framework/cache',
     $storagePath . '/framework/sessions',
     $storagePath . '/logs',
+    $cachePath
 ];
 
-foreach ($paths as $path) {
-    if (!is_dir($path)) {
-        mkdir($path, 0777, true);
+foreach ($dirs as $dir) {
+    if (!is_dir($dir)) {
+        mkdir($dir, 0777, true);
     }
 }
 
-// Override environment variables Laravel secara runtime
-putenv("LOG_CHANNEL=stderr");
-putenv("VIEW_COMPILED_PATH=$storagePath/framework/views");
-putenv("FRAMEWORK_CACHE_PATH=$storagePath/framework/cache");
-putenv("SESSION_DRIVER=cookie");
+// 2. Paksa Laravel pake folder /tmp buat bootstrap cache
+putenv("APP_STORAGE=$storagePath");
+putenv("BOOTSTRAP_CACHE=$cachePath");
 
-// Jalanin aplikasi Laravel
+// 3. Tambahkan file dummy services.php & packages.php biar Laravel gak komplain
+if (!file_exists($cachePath . '/services.php')) file_put_contents($cachePath . '/services.php', '<?php return [];');
+if (!file_exists($cachePath . '/packages.php')) file_put_contents($cachePath . '/packages.php', '<?php return [];');
+
+// 4. Load aplikasi
 require __DIR__ . '/../public/index.php';
