@@ -1,17 +1,25 @@
 <?php
 
-// Pindahkan folder cache ke /tmp biar nggak Read-only
-$cachePath = '/tmp/storage/framework/cache';
-$viewsPath = '/tmp/storage/framework/views';
+// Konfigurasi path untuk folder writable di Vercel (/tmp)
+$storagePath = '/tmp/storage';
+$paths = [
+    $storagePath . '/framework/views',
+    $storagePath . '/framework/cache',
+    $storagePath . '/framework/sessions',
+    $storagePath . '/logs',
+];
 
-if (!is_dir($cachePath)) mkdir($cachePath, 0777, true);
-if (!is_dir($viewsPath)) mkdir($viewsPath, 0777, true);
+foreach ($paths as $path) {
+    if (!is_dir($path)) {
+        mkdir($path, 0777, true);
+    }
+}
 
-// Set environment variable buat folder-folder ini
-putenv("XDG_CONFIG_HOME=/tmp");
-putenv("APP_CONFIG_CACHE=/tmp/config.php");
-putenv("APP_ROUTES_CACHE=/tmp/routes.php");
-putenv("APP_SERVICES_CACHE=/tmp/services.php");
-putenv("APP_PACKAGES_CACHE=/tmp/packages.php");
+// Override environment variables Laravel secara runtime
+putenv("LOG_CHANNEL=stderr");
+putenv("VIEW_COMPILED_PATH=$storagePath/framework/views");
+putenv("FRAMEWORK_CACHE_PATH=$storagePath/framework/cache");
+putenv("SESSION_DRIVER=cookie");
 
+// Jalanin aplikasi Laravel
 require __DIR__ . '/../public/index.php';
