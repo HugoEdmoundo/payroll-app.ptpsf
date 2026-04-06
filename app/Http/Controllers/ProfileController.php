@@ -49,19 +49,28 @@ class ProfileController extends Controller
 
             // HANDLE FOTO
             if ($request->hasFile('profile_photo')) {
-                // Hapus foto lama
-                if ($user->profile_photo) {
-                    $oldPath = 'profile-photos/' . $user->profile_photo;
-                    if (Storage::disk('public')->exists($oldPath)) {
-                        Storage::disk('public')->delete($oldPath);
+                // Hapus foto lama dari Cloudinary
+                if ($user->profile_photo && str_starts_with($user->profile_photo, 'http')) {
+                    // Extract public_id from Cloudinary URL and delete
+                    try {
+                        $publicId = pathinfo(parse_url($user->profile_photo, PHP_URL_PATH), PATHINFO_FILENAME);
+                        \Cloudinary\Cloudinary::uploadApi()->destroy('profile-photos/' . $publicId);
+                    } catch (\Exception $e) {
+                        // Ignore delete errors
+                    }
+                } elseif ($user->profile_photo) {
+                    // Legacy local storage cleanup
+                    if (Storage::disk('public')->exists('profile-photos/' . $user->profile_photo)) {
+                        Storage::disk('public')->delete('profile-photos/' . $user->profile_photo);
                     }
                 }
                 
-                // Simpan foto baru
-                $file = $request->file('profile_photo');
-                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('profile-photos', $filename, 'public');
-                $user->profile_photo = $filename;
+                // Upload ke Cloudinary
+                $uploadedFile = cloudinary()->upload($request->file('profile_photo')->getRealPath(), [
+                    'folder' => 'profile-photos',
+                    'transformation' => ['width' => 400, 'height' => 400, 'crop' => 'fill']
+                ]);
+                $user->profile_photo = $uploadedFile->getSecurePath();
             }
 
             // HANDLE PASSWORD

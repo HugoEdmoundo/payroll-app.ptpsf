@@ -116,14 +116,24 @@ class UserController extends Controller
         // Join date TIDAK DIUPDATE
 
         if ($request->hasFile('profile_photo')) {
-            if ($user->profile_photo) {
+            // Delete old photo from Cloudinary
+            if ($user->profile_photo && str_starts_with($user->profile_photo, 'http')) {
+                try {
+                    $publicId = pathinfo(parse_url($user->profile_photo, PHP_URL_PATH), PATHINFO_FILENAME);
+                    \Cloudinary\Cloudinary::uploadApi()->destroy('profile-photos/' . $publicId);
+                } catch (\Exception $e) {
+                    // Ignore delete errors
+                }
+            } elseif ($user->profile_photo) {
                 Storage::disk('public')->delete('profile-photos/' . $user->profile_photo);
             }
             
-            $file = $request->file('profile_photo');
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('profile-photos', $filename, 'public');
-            $user->profile_photo = $filename;
+            // Upload to Cloudinary
+            $uploadedFile = cloudinary()->upload($request->file('profile_photo')->getRealPath(), [
+                'folder' => 'profile-photos',
+                'transformation' => ['width' => 400, 'height' => 400, 'crop' => 'fill']
+            ]);
+            $user->profile_photo = $uploadedFile->getSecurePath();
         }
 
         $user->save();
