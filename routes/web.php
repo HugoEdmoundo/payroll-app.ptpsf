@@ -10,6 +10,17 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Payroll\PengaturanGajiController;
 
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/gas-migrate', function () {
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+        return "Database Berhasil Dimigrasi, Bree!";
+    } catch (\Exception $e) {
+        return "Waduh Error: " . $e->getMessage();
+    }
+});
+
 // Authentication routes
 Route::get('/', function () {
     return redirect()->route('login');
