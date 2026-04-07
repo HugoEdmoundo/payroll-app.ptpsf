@@ -38,6 +38,15 @@
             overflow-x: hidden;
         }
         
+        /* Hide scrollbar but keep scrollable */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
         /* Ensure content is not hidden */
         @media (max-width: 1023px) {
             main {

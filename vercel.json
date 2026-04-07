@@ -1,32 +1,37 @@
 {
   "version": 2,
-  "outputDirectory": "dist",
+  "framework": null,
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.7.2"
     }
   },
   "routes": [
-        {
-            "src": "/build/(.*)",
-            "dest": "/public/build/$1"
-        },
-        {
-            "src": "/js/(.*)",
-            "dest": "/public/js/$1"
-        },
-        {
-            "src": "/images/(.*)",
-            "dest": "/public/images/$1"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/api/index.php"
-        }
-    ],
-  "env": {
-        "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
-        "SESSION_DRIVER": "cookie",
-        "CACHE_STORE": "array"
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.php"
     }
+  ],
+  "env": {
+    "APP_NAME": "Payroll PSF",
+    "APP_ENV": "production",
+    "APP_DEBUG": "false",
+    "APP_TIMEZONE": "Asia/Jakarta",
+    "APP_KEY": "base64:mfeNkzoy6nHX9GmWxTgUgwrK0Nd8dLdRbmt+1JXoiIw=",
+    "APP_LOCALE": "en",
+    "LOG_CHANNEL": "stderr",
+    "LOG_LEVEL": "error",
+    "DB_CONNECTION": "pgsql",
+    "DB_HOST": "db.xkmhtprgoywyvvqdbhvm.supabase.co",
+    "DB_PORT": "5432",
+    "DB_DATABASE": "postgres",
+    "DB_USERNAME": "postgres",
+    "DB_PASSWORD": "_b975C77_ChKu@m",
+    "SESSION_DRIVER": "database",
+    "SESSION_LIFETIME": "120",
+    "CACHE_STORE": "database",
+    "QUEUE_CONNECTION": "sync",
+    "FILESYSTEM_DISK": "local",
+    "BCRYPT_ROUNDS": "12"
+  }
 }

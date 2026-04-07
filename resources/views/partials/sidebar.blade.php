@@ -56,7 +56,8 @@
         </div>
 
         <!-- Navigation -->
-        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto" style="scrollbar-width: none; -ms-overflow-style: none; overflow-y: scroll;">
+        <style>nav::-webkit-scrollbar { display: none; }</style>
             
             <!-- ========== MAIN MENU ========== -->
             
