@@ -9,19 +9,27 @@
   "routes": [
     {
       "src": "^/build/(.*)",
-      "dest": "/build/$1"
+      "dest": "/public/build/$1"
     },
     {
       "src": "^/images/(.*)",
-      "dest": "/images/$1"
+      "dest": "/public/images/$1"
     },
     {
       "src": "^/css/(.*)",
-      "dest": "/css/$1"
+      "dest": "/public/css/$1"
     },
     {
       "src": "^/js/(.*)",
-      "dest": "/js/$1"
+      "dest": "/public/js/$1"
+    },
+    {
+      "src": "^/favicon\\.ico$",
+      "dest": "/public/favicon.ico"
+    },
+    {
+      "src": "^/robots\\.txt$",
+      "dest": "/public/robots.txt"
     },
     {
       "src": "/(.*)",
@@ -31,7 +39,7 @@
   "env": {
     "APP_NAME": "Payroll PSF",
     "APP_ENV": "production",
-    "APP_DEBUG": "false",
+    "APP_DEBUG": "true",
     "APP_TIMEZONE": "Asia/Jakarta",
     "APP_KEY": "base64:mfeNkzoy6nHX9GmWxTgUgwrK0Nd8dLdRbmt+1JXoiIw=",
     "APP_URL": "https://payroll-app-ptpsf.hugoedm.fun",

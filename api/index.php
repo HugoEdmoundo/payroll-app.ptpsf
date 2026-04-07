@@ -4,26 +4,24 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-// On Vercel, use /tmp for writable storage
-if (isset($_ENV['VERCEL']) || getenv('VERCEL')) {
-    $_ENV['APP_STORAGE_PATH'] = '/tmp/storage';
-    
-    // Create required directories in /tmp
+// On Vercel, /tmp is the only writable directory
+if (getenv('VERCEL')) {
+    $tmpStorage = '/tmp/laravel/storage';
     $dirs = [
-        '/tmp/storage/framework/sessions',
-        '/tmp/storage/framework/views',
-        '/tmp/storage/framework/cache/data',
-        '/tmp/storage/logs',
-        '/tmp/bootstrap/cache',
+        $tmpStorage . '/framework/sessions',
+        $tmpStorage . '/framework/views',
+        $tmpStorage . '/framework/cache/data',
+        $tmpStorage . '/logs',
     ];
     foreach ($dirs as $dir) {
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
     }
+    // Point storage to /tmp
+    putenv('APP_STORAGE_PATH=' . $tmpStorage);
 }
 
-// Maintenance mode check
 if (file_exists($maintenance = __DIR__ . '/../storage/framework/maintenance.php')) {
     require $maintenance;
 }
@@ -32,10 +30,8 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $app = require_once __DIR__ . '/../bootstrap/app.php';
 
-// Override storage path for Vercel
-if (isset($_ENV['VERCEL']) || getenv('VERCEL')) {
-    $app->useStoragePath('/tmp/storage');
-    $app->useBootstrapPath('/tmp/bootstrap');
+if (getenv('VERCEL')) {
+    $app->useStoragePath('/tmp/laravel/storage');
 }
 
 $app->handleRequest(Request::capture());
