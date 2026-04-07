@@ -1,30 +1,20 @@
 <?php
 
-// 1. Buat folder temporary di /tmp (satu-satunya tempat yang bisa ditulis di Vercel)
-$storagePath = '/tmp/storage';
-$cachePath = '/tmp/bootstrap/cache';
-
-$dirs = [
-    $storagePath . '/framework/views',
-    $storagePath . '/framework/cache',
-    $storagePath . '/framework/sessions',
-    $storagePath . '/logs',
-    $cachePath
-];
-
-foreach ($dirs as $dir) {
-    if (!is_dir($dir)) {
-        mkdir($dir, 0777, true);
-    }
+// Buat folder wajib di /tmp
+$baseTmp = '/tmp/bootstrap/cache';
+if (!is_dir($baseTmp)) {
+    mkdir($baseTmp, 0777, true);
 }
 
-// 2. Paksa Laravel pake folder /tmp buat bootstrap cache
-putenv("APP_STORAGE=$storagePath");
-putenv("BOOTSTRAP_CACHE=$cachePath");
+// Buat file pancingan biar Laravel nggak nyari folder aslinya
+file_put_contents($baseTmp . '/services.php', '<?php return [];');
+file_put_contents($baseTmp . '/packages.php', '<?php return [];');
 
-// 3. Tambahkan file dummy services.php & packages.php biar Laravel gak komplain
-if (!file_exists($cachePath . '/services.php')) file_put_contents($cachePath . '/services.php', '<?php return [];');
-if (!file_exists($cachePath . '/packages.php')) file_put_contents($cachePath . '/packages.php', '<?php return [];');
+// Set Environment secara runtime
+putenv("LOG_CHANNEL=stderr");
+putenv("APP_CONFIG_CACHE=/tmp/config.php");
+putenv("APP_ROUTES_CACHE=/tmp/routes.php");
+putenv("APP_SERVICES_CACHE=$baseTmp/services.php");
+putenv("APP_PACKAGES_CACHE=$baseTmp/packages.php");
 
-// 4. Load aplikasi
 require __DIR__ . '/../public/index.php';
