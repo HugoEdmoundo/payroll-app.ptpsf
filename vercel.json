@@ -51,7 +51,7 @@
     "DB_PORT": "6543",
     "DB_DATABASE": "postgres",
     "DB_USERNAME": "postgres.xkmhtprgoywyvvqdbhvm",
-    "DB_PASSWORD": "_b975C77_ChKu@m",
+    "DB_PASSWORD": "_b9975C77_ChKu@m",
     "SESSION_DRIVER": "cookie",
     "SESSION_LIFETIME": "120",
     "CACHE_STORE": "array",
