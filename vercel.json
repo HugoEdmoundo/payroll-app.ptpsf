@@ -8,6 +8,22 @@
   },
   "routes": [
     {
+      "src": "^/build/(.*)",
+      "dest": "/build/$1"
+    },
+    {
+      "src": "^/images/(.*)",
+      "dest": "/images/$1"
+    },
+    {
+      "src": "^/css/(.*)",
+      "dest": "/css/$1"
+    },
+    {
+      "src": "^/js/(.*)",
+      "dest": "/js/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/api/index.php"
     }
@@ -18,6 +34,7 @@
     "APP_DEBUG": "false",
     "APP_TIMEZONE": "Asia/Jakarta",
     "APP_KEY": "base64:mfeNkzoy6nHX9GmWxTgUgwrK0Nd8dLdRbmt+1JXoiIw=",
+    "APP_URL": "https://payroll-app-ptpsf.hugoedm.fun",
     "APP_LOCALE": "en",
     "LOG_CHANNEL": "stderr",
     "LOG_LEVEL": "error",
@@ -32,6 +49,7 @@
     "CACHE_STORE": "database",
     "QUEUE_CONNECTION": "sync",
     "FILESYSTEM_DISK": "local",
-    "BCRYPT_ROUNDS": "12"
+    "BCRYPT_ROUNDS": "12",
+    "VERCEL": "1"
   }
 }
