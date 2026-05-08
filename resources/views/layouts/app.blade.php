@@ -10,7 +10,7 @@
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" class="rounded-lg">
     
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <link rel="icon" href="{{ asset('images/LOGOPSF_v4fq0w.jpg') }}" type="image/x-icon">
