@@ -26,7 +26,7 @@
         <div class="flex items-start">
             <i class="fas fa-info-circle text-blue-600 mt-0.5 mr-2"></i>
             <div class="text-sm text-blue-800">
-                <strong>NKI Calculation:</strong> Nilai NKI {{ $data['nki_info']['nilai'] }} → {{ $data['nki_info']['persentase'] }}% × Rp {{ number_format($data['nki_info']['acuan'], 0, ',', '.') }} = Rp {{ number_format($data['fields']['tunjangan_prestasi'], 0, ',', '.') }}
+                <strong>NKI Calculation:</strong> Nilai NKI {{ $data['nki_info']['nilai_nki'] }} → {{ $data['nki_info']['persentase'] }}% × Rp {{ number_format($data['nki_info']['acuan'], 0, ',', '.') }} = Rp {{ number_format($data['fields']['tunjangan_prestasi'], 0, ',', '.') }}
             </div>
         </div>
     </div>
@@ -52,11 +52,11 @@
             @php
             $pendapatanFields = [
                 'gaji_pokok' => 'Gaji Pokok',
-                'bpjs_kesehatan_pendapatan' => 'BPJS Kesehatan (Pendapatan)',
-                'bpjs_kecelakaan_kerja_pendapatan' => 'BPJS Kecelakaan Kerja (Pendapatan)',
-                'bpjs_kematian_pendapatan' => 'BPJS Kematian (Pendapatan)',
-                'bpjs_jht_pendapatan' => 'BPJS JHT (Pendapatan)',
-                'bpjs_jp_pendapatan' => 'BPJS JP (Pendapatan)',
+                'bpjs_kesehatan' => 'BPJS Kesehatan (Pendapatan)',
+                'bpjs_kecelakaan_kerja' => 'BPJS Kecelakaan Kerja (Pendapatan)',
+                'bpjs_kematian' => 'BPJS Kematian (Pendapatan)',
+                'bpjs_jht' => 'BPJS JHT (Pendapatan)',
+                'bpjs_jp' => 'BPJS JP (Pendapatan)',
                 'tunjangan_prestasi' => 'Tunjangan Prestasi (from NKI)',
                 'tunjangan_konjungtur' => 'Tunjangan Konjungtur',
                 'benefit_ibadah' => 'Benefit Ibadah',

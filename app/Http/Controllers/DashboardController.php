@@ -132,11 +132,11 @@ class DashboardController extends Controller
         
         // Pengeluaran BPJS (PENDAPATAN only - with adjustments)
         $totalBPJS = $hitungGajiData->sum(function($item) {
-            return $item->getFinalValue('bpjs_kesehatan_pendapatan') + 
-                   $item->getFinalValue('bpjs_kecelakaan_kerja_pendapatan') + 
-                   $item->getFinalValue('bpjs_kematian_pendapatan') + 
-                   $item->getFinalValue('bpjs_jht_pendapatan') + 
-                   $item->getFinalValue('bpjs_jp_pendapatan');
+            return $item->getFinalValue('bpjs_kesehatan') + 
+                   $item->getFinalValue('bpjs_kecelakaan_kerja') + 
+                   $item->getFinalValue('bpjs_kematian') + 
+                   $item->getFinalValue('bpjs_jht') + 
+                   $item->getFinalValue('bpjs_jp');
         });
         
         // Tagihan Koperasi (with adjustments)

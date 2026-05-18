@@ -27,9 +27,9 @@ class PengaturanGajiObserver
             // Update Acuan Gaji with new values from Pengaturan
             $acuan->update([
                 'gaji_pokok' => $pengaturan->gaji_pokok,
-                'bpjs_kesehatan_pendapatan' => $pengaturan->bpjs_kesehatan,
-                'bpjs_kecelakaan_kerja_pendapatan' => $pengaturan->bpjs_kecelakaan_kerja,
-                'bpjs_kematian_pendapatan' => $pengaturan->bpjs_ketenagakerjaan,
+                'bpjs_kesehatan' => $pengaturan->bpjs_kesehatan,
+                'bpjs_kecelakaan_kerja' => $pengaturan->bpjs_kecelakaan_kerja,
+                'bpjs_kematian' => $pengaturan->bpjs_ketenagakerjaan,
                 'benefit_operasional' => $pengaturan->tunjangan_operasional,
                 'koperasi' => $pengaturan->potongan_koperasi,
             ]);
@@ -74,9 +74,9 @@ class PengaturanGajiObserver
         // Update Hitung Gaji
         $hitungGaji->update([
             'gaji_pokok' => $acuan->gaji_pokok,
-            'bpjs_kesehatan_pendapatan' => $acuan->bpjs_kesehatan_pendapatan,
-            'bpjs_kecelakaan_kerja_pendapatan' => $acuan->bpjs_kecelakaan_kerja_pendapatan,
-            'bpjs_kematian_pendapatan' => $acuan->bpjs_kematian_pendapatan,
+            'bpjs_kesehatan' => $acuan->bpjs_kesehatan,
+            'bpjs_kecelakaan_kerja' => $acuan->bpjs_kecelakaan_kerja,
+            'bpjs_kematian' => $acuan->bpjs_kematian,
             'benefit_operasional' => $acuan->benefit_operasional,
             'tunjangan_prestasi' => $tunjanganPrestasi,
             'potongan_absensi' => $potonganAbsensi,

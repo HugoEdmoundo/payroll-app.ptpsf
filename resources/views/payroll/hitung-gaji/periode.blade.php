@@ -207,15 +207,28 @@ function openModal(karyawanId, periode, namaKaryawan) {
     
     // Load form via AJAX
     fetch(`/payroll/hitung-gaji/modal/${karyawanId}/${periode}`)
-        .then(response => response.text())
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => { throw new Error(text || 'Server error ' + response.status); });
+            }
+            return response.text();
+        })
         .then(html => {
             document.getElementById('modalContent').innerHTML = html;
         })
         .catch(error => {
+            console.error('Modal load error:', error);
             document.getElementById('modalContent').innerHTML = `
-                <div class="text-red-600">
-                    <i class="fas fa-exclamation-circle text-4xl mb-2"></i>
-                    <p>Error loading data: ${error}</p>
+                <div class="text-center py-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 mb-4">
+                        <i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Data Tidak Ditemukan</h3>
+                    <p class="text-gray-500 mb-4">` + error.message + `</p>
+                    <button onclick="closeModal()" 
+                            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+                        Tutup
+                    </button>
                 </div>
             `;
         });

@@ -69,11 +69,11 @@ class DashboardApiController extends Controller
         })->sum('gaji_bersih');
         
         $totalBPJS = $hitungGajiData->sum(function($item) {
-            return ($item->bpjs_kesehatan_pendapatan ?? 0) + 
-                   ($item->bpjs_kecelakaan_kerja_pendapatan ?? 0) + 
-                   ($item->bpjs_kematian_pendapatan ?? 0) + 
-                   ($item->bpjs_jht_pendapatan ?? 0) + 
-                   ($item->bpjs_jp_pendapatan ?? 0);
+            return ($item->bpjs_kesehatan ?? 0) + 
+                   ($item->bpjs_kecelakaan_kerja ?? 0) + 
+                   ($item->bpjs_kematian ?? 0) + 
+                   ($item->bpjs_jht ?? 0) + 
+                   ($item->bpjs_jp ?? 0);
         });
         
         $totalKoperasi = $hitungGajiData->sum('koperasi');

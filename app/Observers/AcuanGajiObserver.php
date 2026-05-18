@@ -62,11 +62,11 @@ class AcuanGajiObserver
             'karyawan_id' => $acuanGaji->id_karyawan,
             'periode' => $acuanGaji->periode,
             'gaji_pokok' => $acuanGaji->gaji_pokok,
-            'bpjs_kesehatan_pendapatan' => $acuanGaji->bpjs_kesehatan_pendapatan,
-            'bpjs_kecelakaan_kerja_pendapatan' => $acuanGaji->bpjs_kecelakaan_kerja_pendapatan,
-            'bpjs_kematian_pendapatan' => $acuanGaji->bpjs_kematian_pendapatan,
-            'bpjs_jht_pendapatan' => $acuanGaji->bpjs_jht_pendapatan,
-            'bpjs_jp_pendapatan' => $acuanGaji->bpjs_jp_pendapatan,
+            'bpjs_kesehatan' => $acuanGaji->bpjs_kesehatan,
+            'bpjs_kecelakaan_kerja' => $acuanGaji->bpjs_kecelakaan_kerja,
+            'bpjs_kematian' => $acuanGaji->bpjs_kematian,
+            'bpjs_jht' => $acuanGaji->bpjs_jht,
+            'bpjs_jp' => $acuanGaji->bpjs_jp,
             'tunjangan_prestasi' => $tunjanganPrestasi, // Calculated with NKI
             'tunjangan_konjungtur' => $acuanGaji->tunjangan_konjungtur,
             'benefit_ibadah' => $acuanGaji->benefit_ibadah,
@@ -133,11 +133,11 @@ class AcuanGajiObserver
         // Update Hitung Gaji with all fields from Acuan Gaji + calculated values
         $hitungGaji->update([
             'gaji_pokok' => $acuanGaji->gaji_pokok,
-            'bpjs_kesehatan_pendapatan' => $acuanGaji->bpjs_kesehatan_pendapatan,
-            'bpjs_kecelakaan_kerja_pendapatan' => $acuanGaji->bpjs_kecelakaan_kerja_pendapatan,
-            'bpjs_kematian_pendapatan' => $acuanGaji->bpjs_kematian_pendapatan,
-            'bpjs_jht_pendapatan' => $acuanGaji->bpjs_jht_pendapatan,
-            'bpjs_jp_pendapatan' => $acuanGaji->bpjs_jp_pendapatan,
+            'bpjs_kesehatan' => $acuanGaji->bpjs_kesehatan,
+            'bpjs_kecelakaan_kerja' => $acuanGaji->bpjs_kecelakaan_kerja,
+            'bpjs_kematian' => $acuanGaji->bpjs_kematian,
+            'bpjs_jht' => $acuanGaji->bpjs_jht,
+            'bpjs_jp' => $acuanGaji->bpjs_jp,
             'tunjangan_prestasi' => $tunjanganPrestasi, // Calculated with NKI
             'tunjangan_konjungtur' => $acuanGaji->tunjangan_konjungtur,
             'benefit_ibadah' => $acuanGaji->benefit_ibadah,

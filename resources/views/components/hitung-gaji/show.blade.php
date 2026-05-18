@@ -41,11 +41,11 @@
             @php
             $pendapatanFields = [
                 'gaji_pokok' => 'Gaji Pokok',
-                'bpjs_kesehatan_pendapatan' => 'BPJS Kesehatan',
-                'bpjs_kecelakaan_kerja_pendapatan' => 'BPJS Kecelakaan Kerja',
-                'bpjs_kematian_pendapatan' => 'BPJS Kematian',
-                'bpjs_jht_pendapatan' => 'BPJS JHT',
-                'bpjs_jp_pendapatan' => 'BPJS JP',
+                'bpjs_kesehatan' => 'BPJS Kesehatan',
+                'bpjs_kecelakaan_kerja' => 'BPJS Kecelakaan Kerja',
+                'bpjs_kematian' => 'BPJS Kematian',
+                'bpjs_jht' => 'BPJS JHT',
+                'bpjs_jp' => 'BPJS JP',
                 'tunjangan_prestasi' => 'Tunjangan Prestasi',
                 'tunjangan_konjungtur' => 'Tunjangan Konjungtur',
                 'benefit_ibadah' => 'Benefit Ibadah',

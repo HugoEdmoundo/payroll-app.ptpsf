@@ -308,11 +308,11 @@
                         @php 
                         $all_pendapatan = [
                             'gaji_pokok' => 'Gaji Pokok',
-                            'bpjs_kesehatan_pendapatan' => 'BPJS Kesehatan (P)',
-                            'bpjs_kecelakaan_kerja_pendapatan' => 'BPJS Kecelakaan Kerja (P)',
-                            'bpjs_kematian_pendapatan' => 'BPJS Kematian (P)',
-                            'bpjs_jht_pendapatan' => 'BPJS JHT (P)',
-                            'bpjs_jp_pendapatan' => 'BPJS JP (P)',
+                            'bpjs_kesehatan' => 'BPJS Kesehatan (P)',
+                            'bpjs_kecelakaan_kerja' => 'BPJS Kecelakaan Kerja (P)',
+                            'bpjs_kematian' => 'BPJS Kematian (P)',
+                            'bpjs_jht' => 'BPJS JHT (P)',
+                            'bpjs_jp' => 'BPJS JP (P)',
                             'tunjangan_prestasi' => 'Tunjangan Prestasi',
                             'tunjangan_konjungtur' => 'Tunjangan Konjungtur',
                             'benefit_ibadah' => 'Benefit Ibadah',
