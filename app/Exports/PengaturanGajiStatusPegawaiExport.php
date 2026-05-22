@@ -4,13 +4,13 @@ namespace App\Exports;
 
 use App\Models\PengaturanGajiStatusPegawai;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class PengaturanGajiStatusPegawaiExport implements FromCollection, WithHeadings, WithMapping, WithStyles, WithColumnWidths
+class PengaturanGajiStatusPegawaiExport implements FromCollection, WithColumnWidths, WithHeadings, WithMapping, WithStyles
 {
     protected $statusPegawai;
 
@@ -22,14 +22,14 @@ class PengaturanGajiStatusPegawaiExport implements FromCollection, WithHeadings,
     public function collection()
     {
         $query = PengaturanGajiStatusPegawai::query();
-        
+
         if ($this->statusPegawai) {
-            $query->where('status_pegawai', $this->statusPegawai);
+            $query->where('employee_status', $this->statusPegawai);
         }
-        
-        return $query->orderBy('status_pegawai')
-                    ->orderBy('lokasi_kerja')
-                    ->get();
+
+        return $query->orderBy('employee_status')
+            ->orderBy('lokasi_kerja')
+            ->get();
     }
 
     public function headings(): array

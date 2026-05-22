@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\PengaturanBpjsKoperasi;
+use Illuminate\Database\Seeder;
 
 class PengaturanBpjsKoperasiSeeder extends Seeder
 {
@@ -24,7 +24,7 @@ class PengaturanBpjsKoperasiSeeder extends Seeder
                 'koperasi' => 11111.00,
             ]
         );
-        
+
         $this->command->info('✅ BPJS & Koperasi configuration created successfully!');
     }
 }

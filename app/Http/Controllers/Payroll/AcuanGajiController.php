@@ -5,31 +5,31 @@ namespace App\Http\Controllers\Payroll;
 use App\Http\Controllers\Controller;
 use App\Models\AcuanGaji;
 use App\Models\Karyawan;
-use App\Models\PengaturanGaji;
-use App\Models\NKI;
-use App\Models\Absensi;
 use App\Models\Kasbon;
+use App\Models\NKI;
+use App\Models\PengaturanGaji;
 use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
 
 class AcuanGajiController extends Controller
 {
-    use GlobalSearchable, \App\Traits\LogsActivity;
+    use \App\Traits\LogsActivity, GlobalSearchable;
+
     public function index(Request $request)
     {
         // Get all unique periodes from Acuan Gaji
         $periodes = AcuanGaji::select('periode')
-                            ->distinct()
-                            ->orderBy('periode', 'desc')
-                            ->get()
-                            ->map(function($item) {
-                                $totalKaryawan = AcuanGaji::where('periode', $item->periode)->count();
-                                
-                                return [
-                                    'periode' => $item->periode,
-                                    'total_karyawan' => $totalKaryawan,
-                                ];
-                            });
+            ->distinct()
+            ->orderBy('periode', 'desc')
+            ->get()
+            ->map(function ($item) {
+                $totalKaryawan = AcuanGaji::where('periode', $item->periode)->count();
+
+                return [
+                    'periode' => $item->periode,
+                    'total_karyawan' => $totalKaryawan,
+                ];
+            });
 
         return view('payroll.acuan-gaji.index', compact('periodes'));
     }
@@ -38,87 +38,86 @@ class AcuanGajiController extends Controller
     {
         // Get all unique periodes with stats
         $periodes = AcuanGaji::select('periode')
-                            ->distinct()
-                            ->orderBy('periode', 'desc')
-                            ->get()
-                            ->map(function($item) {
-                                $stats = AcuanGaji::where('periode', $item->periode)
-                                                 ->selectRaw('
-                                                     COUNT(*) as total_karyawan, 
-                                                     SUM(gaji_bersih) as total_gaji_bersih,
-                                                     SUM(bpjs_kesehatan + bpjs_kecelakaan_kerja + bpjs_kematian + bpjs_jht + bpjs_jp) as total_bpjs
+            ->distinct()
+            ->orderBy('periode', 'desc')
+            ->get()
+            ->map(function ($item) {
+                $stats = AcuanGaji::where('periode', $item->periode)
+                    ->selectRaw('
+                                                     COUNT(*) as total_karyawan,
+                                                     SUM(COALESCE(gaji_pokok,0) + COALESCE(bpjs_kesehatan,0) + COALESCE(bpjs_kecelakaan_kerja,0) + COALESCE(bpjs_kematian,0) + COALESCE(bpjs_jht,0) + COALESCE(bpjs_jp,0) + COALESCE(tunjangan_prestasi,0) + COALESCE(tunjangan_konjungtur,0) + COALESCE(benefit_ibadah,0) + COALESCE(benefit_komunikasi,0) + COALESCE(benefit_operasional,0) + COALESCE(reward,0) - COALESCE(koperasi,0) - COALESCE(kasbon,0) - COALESCE(umroh,0) - COALESCE(kurban,0) - COALESCE(mutabaah,0) - COALESCE(potongan_absensi,0) - COALESCE(potongan_kehadiran,0)) as total_gaji_bersih,
+                                                     SUM(COALESCE(bpjs_kesehatan,0) + COALESCE(bpjs_kecelakaan_kerja,0) + COALESCE(bpjs_kematian,0) + COALESCE(bpjs_jht,0) + COALESCE(bpjs_jp,0)) as total_bpjs
                                                  ')
-                                                 ->first();
+                    ->first();
 
-                                // Pengeluaran Perusahaan = Total Gaji Bersih + Total BPJS
-                                $pengeluaranPerusahaan = ($stats->total_gaji_bersih ?? 0) + ($stats->total_bpjs ?? 0);
+                // Pengeluaran Perusahaan = Total Gaji Bersih + Total BPJS
+                $pengeluaranPerusahaan = ($stats->total_gaji_bersih ?? 0) + ($stats->total_bpjs ?? 0);
 
-                                return [
-                                    'periode' => $item->periode,
-                                    'total_karyawan' => $stats->total_karyawan,
-                                    'total_gaji_bersih' => $stats->total_gaji_bersih ?? 0,
-                                    'total_bpjs' => $stats->total_bpjs ?? 0,
-                                    'total_pengeluaran_perusahaan' => $pengeluaranPerusahaan,
-                                ];
-                            });
+                return [
+                    'periode' => $item->periode,
+                    'total_karyawan' => $stats->total_karyawan,
+                    'total_gaji_bersih' => $stats->total_gaji_bersih ?? 0,
+                    'total_bpjs' => $stats->total_bpjs ?? 0,
+                    'total_pengeluaran_perusahaan' => $pengeluaranPerusahaan,
+                ];
+            });
 
         return view('payroll.acuan-gaji.manage-periode', compact('periodes'));
     }
 
-
     public function showPeriode(Request $request, $periode)
     {
         $query = AcuanGaji::with('karyawan')
-                         ->where('periode', $periode);
+            ->where('periode', $periode);
 
         // Global search
         if ($request->has('search') && $request->search != '') {
             $query = $this->applyGlobalSearch($query, $request->search, [
                 'periode',
             ], [
-                'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'jabatan', 'lokasi_kerja', 'email', 'no_telp']
+                'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'jabatan', 'lokasi_kerja', 'email', 'no_telp'],
             ]);
         }
 
         // Filter by lokasi kerja
         if ($request->has('lokasi_kerja') && $request->lokasi_kerja != '') {
-            $query->whereHas('karyawan', function($q) use ($request) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
                 $q->where('lokasi_kerja', $request->lokasi_kerja);
             });
         }
 
         // Filter by jabatan
         if ($request->has('jabatan') && $request->jabatan != '') {
-            $query->whereHas('karyawan', function($q) use ($request) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
                 $q->where('jabatan', $request->jabatan);
             });
         }
 
         $acuanGajiList = $query->orderBy('id_acuan', 'desc')
-                              ->paginate(50);
+            ->paginate(50);
 
         // Calculate statistics for this periode
         $stats = AcuanGaji::where('periode', $periode)
-                         ->selectRaw('
+            ->selectRaw('
                              COUNT(*) as total_karyawan,
-                             SUM(bpjs_kesehatan + bpjs_kecelakaan_kerja + bpjs_kematian + bpjs_jht + bpjs_jp) as total_bpjs,
-                             SUM(gaji_bersih) as total_gaji_bersih
+                             SUM(COALESCE(bpjs_kesehatan,0) + COALESCE(bpjs_kecelakaan_kerja,0) + COALESCE(bpjs_kematian,0) + COALESCE(bpjs_jht,0) + COALESCE(bpjs_jp,0)) as total_bpjs,
+                             SUM(COALESCE(gaji_pokok,0) + COALESCE(bpjs_kesehatan,0) + COALESCE(bpjs_kecelakaan_kerja,0) + COALESCE(bpjs_kematian,0) + COALESCE(bpjs_jht,0) + COALESCE(bpjs_jp,0) + COALESCE(tunjangan_prestasi,0) + COALESCE(tunjangan_konjungtur,0) + COALESCE(benefit_ibadah,0) + COALESCE(benefit_komunikasi,0) + COALESCE(benefit_operasional,0) + COALESCE(reward,0) - COALESCE(koperasi,0) - COALESCE(kasbon,0) - COALESCE(umroh,0) - COALESCE(kurban,0) - COALESCE(mutabaah,0) - COALESCE(potongan_absensi,0) - COALESCE(potongan_kehadiran,0)) as total_gaji_bersih
                          ')
-                         ->first();
-        
+            ->first();
+
         // Calculate Pengeluaran Perusahaan = Total Gaji Bersih + Total BPJS
         $stats->total_pengeluaran_perusahaan = ($stats->total_gaji_bersih ?? 0) + ($stats->total_bpjs ?? 0);
 
         // Get unique lokasi kerja and jabatan for filters
         $lokasiKerjaList = Karyawan::select('lokasi_kerja')
-                                  ->distinct()
-                                  ->orderBy('lokasi_kerja')
-                                  ->pluck('lokasi_kerja');
-        
+            ->distinct()
+            ->orderBy('lokasi_kerja')
+            ->pluck('lokasi_kerja');
+
         $jabatanList = Karyawan::select('jabatan')
-                              ->distinct()
-                              ->orderBy('jabatan')
-                              ->pluck('jabatan');
+            ->distinct()
+            ->orderBy('jabatan')
+            ->pluck('jabatan');
 
         return view('payroll.acuan-gaji.periode', compact('acuanGajiList', 'periode', 'lokasiKerjaList', 'jabatanList', 'stats'));
     }
@@ -151,11 +150,12 @@ class AcuanGajiController extends Controller
         foreach ($karyawanList as $karyawan) {
             // Check if already exists
             $exists = AcuanGaji::where('id_karyawan', $karyawan->id_karyawan)
-                              ->where('periode', $periode)
-                              ->exists();
+                ->where('periode', $periode)
+                ->exists();
 
             if ($exists) {
                 $skipped++;
+
                 continue;
             }
 
@@ -163,10 +163,10 @@ class AcuanGajiController extends Controller
             $pengaturan = $karyawan->getPengaturanGaji();
 
             // FALLBACK: If no pengaturan found for Harian/OJT, create default
-            if (!$pengaturan && in_array($karyawan->status_pegawai, ['Harian', 'OJT'])) {
+            if (! $pengaturan && in_array($karyawan->status_pegawai, ['Harian', 'OJT'])) {
                 // Auto-create pengaturan for Harian/OJT
                 $defaultGaji = $karyawan->status_pegawai === 'Harian' ? 90000 : 5000000;
-                
+
                 $pengaturan = \App\Models\PengaturanGajiStatusPegawai::create([
                     'status_pegawai' => $karyawan->status_pegawai,
                     'lokasi_kerja' => $karyawan->lokasi_kerja,
@@ -174,15 +174,16 @@ class AcuanGajiController extends Controller
                 ]);
             }
 
-            if (!$pengaturan) {
+            if (! $pengaturan) {
                 $skipped++;
+
                 continue;
             }
 
             // Get NKI for tunjangan prestasi calculation
             $nki = \App\Models\NKI::where('id_karyawan', $karyawan->id_karyawan)
-                                  ->where('periode', $periode)
-                                  ->first();
+                ->where('periode', $periode)
+                ->first();
 
             // Calculate tunjangan prestasi (HYBRID LOGIC)
             // If NKI exists: tunjangan_prestasi × NKI%
@@ -201,9 +202,9 @@ class AcuanGajiController extends Controller
             // Get Kasbon
             $kasbonTotal = 0;
             $kasbonList = Kasbon::where('id_karyawan', $karyawan->id_karyawan)
-                               ->whereIn('status_pembayaran', ['Pending', 'Cicilan', 'Lunas'])
-                               ->orderBy('tanggal_pengajuan', 'asc')
-                               ->get();
+                ->whereIn('status_pembayaran', ['Pending', 'Lunas'])
+                ->orderBy('tanggal_pengajuan', 'asc')
+                ->get();
 
             foreach ($kasbonList as $kasbon) {
                 $potongan = $kasbon->getPotonganForPeriode($periode);
@@ -276,15 +277,15 @@ class AcuanGajiController extends Controller
         }
 
         return redirect()->route('payroll.acuan-gaji.index', ['periode' => $periode])
-                        ->with('success', "Berhasil generate {$generated} acuan gaji. {$skipped} dilewati (sudah ada atau tidak ada pengaturan gaji).");
+            ->with('success', "Berhasil generate {$generated} acuan gaji. {$skipped} dilewati (sudah ada atau tidak ada pengaturan gaji).");
     }
 
     public function create()
     {
         $karyawanList = Karyawan::where('status_karyawan', 'Active')
-                               ->orderBy('nama_karyawan')
-                               ->get();
-        
+            ->orderBy('nama_karyawan')
+            ->get();
+
         return view('payroll.acuan-gaji.create', compact('karyawanList'));
     }
 
@@ -293,13 +294,32 @@ class AcuanGajiController extends Controller
         $request->validate([
             'id_karyawan' => 'required|exists:karyawan,id_karyawan',
             'periode' => 'required|string|regex:/^\d{4}-\d{2}$/',
+            'gaji_pokok' => 'nullable|numeric|min:0',
+            'bpjs_kesehatan' => 'nullable|numeric|min:0',
+            'bpjs_kecelakaan_kerja' => 'nullable|numeric|min:0',
+            'bpjs_kematian' => 'nullable|numeric|min:0',
+            'bpjs_jht' => 'nullable|numeric|min:0',
+            'bpjs_jp' => 'nullable|numeric|min:0',
+            'tunjangan_prestasi' => 'nullable|numeric|min:0',
+            'tunjangan_konjungtur' => 'nullable|numeric|min:0',
+            'benefit_ibadah' => 'nullable|numeric|min:0',
+            'benefit_komunikasi' => 'nullable|numeric|min:0',
+            'benefit_operasional' => 'nullable|numeric|min:0',
+            'reward' => 'nullable|numeric|min:0',
+            'koperasi' => 'nullable|numeric|min:0',
+            'kasbon' => 'nullable|numeric|min:0',
+            'umroh' => 'nullable|numeric|min:0',
+            'kurban' => 'nullable|numeric|min:0',
+            'mutabaah' => 'nullable|numeric|min:0',
+            'potongan_absensi' => 'nullable|numeric|min:0',
+            'potongan_kehadiran' => 'nullable|numeric|min:0',
         ]);
 
         // Check if already exists
         $exists = AcuanGaji::where('id_karyawan', $request->id_karyawan)
-                          ->where('periode', $request->periode)
-                          ->exists();
-        
+            ->where('periode', $request->periode)
+            ->exists();
+
         if ($exists) {
             return back()->withErrors(['periode' => 'Acuan gaji untuk karyawan ini pada periode tersebut sudah ada.'])->withInput();
         }
@@ -307,21 +327,22 @@ class AcuanGajiController extends Controller
         AcuanGaji::create($request->all());
 
         return redirect()->route('payroll.acuan-gaji.index')
-                        ->with('success', 'Acuan gaji berhasil ditambahkan.');
+            ->with('success', 'Acuan gaji berhasil ditambahkan.');
     }
 
     public function show(AcuanGaji $acuanGaji)
     {
         $acuanGaji->load('karyawan');
+
         return view('payroll.acuan-gaji.show', compact('acuanGaji'));
     }
 
     public function edit(AcuanGaji $acuanGaji)
     {
         $karyawanList = Karyawan::where('status_karyawan', 'Active')
-                               ->orderBy('nama_karyawan')
-                               ->get();
-        
+            ->orderBy('nama_karyawan')
+            ->get();
+
         return view('payroll.acuan-gaji.edit', compact('acuanGaji', 'karyawanList'));
     }
 
@@ -330,14 +351,33 @@ class AcuanGajiController extends Controller
         $request->validate([
             'id_karyawan' => 'required|exists:karyawan,id_karyawan',
             'periode' => 'required|string|regex:/^\d{4}-\d{2}$/',
+            'gaji_pokok' => 'nullable|numeric|min:0',
+            'bpjs_kesehatan' => 'nullable|numeric|min:0',
+            'bpjs_kecelakaan_kerja' => 'nullable|numeric|min:0',
+            'bpjs_kematian' => 'nullable|numeric|min:0',
+            'bpjs_jht' => 'nullable|numeric|min:0',
+            'bpjs_jp' => 'nullable|numeric|min:0',
+            'tunjangan_prestasi' => 'nullable|numeric|min:0',
+            'tunjangan_konjungtur' => 'nullable|numeric|min:0',
+            'benefit_ibadah' => 'nullable|numeric|min:0',
+            'benefit_komunikasi' => 'nullable|numeric|min:0',
+            'benefit_operasional' => 'nullable|numeric|min:0',
+            'reward' => 'nullable|numeric|min:0',
+            'koperasi' => 'nullable|numeric|min:0',
+            'kasbon' => 'nullable|numeric|min:0',
+            'umroh' => 'nullable|numeric|min:0',
+            'kurban' => 'nullable|numeric|min:0',
+            'mutabaah' => 'nullable|numeric|min:0',
+            'potongan_absensi' => 'nullable|numeric|min:0',
+            'potongan_kehadiran' => 'nullable|numeric|min:0',
         ]);
 
         // Check if already exists (excluding current)
         $exists = AcuanGaji::where('id_karyawan', $request->id_karyawan)
-                          ->where('periode', $request->periode)
-                          ->where('id_acuan', '!=', $acuanGaji->id_acuan)
-                          ->exists();
-        
+            ->where('periode', $request->periode)
+            ->where('id_acuan', '!=', $acuanGaji->id_acuan)
+            ->exists();
+
         if ($exists) {
             return back()->withErrors(['periode' => 'Acuan gaji untuk karyawan ini pada periode tersebut sudah ada.'])->withInput();
         }
@@ -345,10 +385,7 @@ class AcuanGajiController extends Controller
         $acuanGaji->update($request->all());
 
         return redirect()->route('payroll.acuan-gaji.index')
-                        ->with('success', 'Acuan gaji berhasil diupdate.');
-
-        
-                        
+            ->with('success', 'Acuan gaji berhasil diupdate.');
 
     }
 
@@ -357,14 +394,19 @@ class AcuanGajiController extends Controller
         $acuanGaji->delete();
 
         return redirect()->route('payroll.acuan-gaji.index')
-                        ->with('success', 'Acuan gaji berhasil dihapus.');
+            ->with('success', 'Acuan gaji berhasil dihapus.');
     }
 
     public function export(Request $request)
     {
         $periode = $request->get('periode');
-        $filename = 'acuan_gaji_' . ($periode ?? 'all') . '_' . date('YmdHis') . '.xlsx';
-        
+
+        if ($periode && ! preg_match('/^\d{4}-\d{2}$/', $periode)) {
+            return back()->with('error', 'Format periode tidak valid.');
+        }
+
+        $filename = 'acuan_gaji_'.($periode ?? 'all').'_'.date('YmdHis').'.xlsx';
+
         return \Maatwebsite\Excel\Facades\Excel::download(
             new \App\Exports\AcuanGajiExport($periode),
             $filename
@@ -389,9 +431,9 @@ class AcuanGajiController extends Controller
             );
 
             return redirect()->route('payroll.acuan-gaji.index')
-                           ->with('success', 'Data acuan gaji berhasil diimport.');
+                ->with('success', 'Data acuan gaji berhasil diimport.');
         } catch (\Exception $e) {
-            return back()->withErrors(['file' => 'Import failed: ' . $e->getMessage()]);
+            return back()->withErrors(['file' => 'Import failed: '.$e->getMessage()]);
         }
     }
 
@@ -405,12 +447,14 @@ class AcuanGajiController extends Controller
 
     public function deletePeriode($periode)
     {
-        // Delete all acuan gaji for this periode
+        if (! preg_match('/^\d{4}-\d{2}$/', $periode)) {
+            return redirect()->route('payroll.acuan-gaji.index')
+                ->with('error', 'Format periode tidak valid.');
+        }
+
         $deleted = AcuanGaji::where('periode', $periode)->delete();
 
         return redirect()->route('payroll.acuan-gaji.index')
-                        ->with('success', "Berhasil menghapus periode {$periode} dengan {$deleted} data acuan gaji.");
+            ->with('success', "Berhasil menghapus periode {$periode} dengan {$deleted} data acuan gaji.");
     }
-
-
 }

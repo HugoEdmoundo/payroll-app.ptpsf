@@ -12,13 +12,14 @@ class ProfileController extends Controller
     public function index()
     {
         $user = auth()->user();
+
         return view('profile.index', compact('user'));
     }
 
     public function update(Request $request)
     {
         $user = auth()->user();
-        
+
         // VALIDASI SEDERHANA DULU
         $rules = [
             'name' => 'required|string|max:255',
@@ -44,7 +45,7 @@ class ProfileController extends Controller
             $user->email_valid = $request->email_valid;
             $user->phone = $request->phone;
             $user->position = $request->position;
-            
+
             // EMAIL LOGIN TIDAK DIUPDATE - Hanya superadmin yang bisa edit
 
             // HANDLE FOTO
@@ -54,21 +55,21 @@ class ProfileController extends Controller
                     // Extract public_id from Cloudinary URL and delete
                     try {
                         $publicId = pathinfo(parse_url($user->profile_photo, PHP_URL_PATH), PATHINFO_FILENAME);
-                        \Cloudinary\Cloudinary::uploadApi()->destroy('profile-photos/' . $publicId);
+                        \Cloudinary\Cloudinary::uploadApi()->destroy('profile-photos/'.$publicId);
                     } catch (\Exception $e) {
                         // Ignore delete errors
                     }
                 } elseif ($user->profile_photo) {
                     // Legacy local storage cleanup
-                    if (Storage::disk('public')->exists('profile-photos/' . $user->profile_photo)) {
-                        Storage::disk('public')->delete('profile-photos/' . $user->profile_photo);
+                    if (Storage::disk('public')->exists('profile-photos/'.$user->profile_photo)) {
+                        Storage::disk('public')->delete('profile-photos/'.$user->profile_photo);
                     }
                 }
-                
+
                 // Upload ke Cloudinary
                 $uploadedFile = cloudinary()->upload($request->file('profile_photo')->getRealPath(), [
                     'folder' => 'profile-photos',
-                    'transformation' => ['width' => 400, 'height' => 400, 'crop' => 'fill']
+                    'transformation' => ['width' => 400, 'height' => 400, 'crop' => 'fill'],
                 ]);
                 $user->profile_photo = $uploadedFile->getSecurePath();
             }
@@ -92,7 +93,7 @@ class ProfileController extends Controller
 
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Failed to update profile: ' . $e->getMessage())
+                ->with('error', 'Failed to update profile: '.$e->getMessage())
                 ->withInput();
         }
     }

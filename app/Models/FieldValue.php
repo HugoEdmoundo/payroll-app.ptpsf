@@ -13,14 +13,14 @@ class FieldValue extends Model
         'dynamic_field_id',
         'entity_type',
         'entity_id',
-        'value'
+        'value',
     ];
 
     public function dynamicField()
     {
         return $this->belongsTo(DynamicField::class);
     }
-    
+
     public function entity()
     {
         return $this->morphTo();

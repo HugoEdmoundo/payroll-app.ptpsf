@@ -3,49 +3,52 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Role;
 use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    use GlobalSearchable, \App\Traits\LogsActivity;
+    use \App\Traits\LogsActivity, GlobalSearchable;
+
     public function index(Request $request)
     {
-        if (!auth()->user()->isSuperadmin()) {
+        if (! auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
-        
+
         $query = Role::withCount('users');
-        
+
         // Global search using trait
         if ($request->has('search') && $request->search != '') {
             $query = $this->applyGlobalSearch($query, $request->search, [
-                'name', 'description'
+                'name', 'description',
             ]);
         }
-        
+
         $roles = $query->paginate(10);
+
         return view('admin.roles.index', compact('roles'));
     }
 
     public function create()
     {
-        if (!auth()->user()->isSuperadmin()) {
+        if (! auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
-        
+
         $permissions = Permission::all();
+
         return view('admin.roles.create', compact('permissions'));
     }
 
     public function store(Request $request)
     {
-        if (!auth()->user()->isSuperadmin()) {
+        if (! auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
-        
+
         $request->validate([
             'name' => 'required|string|max:255|unique:roles',
             'description' => 'nullable|string',
@@ -67,32 +70,32 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
-        if (!auth()->user()->isSuperadmin()) {
+        if (! auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
-        
+
         if ($role->is_superadmin) {
             abort(403, 'Cannot edit superadmin role.');
         }
 
         $permissions = Permission::all();
         $rolePermissions = $role->permissions->pluck('id')->toArray();
-        
+
         return view('admin.roles.edit', compact('role', 'permissions', 'rolePermissions'));
     }
 
     public function update(Request $request, Role $role)
     {
-        if (!auth()->user()->isSuperadmin()) {
+        if (! auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
-        
+
         if ($role->is_superadmin) {
             abort(403, 'Cannot edit superadmin role.');
         }
 
         $request->validate([
-            'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
+            'name' => 'required|string|max:255|unique:roles,name,'.$role->id,
             'description' => 'nullable|string',
         ]);
 
@@ -108,22 +111,22 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
-        if (!auth()->user()->isSuperadmin()) {
+        if (! auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
-        
+
         // SUPER ADMIN - TIDAK BISA DI DELETE
         if ($role->is_superadmin) {
             return redirect()->route('admin.roles.index')
                 ->with('error', 'Cannot delete Super Admin role.');
         }
-        
+
         // ROLE DEFAULT (User) - TIDAK BISA DI DELETE
         if ($role->is_default && $role->name === 'User') {
             return redirect()->route('admin.roles.index')
                 ->with('error', 'Cannot delete default User role.');
         }
-        
+
         // CEK ROLE SEDANG DIPAKAI USER
         if ($role->users()->count() > 0) {
             return redirect()->route('admin.roles.index')
@@ -133,16 +136,16 @@ class RoleController extends Controller
         try {
             // Hapus relasi permissions
             $role->permissions()->detach();
-            
+
             // Hapus role
             $role->delete();
-            
+
             return redirect()->route('admin.roles.index')
-                ->with('success', 'Role "' . $role->name . '" deleted successfully.');
-                
+                ->with('success', 'Role "'.$role->name.'" deleted successfully.');
+
         } catch (\Exception $e) {
             return redirect()->route('admin.roles.index')
-                ->with('error', 'Failed to delete role: ' . $e->getMessage());
+                ->with('error', 'Failed to delete role: '.$e->getMessage());
         }
     }
 }

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasTable('pengaturan_gaji') && !Schema::hasColumn('pengaturan_gaji', 'tunjangan_operasional')) {
+        if (Schema::hasTable('pengaturan_gaji') && ! Schema::hasColumn('pengaturan_gaji', 'tunjangan_operasional')) {
             Schema::table('pengaturan_gaji', function (Blueprint $table) {
                 $table->decimal('tunjangan_operasional', 15, 2)->default(0)->after('gaji_pokok');
             });

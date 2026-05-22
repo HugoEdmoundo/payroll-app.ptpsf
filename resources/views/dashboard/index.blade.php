@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('title', 'Dashboard')
-@section('breadcrumb', 'Dashboard')
 
 @section('content')
 <div class="space-y-6">

@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\HitungGaji;
-use App\Models\AcuanGaji;
-use App\Models\PengaturanGaji;
-use App\Models\NKI;
 use App\Models\Absensi;
+use App\Models\AcuanGaji;
+use App\Models\HitungGaji;
+use App\Models\NKI;
+use App\Models\PengaturanGaji;
+use Illuminate\Database\Seeder;
 
 class HitungGajiSeeder extends Seeder
 {
@@ -19,9 +19,9 @@ class HitungGajiSeeder extends Seeder
         foreach ($acuanGajiList as $acuanGaji) {
             // Check if already exists
             $exists = HitungGaji::where('karyawan_id', $acuanGaji->id_karyawan)
-                               ->where('periode', $acuanGaji->periode)
-                               ->exists();
-            
+                ->where('periode', $acuanGaji->periode)
+                ->exists();
+
             if ($exists) {
                 continue; // Skip if already exists
             }
@@ -29,29 +29,29 @@ class HitungGajiSeeder extends Seeder
             // Get Pengaturan Gaji for calculations
             $karyawan = $acuanGaji->karyawan;
             $pengaturan = PengaturanGaji::where('jenis_karyawan', $karyawan->jenis_karyawan)
-                                       ->where('jabatan', $karyawan->jabatan)
-                                       ->where('lokasi_kerja', $karyawan->lokasi_kerja)
-                                       ->first();
+                ->where('jabatan', $karyawan->jabatan)
+                ->where('lokasi_kerja', $karyawan->lokasi_kerja)
+                ->first();
 
-            if (!$pengaturan) {
+            if (! $pengaturan) {
                 continue; // Skip if no pengaturan found
             }
 
             // Calculate NKI (Tunjangan Prestasi)
             $nki = NKI::where('id_karyawan', $acuanGaji->id_karyawan)
-                     ->where('periode', $acuanGaji->periode)
-                     ->first();
-            
+                ->where('periode', $acuanGaji->periode)
+                ->first();
+
             $tunjanganPrestasi = 0;
-            if ($nki && $pengaturan->tunjangan_operasional > 0) {
-                $tunjanganPrestasi = $pengaturan->tunjangan_operasional * ($nki->persentase_tunjangan / 100);
+            if ($nki && $pengaturan->tunjangan_prestasi > 0) {
+                $tunjanganPrestasi = $pengaturan->tunjangan_prestasi * ($nki->persentase_tunjangan / 100);
             }
 
             // Calculate Absensi (Potongan Absensi)
             $absensi = Absensi::where('id_karyawan', $acuanGaji->id_karyawan)
-                             ->where('periode', $acuanGaji->periode)
-                             ->first();
-            
+                ->where('periode', $acuanGaji->periode)
+                ->first();
+
             $potonganAbsensi = 0;
             if ($absensi) {
                 $totalAbsence = $absensi->absence + $absensi->tanpa_keterangan;
@@ -61,13 +61,13 @@ class HitungGajiSeeder extends Seeder
 
             // Create sample adjustments for some fields (optional)
             $adjustments = [];
-            
+
             // Random adjustment for demonstration
             if (rand(0, 1)) {
                 $adjustments['reward'] = [
                     'type' => '+',
                     'nominal' => 500000,
-                    'description' => 'Bonus kinerja bulan ini'
+                    'description' => 'Bonus kinerja bulan ini',
                 ];
             }
 
@@ -76,25 +76,18 @@ class HitungGajiSeeder extends Seeder
                 'acuan_gaji_id' => $acuanGaji->id_acuan,
                 'karyawan_id' => $acuanGaji->id_karyawan,
                 'periode' => $acuanGaji->periode,
-                // PENDAPATAN
                 'gaji_pokok' => $acuanGaji->gaji_pokok,
-                'bpjs_kesehatan_pendapatan' => $acuanGaji->bpjs_kesehatan_pendapatan,
-                'bpjs_kecelakaan_kerja_pendapatan' => $acuanGaji->bpjs_kecelakaan_kerja_pendapatan,
-                'bpjs_kematian_pendapatan' => $acuanGaji->bpjs_kematian_pendapatan,
-                'bpjs_jht_pendapatan' => $acuanGaji->bpjs_jht_pendapatan,
-                'bpjs_jp_pendapatan' => $acuanGaji->bpjs_jp_pendapatan,
+                'bpjs_kesehatan' => $acuanGaji->bpjs_kesehatan,
+                'bpjs_kecelakaan_kerja' => $acuanGaji->bpjs_kecelakaan_kerja,
+                'bpjs_kematian' => $acuanGaji->bpjs_kematian,
+                'bpjs_jht' => $acuanGaji->bpjs_jht,
+                'bpjs_jp' => $acuanGaji->bpjs_jp,
                 'tunjangan_prestasi' => $tunjanganPrestasi,
                 'tunjangan_konjungtur' => $acuanGaji->tunjangan_konjungtur,
                 'benefit_ibadah' => $acuanGaji->benefit_ibadah,
                 'benefit_komunikasi' => $acuanGaji->benefit_komunikasi,
                 'benefit_operasional' => $acuanGaji->benefit_operasional,
                 'reward' => $acuanGaji->reward,
-                // PENGELUARAN
-                'bpjs_kesehatan_pengeluaran' => $acuanGaji->bpjs_kesehatan_pengeluaran,
-                'bpjs_kecelakaan_kerja_pengeluaran' => $acuanGaji->bpjs_kecelakaan_kerja_pengeluaran,
-                'bpjs_kematian_pengeluaran' => $acuanGaji->bpjs_kematian_pengeluaran,
-                'bpjs_jht_pengeluaran' => $acuanGaji->bpjs_jht_pengeluaran,
-                'bpjs_jp_pengeluaran' => $acuanGaji->bpjs_jp_pengeluaran,
                 'koperasi' => $acuanGaji->koperasi,
                 'kasbon' => $acuanGaji->kasbon,
                 'umroh' => $acuanGaji->umroh,

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_acuan');
             $table->unsignedBigInteger('id_karyawan');
             $table->string('periode'); // Format: YYYY-MM
-            
+
             // Pendapatan
             $table->decimal('gaji_pokok', 15, 2)->default(0);
             $table->decimal('bpjs_kesehatan', 15, 2)->default(0);
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->decimal('benefit_operasional', 15, 2)->default(0);
             $table->decimal('reward', 15, 2)->default(0);
             $table->decimal('total_pendapatan', 15, 2)->default(0);
-            
+
             // Pengeluaran
             $table->decimal('koperasi', 15, 2)->default(0);
             $table->decimal('kasbon', 15, 2)->default(0);
@@ -40,11 +40,11 @@ return new class extends Migration
             $table->decimal('potongan_absensi', 15, 2)->default(0);
             $table->decimal('potongan_kehadiran', 15, 2)->default(0);
             $table->decimal('total_pengeluaran', 15, 2)->default(0);
-            
+
             $table->decimal('gaji_bersih', 15, 2)->default(0);
             $table->text('keterangan')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('id_karyawan')->references('id_karyawan')->on('karyawan')->onDelete('cascade');
             $table->unique(['id_karyawan', 'periode'], 'unique_acuan_periode');
         });

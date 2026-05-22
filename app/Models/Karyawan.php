@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\HasDynamicFields;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Karyawan extends Model
 {
-    use HasFactory, HasDynamicFields;
+    use HasDynamicFields, HasFactory;
 
     protected $table = 'karyawan';
+
     protected $primaryKey = 'id_karyawan';
-    
+
     protected $fillable = [
         'nama_karyawan',
         'email',
@@ -33,42 +34,42 @@ class Karyawan extends Model
         'nama_istri',
         'jumlah_anak',
         'no_telp_istri',
-        'status_karyawan'
+        'status_karyawan',
     ];
 
     protected $casts = [
         'join_date' => 'datetime',
-        'jumlah_anak' => 'integer'
+        'jumlah_anak' => 'integer',
     ];
-    
+
     // Boot method untuk set join_date dengan waktu SEKARANG dan auto-calculate status_pegawai
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($karyawan) {
             if (request()->has('join_date')) {
                 $tanggal = Carbon::parse(request()->join_date)->format('Y-m-d');
                 $waktuSekarang = Carbon::now()->format('H:i:s');
-                $karyawan->join_date = Carbon::parse($tanggal . ' ' . $waktuSekarang);
+                $karyawan->join_date = Carbon::parse($tanggal.' '.$waktuSekarang);
             }
-            
+
             // Auto-calculate status_pegawai
             $karyawan->status_pegawai = $karyawan->calculateStatusPegawai();
         });
-        
+
         static::updating(function ($karyawan) {
             if (request()->has('join_date') && request()->join_date != $karyawan->getOriginal('join_date')->format('Y-m-d')) {
                 $tanggal = Carbon::parse(request()->join_date)->format('Y-m-d');
                 $waktuSekarang = Carbon::now()->format('H:i:s');
-                $karyawan->join_date = Carbon::parse($tanggal . ' ' . $waktuSekarang);
+                $karyawan->join_date = Carbon::parse($tanggal.' '.$waktuSekarang);
             }
-            
+
             // Auto-update status_pegawai
             $karyawan->status_pegawai = $karyawan->calculateStatusPegawai();
         });
     }
-    
+
     /**
      * Calculate Status Pegawai based on join_date
      * Harian: 14 hari pertama (90rb/hari)
@@ -77,29 +78,29 @@ class Karyawan extends Model
      */
     public function calculateStatusPegawai()
     {
-        if (!$this->join_date) {
+        if (! $this->join_date) {
             return 'Kontrak';
         }
-        
+
         $now = Carbon::now();
         $join = Carbon::parse($this->join_date);
         $daysSinceJoin = $join->diffInDays($now);
-        
+
         // Fase 1: Harian (14 hari pertama)
         if ($daysSinceJoin < 14) {
             return 'Harian';
         }
-        
+
         // Fase 2: OJT (3 bulan setelah 14 hari)
         // 14 hari + 90 hari (3 bulan) = 104 hari total
         if ($daysSinceJoin < 104) {
             return 'OJT';
         }
-        
+
         // Fase 3: Kontrak (setelah OJT selesai - NORMAL EMPLOYEE)
         return 'Kontrak';
     }
-    
+
     /**
      * Get current status pegawai (accessor)
      */
@@ -108,65 +109,50 @@ class Karyawan extends Model
         // Always recalculate to ensure it's up to date
         return $this->calculateStatusPegawai();
     }
-    
+
     /**
      * Get appropriate salary configuration based on status_pegawai
-     * Returns PengaturanGaji or PengaturanGajiStatusPegawai
      */
     public function getPengaturanGaji()
     {
-        $statusPegawai = $this->status_pegawai;
-        
-        // Check if status pegawai is Harian or OJT (special cases)
-        if (in_array($statusPegawai, ['Harian', 'OJT'])) {
-            // Get from PengaturanGajiStatusPegawai (only status_pegawai + lokasi_kerja, NO jabatan!)
-            return \App\Models\PengaturanGajiStatusPegawai::where('status_pegawai', $statusPegawai)
-                ->where('lokasi_kerja', $this->lokasi_kerja)
-                ->first();
-        }
-        
-        // Default: Kontrak = Normal employee, use PengaturanGaji
-        return \App\Models\PengaturanGaji::where('jenis_karyawan', $this->jenis_karyawan)
-            ->where('jabatan', $this->jabatan)
-            ->where('lokasi_kerja', $this->lokasi_kerja)
-            ->first();
+        return \App\Models\SalaryTemplate::findByEmployee($this);
     }
 
     // Masa Kerja dalam format readable (X Bulan Y Hari) - KEDUANYA HARUS ADA
     public function getMasaKerjaReadableAttribute()
     {
-        if (!$this->join_date) {
+        if (! $this->join_date) {
             return '0 Bulan 0 Hari';
         }
 
         $now = Carbon::now();
         $join = Carbon::parse($this->join_date);
-        
+
         // Use diff to get accurate months and days
         $diff = $join->diff($now);
-        
+
         // Total months from years and months
         $totalMonths = ($diff->y * 12) + $diff->m;
-        
+
         // Remaining days
         $days = $diff->d;
-        
+
         // Format: X Bulan Y Hari (keduanya selalu ditampilkan)
-        return $totalMonths . ' Bulan ' . $days . ' Hari';
+        return $totalMonths.' Bulan '.$days.' Hari';
     }
-    
+
     // Masa Kerja dalam format DD:HH:MM:SS (untuk backward compatibility)
     public function getMasaKerjaAttribute()
     {
-        if (!$this->join_date) {
+        if (! $this->join_date) {
             return '00:00:00:00';
         }
 
         $now = Carbon::now();
         $join = Carbon::parse($this->join_date);
-        
+
         $diff = $join->diff($now);
-        
+
         return sprintf(
             '%02d:%02d:%02d:%02d',
             $diff->days,
@@ -175,12 +161,14 @@ class Karyawan extends Model
             $diff->s
         );
     }
+
     // Format tanggal untuk display
     public function getFormattedJoinDateAttribute()
     {
-        if (!$this->join_date) {
+        if (! $this->join_date) {
             return '-';
         }
-        return $this->join_date->format('d/m/Y H:i:s') . ' WIB';
+
+        return $this->join_date->format('d/m/Y H:i:s').' WIB';
     }
 }

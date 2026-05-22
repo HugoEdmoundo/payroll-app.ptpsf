@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class SlipGaji extends Model
 {
     protected $table = 'slip_gaji';
-    
+
     protected $fillable = [
         'hitung_gaji_id',
         'karyawan_id',
@@ -27,7 +27,7 @@ class SlipGaji extends Model
         'generated_by',
         'is_sent',
         'sent_at',
-        'catatan'
+        'catatan',
     ];
 
     protected $casts = [
@@ -39,7 +39,7 @@ class SlipGaji extends Model
         'tanggal_mulai_bekerja' => 'date',
         'generated_at' => 'datetime',
         'sent_at' => 'datetime',
-        'is_sent' => 'boolean'
+        'is_sent' => 'boolean',
     ];
 
     public function hitungGaji()

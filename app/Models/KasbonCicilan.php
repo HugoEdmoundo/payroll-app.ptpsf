@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\LoanService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +11,7 @@ class KasbonCicilan extends Model
     use HasFactory;
 
     protected $table = 'kasbon_cicilan';
+
     protected $primaryKey = 'id_cicilan';
 
     protected $fillable = [
@@ -44,6 +46,7 @@ class KasbonCicilan extends Model
         // Update kasbon cicilan_terbayar
         $kasbon = $this->kasbon;
         $kasbon->cicilan_terbayar = $kasbon->cicilan()->where('status', 'Terbayar')->count();
+        app(LoanService::class)->calculateFields($kasbon);
         $kasbon->save();
     }
 }

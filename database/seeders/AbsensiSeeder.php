@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Absensi;
 use App\Models\Karyawan;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class AbsensiSeeder extends Seeder
 {

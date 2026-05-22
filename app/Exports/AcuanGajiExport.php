@@ -21,11 +21,11 @@ class AcuanGajiExport implements FromCollection, WithHeadings, WithMapping, With
     public function collection()
     {
         $query = AcuanGaji::with('karyawan');
-        
+
         if ($this->periode) {
             $query->where('periode', $this->periode);
         }
-        
+
         return $query->orderBy('periode', 'desc')->get();
     }
 

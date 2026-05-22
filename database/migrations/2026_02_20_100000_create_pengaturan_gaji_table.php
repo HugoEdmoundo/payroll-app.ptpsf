@@ -13,18 +13,18 @@ return new class extends Migration
             $table->string('jenis_karyawan'); // Teknisi, Borongan
             $table->string('jabatan');
             $table->string('lokasi_kerja');
-            
+
             // Komponen Gaji
             $table->decimal('gaji_pokok', 15, 2)->default(0);
             $table->decimal('tunjangan_prestasi', 15, 2)->default(0); // Ganti dari tunjangan_operasional
-            
+
             // Calculated fields
             $table->decimal('gaji_nett', 15, 2)->default(0);
             $table->decimal('total_gaji', 15, 2)->default(0);
-            
+
             $table->text('keterangan')->nullable();
             $table->timestamps();
-            
+
             // Unique constraint untuk kombinasi jenis_karyawan, jabatan, lokasi_kerja
             $table->unique(['jenis_karyawan', 'jabatan', 'lokasi_kerja'], 'unique_pengaturan');
         });

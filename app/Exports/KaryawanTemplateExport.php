@@ -3,14 +3,13 @@
 namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromArray;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Concerns\WithColumnWidths;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class KaryawanTemplateExport implements FromArray, WithHeadings, WithStyles, WithColumnWidths
+class KaryawanTemplateExport implements FromArray, WithColumnWidths, WithHeadings, WithStyles
 {
     public function array(): array
     {
@@ -110,7 +109,7 @@ class KaryawanTemplateExport implements FromArray, WithHeadings, WithStyles, Wit
                 'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => '4F46E5']
+                    'startColor' => ['rgb' => '4F46E5'],
                 ],
             ],
         ];

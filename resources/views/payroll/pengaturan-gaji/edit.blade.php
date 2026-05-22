@@ -19,7 +19,7 @@
 
     <!-- Form Card -->
     <div class="card p-6">
-        <form action="{{ route('payroll.pengaturan-gaji.update', $pengaturanGaji->id_pengaturan) }}" method="POST">
+        <form action="{{ route('payroll.pengaturan-gaji.update', $pengaturanGaji->id) }}" method="POST">
             @csrf
             @method('PUT')
             

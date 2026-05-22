@@ -1,6 +1,6 @@
 # 5.3 Cuplikan Kode Program
 
-Dokumentasi ini menampilkan 10 cuplikan kode inti dari aplikasi payroll. Fokusnya pada logika karyawan, perhitungan gaji, slip gaji, dan otomatisasi dependensi.
+Dokumentasi ini menampilkan 10 cuplikan kode inti dari aplikasi payroll. Fokusnya pada logika karyawan, perhitungan gaji, slip gaji, dan integrasi data.
 
 ## 1. Manajemen Karyawan: Validasi dan duplikasi
 
@@ -26,7 +26,10 @@ $exists = Karyawan::where('nama_karyawan', $request->nama_karyawan)->first();
 if ($exists) {
     $differences = 0;
     $diffFields = [];
-    $fieldsToCheck = ['email', 'no_telp', 'jenis_karyawan', 'jabatan', 'lokasi_kerja', 'bank', 'no_rekening'];
+    $fieldsToCheck = [
+        'email', 'no_telp', 'jenis_karyawan', 'jabatan',
+        'lokasi_kerja', 'bank', 'no_rekening'
+    ];
 
     foreach ($fieldsToCheck as $field) {
         if ($request->$field && $exists->$field != $request->$field) {
@@ -110,6 +113,15 @@ static::creating(function ($karyawan) {
     $karyawan->status_pegawai = $karyawan->calculateStatusPegawai();
 });
 
+static::updating(function ($karyawan) {
+    if (request()->has('join_date') && request()->join_date != $karyawan->getOriginal('join_date')->format('Y-m-d')) {
+        $tanggal = Carbon::parse(request()->join_date)->format('Y-m-d');
+        $waktuSekarang = Carbon::now()->format('H:i:s');
+        $karyawan->join_date = Carbon::parse($tanggal . ' ' . $waktuSekarang);
+    }
+    $karyawan->status_pegawai = $karyawan->calculateStatusPegawai();
+});
+
 public function calculateStatusPegawai()
 {
     if (!$this->join_date) {
@@ -136,11 +148,53 @@ Penjelasan:
 - `join_date` di-normalisasi ke format tanggal + waktu sekarang.
 - Status pegawai berubah otomatis dari `Harian` ke `OJT` lalu `Kontrak`.
 
-## 4. Model HitungGaji: Kalkulasi total otomatis
+## 4. Model Karyawan: Pengaturan gaji dan masa kerja
+
+File: `app/Models/Karyawan.php`
+
+Model ini mengarahkan `Karyawan` ke pengaturan gaji yang tepat untuk status pegawai saat ini.
+
+```php
+public function getPengaturanGaji()
+{
+    $statusPegawai = $this->status_pegawai;
+
+    if (in_array($statusPegawai, ['Harian', 'OJT'])) {
+        return \App\Models\PengaturanGajiStatusPegawai::where('status_pegawai', $statusPegawai)
+            ->where('lokasi_kerja', $this->lokasi_kerja)
+            ->first();
+    }
+
+    return \App\Models\PengaturanGaji::where('jenis_karyawan', $this->jenis_karyawan)
+        ->where('jabatan', $this->jabatan)
+        ->where('lokasi_kerja', $this->lokasi_kerja)
+        ->first();
+}
+
+public function getMasaKerjaReadableAttribute()
+{
+    if (!$this->join_date) {
+        return '0 Bulan 0 Hari';
+    }
+
+    $now = Carbon::now();
+    $join = Carbon::parse($this->join_date);
+    $diff = $join->diff($now);
+    $totalMonths = ($diff->y * 12) + $diff->m;
+
+    return $totalMonths . ' Bulan ' . $diff->d . ' Hari';
+}
+```
+
+Penjelasan:
+- `Harian` dan `OJT` menggunakan `PengaturanGajiStatusPegawai`.
+- `Masa Kerja` disajikan dalam format `X Bulan Y Hari`.
+
+## 5. Model HitungGaji: Kalkulasi total otomatis
 
 File: `app/Models/HitungGaji.php`
 
-Model ini memastikan total pendapatan dan pengeluaran dihitung kembali setiap kali data gaji tersimpan.
+Model ini mengakumulasi pendapatan, pengeluaran, dan gaji bersih saat menyimpan.
 
 ```php
 static::saving(function ($model) {
@@ -161,7 +215,10 @@ static::saving(function ($model) {
         $totalPendapatan += $value;
     }
 
-    $pengeluaranFields = ['koperasi', 'kasbon', 'umroh', 'kurban', 'mutabaah', 'potongan_absensi', 'potongan_kehadiran'];
+    $pengeluaranFields = [
+        'koperasi', 'kasbon', 'umroh', 'kurban',
+        'mutabaah', 'potongan_absensi', 'potongan_kehadiran'
+    ];
     $totalPengeluaran = 0;
     foreach ($pengeluaranFields as $field) {
         $value = $model->$field;
@@ -179,14 +236,37 @@ static::saving(function ($model) {
 ```
 
 Penjelasan:
-- Otomatisasi ini mengurangi risiko perhitungan manual di banyak tempat.
+- Otomatisasi ini mengurangi risiko perhitungan manual.
 - `adjustments` diproses sebagai bagian dari setiap penyimpanan.
 
-## 5. Load data modal payroll
+## 6. Daftar periode payroll dan statistik
 
 File: `app/Http/Controllers/Payroll/HitungGajiController.php`
 
-Method ini mengambil data karyawan, acuan gaji, NKI, dan absensi kemudian menyiapkan form modal untuk create/edit.
+Halaman `Hitung Gaji` menampilkan periode berdasarkan `AcuanGaji`.
+
+```php
+$periodes = AcuanGaji::select('periode')
+                    ->distinct()
+                    ->orderBy('periode', 'desc')
+                    ->get()
+                    ->map(function($item) {
+                        return [
+                            'periode' => $item->periode,
+                            'total_karyawan' => HitungGaji::where('periode', $item->periode)->count(),
+                        ];
+                    });
+```
+
+Penjelasan:
+- Periode payroll mengikuti `AcuanGaji` yang tersedia.
+- Total karyawan per periode dihitung dari `HitungGaji`.
+
+## 7. Load modal Hitung Gaji dengan data terkait
+
+File: `app/Http/Controllers/Payroll/HitungGajiController.php`
+
+Data modal disusun dari `AcuanGaji`, `Karyawan`, `PengaturanGaji`, `NKI`, dan `Absensi`.
 
 ```php
 $acuanGaji = AcuanGaji::where('id_karyawan', $karyawanId)
@@ -200,24 +280,30 @@ $nki = NKI::where('id_karyawan', $karyawanId)
          ->first();
 
 $absensi = Absensi::where('id_karyawan', $karyawanId)
-                  ->where('periode', $periode)
-                  ->first();
+                 ->where('periode', $periode)
+                 ->first();
 
-$potonganAbsensi = ($absensi && $absensi->jumlah_hari_bulan > 0)
-    ? (($absensi->absence + $absensi->tanpa_keterangan) / $absensi->jumlah_hari_bulan)
-       * ($acuanGaji->gaji_pokok + $tunjanganPrestasi + $acuanGaji->benefit_operasional)
-    : 0;
+$potonganAbsensi = 0;
+if ($absensi) {
+    $totalAbsence = $absensi->absence + $absensi->tanpa_keterangan;
+    $gajiPokok = $pengaturan->gaji_pokok ?? 0;
+    $operasional = $isStatusPegawai ? 0 : ($pengaturan->tunjangan_operasional ?? 0);
+    $baseAmount = $gajiPokok + $tunjanganPrestasi + $operasional;
+    if ($absensi->jumlah_hari_bulan > 0) {
+        $potonganAbsensi = ($totalAbsence / $absensi->jumlah_hari_bulan) * $baseAmount;
+    }
+}
 ```
 
 Penjelasan:
-- Data modal dikumpulkan dari beberapa model agar form terlihat lengkap.
-- Sistem menyesuaikan `tunjangan_prestasi` dan `potongan_absensi` sebelum rendering.
+- Data modal siap untuk create/edit dengan nilai acuan terbaru.
+- `tunjangan_prestasi` dan `potongan_absensi` dihitung sebelum rendering.
 
-## 6. Simpan Hitung Gaji dengan penyesuaian
+## 8. Simpan Hitung Gaji dengan penyesuaian
 
 File: `app/Http/Controllers/Payroll/HitungGajiController.php`
 
-Potongan ini menyimpan payroll `HitungGaji`, termasuk penyesuaian (adjustments) yang boleh positif atau negatif.
+Saat menyimpan payroll, penyesuaian (`adjustments`) diproses menjadi struktur JSON.
 
 ```php
 $adjustments = $request->input('adjustments', []);
@@ -238,10 +324,24 @@ HitungGaji::create([
     'karyawan_id' => $request->karyawan_id,
     'periode' => $request->periode,
     'gaji_pokok' => $acuanGaji->gaji_pokok,
+    'bpjs_kesehatan' => $acuanGaji->bpjs_kesehatan,
+    'bpjs_kecelakaan_kerja' => $acuanGaji->bpjs_kecelakaan_kerja,
+    'bpjs_kematian' => $acuanGaji->bpjs_kematian,
+    'bpjs_jht' => $acuanGaji->bpjs_jht,
+    'bpjs_jp' => $acuanGaji->bpjs_jp,
     'tunjangan_prestasi' => $tunjanganPrestasi,
+    'tunjangan_konjungtur' => $acuanGaji->tunjangan_konjungtur,
+    'benefit_ibadah' => $acuanGaji->benefit_ibadah,
+    'benefit_komunikasi' => $acuanGaji->benefit_komunikasi,
     'benefit_operasional' => $acuanGaji->benefit_operasional,
+    'reward' => $acuanGaji->reward,
+    'koperasi' => $acuanGaji->koperasi,
     'kasbon' => $acuanGaji->kasbon,
+    'umroh' => $acuanGaji->umroh,
+    'kurban' => $acuanGaji->kurban,
+    'mutabaah' => $acuanGaji->mutabaah,
     'potongan_absensi' => $potonganAbsensi,
+    'potongan_kehadiran' => $acuanGaji->potongan_kehadiran,
     'adjustments' => $processedAdjustments,
     'status' => 'approved',
     'approved_at' => now(),
@@ -251,14 +351,47 @@ HitungGaji::create([
 ```
 
 Penjelasan:
-- Semua data payroll berasal dari `AcuanGaji` dengan update dari NKI/absensi.
+- Semua data payroll berasal dari `AcuanGaji` dengan penyesuaian NKI/absensi.
 - `adjustments` disimpan sebagai JSON terstruktur untuk setiap field.
 
-## 7. Ekspor slip gaji ke PDF
+## 9. Filter slip gaji berdasarkan periode, lokasi kerja, dan jabatan
 
 File: `app/Http/Controllers/Payroll/SlipGajiController.php`
 
-Slip gaji dibuat dalam format PDF menggunakan view khusus.
+Slip gaji mendukung pencarian global dan filter `lokasi_kerja` serta `jabatan`.
+
+```php
+$query = HitungGaji::with(['karyawan'])
+                  ->where('periode', $periode);
+
+if ($request->has('search') && $request->search != '') {
+    $query = $this->applyGlobalSearch($query, $request->search, [
+        'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'lokasi_kerja', 'jabatan']
+    ]);
+}
+
+if ($request->has('lokasi_kerja') && $request->lokasi_kerja != '') {
+    $query->whereHas('karyawan', function($q) use ($request) {
+        $q->where('lokasi_kerja', $request->lokasi_kerja);
+    });
+}
+
+if ($request->has('jabatan') && $request->jabatan != '') {
+    $query->whereHas('karyawan', function($q) use ($request) {
+        $q->where('jabatan', $request->jabatan);
+    });
+}
+```
+
+Penjelasan:
+- UI slip gaji dapat dibatasi berdasarkan lokasi kerja dan jabatan.
+- Data karyawan dimuat dengan relasi `karyawan` agar tampilan lengkap.
+
+## 10. Generate PDF slip gaji dari view khusus
+
+File: `app/Http/Controllers/Payroll/SlipGajiController.php`
+
+Slip gaji diekspor ke PDF dengan view `payroll.slip-gaji.pdf`.
 
 ```php
 $pdf = Pdf::loadView('payroll.slip-gaji.pdf', compact('data'))
@@ -270,98 +403,19 @@ return $pdf->download($filename);
 
 Penjelasan:
 - File PDF dibuat dari view `payroll.slip-gaji.pdf`.
-- Nama file disesuaikan dengan nama karyawan dan periode.
+- Nama file mengikuti format `slip-gaji-{nama}-{periode}.pdf`.
 
-## 8. Otomatis update status kasbon
 
-File: `app/Observers/HitungGajiObserver.php`
 
-Observer ini menjaga status kasbon tetap konsisten setiap kali payroll dibuat atau diperbarui.
 
-```php
-$kasbonAmount = $hitungGaji->getFinalValue('kasbon');
-if ($kasbonAmount <= 0) {
-    return;
-}
 
-$kasbon = Kasbon::where('id_karyawan', $hitungGaji->karyawan_id)
-               ->whereIn('status_pembayaran', ['Pending', 'Cicilan', 'Lunas'])
-               ->orderBy('tanggal_pengajuan', 'asc')
-               ->first();
 
-$cicilan = KasbonCicilan::firstOrNew([
-    'id_kasbon' => $kasbon->id_kasbon,
-    'periode' => $hitungGaji->periode,
-]);
-$cicilan->nominal_cicilan = $kasbonAmount;
-$cicilan->tanggal_bayar = now();
-$cicilan->status = 'Terbayar';
-$cicilan->save();
-```
 
-Penjelasan:
-- Jika payroll mencatat kasbon, observer membuat atau memperbarui cicilan.
-- Status kasbon diupdate ke `Lunas` atau `Pending` sesuai total pembayaran.
 
-## 9. Sinkron NKI ke Acuan Gaji dan Hitung Gaji
 
-File: `app/Observers/NKIObserver.php`
 
-Saat NKI disimpan, tunjangan prestasi dan potongan absensi dihitung ulang.
 
-```php
-$tunjanganPrestasi = 0;
-if ($pengaturan->tunjangan_operasional > 0) {
-    $tunjanganPrestasi = $pengaturan->tunjangan_operasional * ($nki->persentase_tunjangan / 100);
-}
 
-$acuan->update(['tunjangan_prestasi' => $tunjanganPrestasi]);
+https://i.pinimg.com/736x/4f/5a/1e/4f5a1e30cb6d49bfb1f957d81405e627.jpg
 
-if ($hitungGaji) {
-    $hitungGaji->update([
-        'tunjangan_prestasi' => $tunjanganPrestasi,
-        'potongan_absensi' => $potonganAbsensi,
-    ]);
-}
-```
-
-Penjelasan:
-- NKI mempengaruhi nilai prestasi dan otomatis mengubah Acuan Gaji.
-- Hitung Gaji yang sudah ada ikut terupdate agar slip dan laporan tetap akurat.
-
-## 10. Update massal ketika konfigurasi gaji berubah
-
-File: `app/Observers/PengaturanGajiObserver.php`
-
-Observer ini menyebarkan perubahan konfigurasi gaji ke `AcuanGaji` dan `HitungGaji`.
-
-```php
-$acuanGajiList = AcuanGaji::whereHas('karyawan', function($q) use ($pengaturan) {
-    $q->where('jenis_karyawan', $pengaturan->jenis_karyawan)
-      ->where('jabatan', $pengaturan->jabatan)
-      ->where('lokasi_kerja', $pengaturan->lokasi_kerja);
-})->get();
-
-foreach ($acuanGajiList as $acuan) {
-    $acuan->update([
-        'gaji_pokok' => $pengaturan->gaji_pokok,
-        'bpjs_kesehatan_pendapatan' => $pengaturan->bpjs_kesehatan,
-        'benefit_operasional' => $pengaturan->tunjangan_operasional,
-        'koperasi' => $pengaturan->potongan_koperasi,
-    ]);
-
-    if ($hitungGaji = HitungGaji::where('acuan_gaji_id', $acuan->id_acuan)->first()) {
-        $hitungGaji->update([
-            'gaji_pokok' => $acuan->gaji_pokok,
-            'benefit_operasional' => $acuan->benefit_operasional,
-            'tunjangan_prestasi' => $tunjanganPrestasi,
-            'potongan_absensi' => $potonganAbsensi,
-            'koperasi' => $acuan->koperasi,
-        ]);
-    }
-}
-```
-
-Penjelasan:
-- Perubahan tarif gaji langsung mempengaruhi semua acuan dan perhitungan gaji yang terkait.
-- Ini penting agar update kebijakan gaji tidak menyebabkan data payroll usang.
+cdn2.vid7me.com/o9u0p2Bl1 

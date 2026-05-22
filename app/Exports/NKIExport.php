@@ -21,11 +21,11 @@ class NKIExport implements FromCollection, WithHeadings, WithMapping, WithStyles
     public function collection()
     {
         $query = NKI::with('karyawan');
-        
+
         if ($this->periode) {
             $query->where('periode', $this->periode);
         }
-        
+
         return $query->orderBy('periode', 'desc')->get();
     }
 
@@ -49,7 +49,7 @@ class NKIExport implements FromCollection, WithHeadings, WithMapping, WithStyles
     public function map($nki): array
     {
         return [
-            'NKI' . str_pad($nki->id_nki, 4, '0', STR_PAD_LEFT),
+            'NKI'.str_pad($nki->id_nki, 4, '0', STR_PAD_LEFT),
             $nki->karyawan->nama_karyawan ?? '-',
             $nki->periode,
             $nki->kemampuan,

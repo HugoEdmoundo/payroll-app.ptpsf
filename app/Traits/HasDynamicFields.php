@@ -2,8 +2,8 @@
 
 namespace App\Traits;
 
-use App\Models\FieldValue;
 use App\Models\DynamicField;
+use App\Models\FieldValue;
 
 trait HasDynamicFields
 {
@@ -14,35 +14,35 @@ trait HasDynamicFields
     {
         return $this->morphMany(FieldValue::class, 'entity');
     }
-    
+
     /**
      * Get dynamic field value by field name
      */
     public function getDynamicField($fieldName)
     {
         $fieldValue = $this->fieldValues()
-            ->whereHas('dynamicField', function($query) use ($fieldName) {
+            ->whereHas('dynamicField', function ($query) use ($fieldName) {
                 $query->where('field_name', $fieldName);
             })
             ->first();
-            
+
         return $fieldValue ? $fieldValue->value : null;
     }
-    
+
     /**
      * Set dynamic field value
      */
     public function setDynamicField($fieldName, $value)
     {
-        $field = DynamicField::whereHas('module', function($query) {
+        $field = DynamicField::whereHas('module', function ($query) {
             $moduleName = $this->getDynamicModuleName();
             $query->where('name', $moduleName);
         })->where('field_name', $fieldName)->first();
-        
-        if (!$field) {
+
+        if (! $field) {
             return false;
         }
-        
+
         return FieldValue::updateOrCreate(
             [
                 'dynamic_field_id' => $field->id,
@@ -50,34 +50,34 @@ trait HasDynamicFields
                 'entity_id' => $this->id,
             ],
             [
-                'value' => $value
+                'value' => $value,
             ]
         );
     }
-    
+
     /**
      * Get all dynamic fields with values
      */
     public function getAllDynamicFields()
     {
         $moduleName = $this->getDynamicModuleName();
-        
-        $fields = DynamicField::whereHas('module', function($query) use ($moduleName) {
+
+        $fields = DynamicField::whereHas('module', function ($query) use ($moduleName) {
             $query->where('name', $moduleName)->where('is_active', true);
         })->where('is_active', true)->orderBy('order')->get();
-        
+
         $result = [];
         foreach ($fields as $field) {
             $value = $this->getDynamicField($field->field_name);
             $result[$field->field_name] = [
                 'field' => $field,
-                'value' => $value
+                'value' => $value,
             ];
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Get module name for this entity
      * Override this method in your model if needed

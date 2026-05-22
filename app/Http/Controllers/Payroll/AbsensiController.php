@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class AbsensiController extends Controller
 {
-    use GlobalSearchable, \App\Traits\LogsActivity;
+    use \App\Traits\LogsActivity, GlobalSearchable;
 
     public function index(Request $request)
     {
@@ -25,13 +25,13 @@ class AbsensiController extends Controller
             $query = $this->applyGlobalSearch($query, $request->search, [
                 'periode',
             ], [
-                'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'jabatan', 'lokasi_kerja']
+                'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'jabatan', 'lokasi_kerja'],
             ]);
         }
 
         $absensiList = $query->orderBy('periode', 'desc')
-                            ->orderBy('id_absensi', 'desc')
-                            ->paginate(15);
+            ->orderBy('id_absensi', 'desc')
+            ->paginate(15);
 
         return view('payroll.absensi.index', compact('absensiList'));
     }
@@ -39,9 +39,9 @@ class AbsensiController extends Controller
     public function create()
     {
         $karyawanList = Karyawan::where('status_karyawan', 'Active')
-                               ->orderBy('nama_karyawan')
-                               ->get();
-        
+            ->orderBy('nama_karyawan')
+            ->get();
+
         return view('payroll.absensi.create', compact('karyawanList'));
     }
 
@@ -60,8 +60,8 @@ class AbsensiController extends Controller
         ]);
 
         $exists = Absensi::where('id_karyawan', $request->id_karyawan)
-                        ->where('periode', $request->periode)
-                        ->exists();
+            ->where('periode', $request->periode)
+            ->exists();
 
         if ($exists) {
             return back()->withErrors(['periode' => 'Absensi untuk karyawan ini pada periode tersebut sudah ada.'])->withInput();
@@ -70,21 +70,22 @@ class AbsensiController extends Controller
         Absensi::create($request->all());
 
         return redirect()->route('payroll.absensi.index')
-                        ->with('success', 'Data absensi berhasil ditambahkan.');
+            ->with('success', 'Data absensi berhasil ditambahkan.');
     }
 
     public function show(Absensi $absensi)
     {
         $absensi->load('karyawan');
+
         return view('payroll.absensi.show', compact('absensi'));
     }
 
     public function edit(Absensi $absensi)
     {
         $karyawanList = Karyawan::where('status_karyawan', 'Active')
-                               ->orderBy('nama_karyawan')
-                               ->get();
-        
+            ->orderBy('nama_karyawan')
+            ->get();
+
         return view('payroll.absensi.edit', compact('absensi', 'karyawanList'));
     }
 
@@ -103,9 +104,9 @@ class AbsensiController extends Controller
         ]);
 
         $exists = Absensi::where('id_karyawan', $request->id_karyawan)
-                        ->where('periode', $request->periode)
-                        ->where('id_absensi', '!=', $absensi->id_absensi)
-                        ->exists();
+            ->where('periode', $request->periode)
+            ->where('id_absensi', '!=', $absensi->id_absensi)
+            ->exists();
 
         if ($exists) {
             return back()->withErrors(['periode' => 'Absensi untuk karyawan ini pada periode tersebut sudah ada.'])->withInput();
@@ -114,7 +115,7 @@ class AbsensiController extends Controller
         $absensi->update($request->all());
 
         return redirect()->route('payroll.absensi.index')
-                        ->with('success', 'Data absensi berhasil diupdate.');
+            ->with('success', 'Data absensi berhasil diupdate.');
     }
 
     public function destroy(Absensi $absensi)
@@ -122,14 +123,14 @@ class AbsensiController extends Controller
         $absensi->delete();
 
         return redirect()->route('payroll.absensi.index')
-                        ->with('success', 'Data absensi berhasil dihapus.');
+            ->with('success', 'Data absensi berhasil dihapus.');
     }
 
     public function export(Request $request)
     {
         $periode = $request->get('periode');
-        $filename = 'absensi_' . ($periode ?? 'all') . '_' . date('YmdHis') . '.xlsx';
-        
+        $filename = 'absensi_'.($periode ?? 'all').'_'.date('YmdHis').'.xlsx';
+
         return \Maatwebsite\Excel\Facades\Excel::download(
             new \App\Exports\AbsensiExport($periode),
             $filename
@@ -143,10 +144,10 @@ class AbsensiController extends Controller
 
     public function downloadTemplate()
     {
-        $filename = 'template_absensi_' . date('YmdHis') . '.xlsx';
-        
+        $filename = 'template_absensi_'.date('YmdHis').'.xlsx';
+
         return \Maatwebsite\Excel\Facades\Excel::download(
-            new \App\Exports\AbsensiTemplateExport(),
+            new \App\Exports\AbsensiTemplateExport,
             $filename
         );
     }
@@ -164,9 +165,9 @@ class AbsensiController extends Controller
             );
 
             return redirect()->route('payroll.absensi.index')
-                            ->with('success', 'Data absensi berhasil diimport.');
+                ->with('success', 'Data absensi berhasil diimport.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Import gagal: ' . $e->getMessage());
+            return back()->with('error', 'Import gagal: '.$e->getMessage());
         }
     }
 }

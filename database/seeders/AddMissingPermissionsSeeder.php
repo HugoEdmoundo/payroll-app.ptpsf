@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Permission;
+use Illuminate\Database\Seeder;
 
 class AddMissingPermissionsSeeder extends Seeder
 {
@@ -17,9 +17,9 @@ class AddMissingPermissionsSeeder extends Seeder
                 'action_type' => 'generate',
                 'module' => 'acuan_gaji',
                 'group' => 'payroll',
-                'description' => 'Generate acuan gaji untuk periode tertentu'
+                'description' => 'Generate acuan gaji untuk periode tertentu',
             ],
-            
+
             // Kasbon - Approve
             [
                 'name' => 'Approve Kasbon',
@@ -27,9 +27,9 @@ class AddMissingPermissionsSeeder extends Seeder
                 'action_type' => 'approve',
                 'module' => 'kasbon',
                 'group' => 'payroll',
-                'description' => 'Approve pengajuan kasbon karyawan'
+                'description' => 'Approve pengajuan kasbon karyawan',
             ],
-            
+
             // Kasbon - Reject
             [
                 'name' => 'Reject Kasbon',
@@ -37,7 +37,7 @@ class AddMissingPermissionsSeeder extends Seeder
                 'action_type' => 'reject',
                 'module' => 'kasbon',
                 'group' => 'payroll',
-                'description' => 'Reject pengajuan kasbon karyawan'
+                'description' => 'Reject pengajuan kasbon karyawan',
             ],
         ];
 

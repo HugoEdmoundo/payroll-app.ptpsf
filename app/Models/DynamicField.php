@@ -25,7 +25,7 @@ class DynamicField extends Model
         'show_in_list',
         'show_in_form',
         'order',
-        'group'
+        'group',
     ];
 
     protected $casts = [
@@ -45,7 +45,7 @@ class DynamicField extends Model
     {
         return $this->hasMany(FieldValue::class);
     }
-    
+
     /**
      * Get field options as array
      */
@@ -54,18 +54,18 @@ class DynamicField extends Model
         if (empty($this->field_options)) {
             return [];
         }
-        
+
         // If already array, return it
         if (is_array($this->field_options)) {
             return $this->field_options;
         }
-        
+
         // Try to decode JSON
         $decoded = json_decode($this->field_options, true);
         if (json_last_error() === JSON_ERROR_NONE) {
             return $decoded;
         }
-        
+
         // If comma-separated string
         return array_map('trim', explode(',', $this->field_options));
     }

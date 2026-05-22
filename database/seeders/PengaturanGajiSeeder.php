@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\PengaturanGaji;
+use Illuminate\Database\Seeder;
 
 class PengaturanGajiSeeder extends Seeder
 {
@@ -13,7 +13,7 @@ class PengaturanGajiSeeder extends Seeder
     public function run(): void
     {
         $this->command->info('Seeding Pengaturan Gaji...');
-        
+
         // Kolom yang ada di database:
         // - gaji_pokok
         // - tunjangan_operasional
@@ -24,7 +24,7 @@ class PengaturanGajiSeeder extends Seeder
         // - bpjs_kecelakaan_kerja
         // - bpjs_total
         // - total_gaji
-        
+
         $pengaturanGaji = [
             // Teknisi - Various positions and locations
             [
@@ -33,8 +33,6 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'West Java',
                 'gaji_pokok' => 5500000,
                 'tunjangan_prestasi' => 900000,
-                'gaji_nett' => 6400000,
-                'total_gaji' => 6400000,
             ],
             [
                 'jenis_karyawan' => 'Teknisi',
@@ -42,8 +40,6 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'Central Java',
                 'gaji_pokok' => 6000000,
                 'tunjangan_prestasi' => 1000000,
-                'gaji_nett' => 7000000,
-                'total_gaji' => 7000000,
             ],
             [
                 'jenis_karyawan' => 'Teknisi',
@@ -51,8 +47,6 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'East Java',
                 'gaji_pokok' => 6500000,
                 'tunjangan_prestasi' => 1100000,
-                'gaji_nett' => 7600000,
-                'total_gaji' => 7600000,
             ],
             [
                 'jenis_karyawan' => 'Teknisi',
@@ -60,8 +54,6 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'West Java',
                 'gaji_pokok' => 7500000,
                 'tunjangan_prestasi' => 1200000,
-                'gaji_nett' => 8700000,
-                'total_gaji' => 8700000,
             ],
             [
                 'jenis_karyawan' => 'Teknisi',
@@ -69,8 +61,6 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'Central Java',
                 'gaji_pokok' => 8500000,
                 'tunjangan_prestasi' => 1500000,
-                'gaji_nett' => 10000000,
-                'total_gaji' => 10000000,
             ],
             [
                 'jenis_karyawan' => 'Teknisi',
@@ -78,8 +68,6 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'East Java',
                 'gaji_pokok' => 10000000,
                 'tunjangan_prestasi' => 2000000,
-                'gaji_nett' => 12000000,
-                'total_gaji' => 12000000,
             ],
             [
                 'jenis_karyawan' => 'Teknisi',
@@ -87,8 +75,6 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'West Java',
                 'gaji_pokok' => 12000000,
                 'tunjangan_prestasi' => 2500000,
-                'gaji_nett' => 14500000,
-                'total_gaji' => 14500000,
             ],
             [
                 'jenis_karyawan' => 'Teknisi',
@@ -96,8 +82,6 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'Central Java',
                 'gaji_pokok' => 7000000,
                 'tunjangan_prestasi' => 1300000,
-                'gaji_nett' => 8300000,
-                'total_gaji' => 8300000,
             ],
             [
                 'jenis_karyawan' => 'Teknisi',
@@ -105,10 +89,8 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'East Java',
                 'gaji_pokok' => 9000000,
                 'tunjangan_prestasi' => 1800000,
-                'gaji_nett' => 10800000,
-                'total_gaji' => 10800000,
             ],
-            
+
             // Borongan - Various positions (no BPJS, handled separately)
             [
                 'jenis_karyawan' => 'Borongan',
@@ -116,8 +98,6 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'West Java',
                 'gaji_pokok' => 4500000,
                 'tunjangan_prestasi' => 700000,
-                'gaji_nett' => 5200000,
-                'total_gaji' => 5200000,
             ],
             [
                 'jenis_karyawan' => 'Borongan',
@@ -125,8 +105,6 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'Central Java',
                 'gaji_pokok' => 5000000,
                 'tunjangan_prestasi' => 800000,
-                'gaji_nett' => 5800000,
-                'total_gaji' => 5800000,
             ],
             [
                 'jenis_karyawan' => 'Borongan',
@@ -134,8 +112,6 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'East Java',
                 'gaji_pokok' => 5500000,
                 'tunjangan_prestasi' => 900000,
-                'gaji_nett' => 6400000,
-                'total_gaji' => 6400000,
             ],
             [
                 'jenis_karyawan' => 'Borongan',
@@ -143,8 +119,6 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'West Java',
                 'gaji_pokok' => 6000000,
                 'tunjangan_prestasi' => 1000000,
-                'gaji_nett' => 7000000,
-                'total_gaji' => 7000000,
             ],
             [
                 'jenis_karyawan' => 'Borongan',
@@ -152,8 +126,6 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'Central Java',
                 'gaji_pokok' => 6500000,
                 'tunjangan_prestasi' => 1100000,
-                'gaji_nett' => 7600000,
-                'total_gaji' => 7600000,
             ],
             [
                 'jenis_karyawan' => 'Borongan',
@@ -161,8 +133,6 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'East Java',
                 'gaji_pokok' => 5500000,
                 'tunjangan_prestasi' => 900000,
-                'gaji_nett' => 6400000,
-                'total_gaji' => 6400000,
             ],
             [
                 'jenis_karyawan' => 'Borongan',
@@ -170,8 +140,6 @@ class PengaturanGajiSeeder extends Seeder
                 'lokasi_kerja' => 'West Java',
                 'gaji_pokok' => 7000000,
                 'tunjangan_prestasi' => 1200000,
-                'gaji_nett' => 8200000,
-                'total_gaji' => 8200000,
             ],
         ];
 
@@ -186,6 +154,6 @@ class PengaturanGajiSeeder extends Seeder
             );
         }
 
-        $this->command->info('Pengaturan Gaji seeded successfully! Processed ' . count($pengaturanGaji) . ' configurations.');
+        $this->command->info('Pengaturan Gaji seeded successfully! Processed '.count($pengaturanGaji).' configurations.');
     }
 }

@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Payroll;
 
 use App\Http\Controllers\Controller;
-use App\Models\NKI;
 use App\Models\Karyawan;
+use App\Models\NKI;
 use App\Traits\GlobalSearchable;
 use App\Traits\LogsActivity;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class NKIController extends Controller
 {
@@ -29,13 +28,13 @@ class NKIController extends Controller
                 'periode',
                 'keterangan',
             ], [
-                'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'jabatan', 'lokasi_kerja']
+                'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'jabatan', 'lokasi_kerja'],
             ]);
         }
 
         $nkiList = $query->orderBy('periode', 'desc')
-                        ->orderBy('id_nki', 'desc')
-                        ->paginate(15);
+            ->orderBy('id_nki', 'desc')
+            ->paginate(15);
 
         return view('payroll.nki.index', compact('nkiList'));
     }
@@ -43,9 +42,9 @@ class NKIController extends Controller
     public function create()
     {
         $karyawanList = Karyawan::where('status_karyawan', 'Active')
-                               ->orderBy('nama_karyawan')
-                               ->get();
-        
+            ->orderBy('nama_karyawan')
+            ->get();
+
         return view('payroll.nki.create', compact('karyawanList'));
     }
 
@@ -63,33 +62,34 @@ class NKIController extends Controller
 
         // Check if NKI already exists for this employee and period
         $exists = NKI::where('id_karyawan', $request->id_karyawan)
-                    ->where('periode', $request->periode)
-                    ->exists();
+            ->where('periode', $request->periode)
+            ->exists();
 
         if ($exists) {
             return back()->withErrors(['periode' => 'NKI untuk karyawan ini pada periode tersebut sudah ada.'])->withInput();
         }
 
         NKI::create($request->all());
-        
+
         $this->logCreate('NKI', "Periode {$request->periode}");
 
         return redirect()->route('payroll.nki.index')
-                        ->with('success', 'Data NKI berhasil ditambahkan.');
+            ->with('success', 'Data NKI berhasil ditambahkan.');
     }
 
     public function show(NKI $nki)
     {
         $nki->load('karyawan');
+
         return view('payroll.nki.show', compact('nki'));
     }
 
     public function edit(NKI $nki)
     {
         $karyawanList = Karyawan::where('status_karyawan', 'Active')
-                               ->orderBy('nama_karyawan')
-                               ->get();
-        
+            ->orderBy('nama_karyawan')
+            ->get();
+
         return view('payroll.nki.edit', compact('nki', 'karyawanList'));
     }
 
@@ -107,40 +107,40 @@ class NKIController extends Controller
 
         // Check if NKI already exists for this employee and period (excluding current record)
         $exists = NKI::where('id_karyawan', $request->id_karyawan)
-                    ->where('periode', $request->periode)
-                    ->where('id_nki', '!=', $nki->id_nki)
-                    ->exists();
+            ->where('periode', $request->periode)
+            ->where('id_nki', '!=', $nki->id_nki)
+            ->exists();
 
         if ($exists) {
             return back()->withErrors(['periode' => 'NKI untuk karyawan ini pada periode tersebut sudah ada.'])->withInput();
         }
 
         $nki->update($request->all());
-        
+
         $this->logUpdate('NKI', "Periode {$request->periode}");
 
         return redirect()->route('payroll.nki.index')
-                        ->with('success', 'Data NKI berhasil diupdate.');
+            ->with('success', 'Data NKI berhasil diupdate.');
     }
 
     public function destroy(NKI $nki)
     {
         $periode = $nki->periode;
         $nki->delete();
-        
+
         $this->logDelete('NKI', "Periode {$periode}");
 
         return redirect()->route('payroll.nki.index')
-                        ->with('success', 'Data NKI berhasil dihapus.');
+            ->with('success', 'Data NKI berhasil dihapus.');
     }
 
     public function export(Request $request)
     {
         $periode = $request->get('periode');
-        $filename = 'nki_' . ($periode ?? 'all') . '_' . date('YmdHis') . '.xlsx';
-        
+        $filename = 'nki_'.($periode ?? 'all').'_'.date('YmdHis').'.xlsx';
+
         $this->logExport('NKI');
-        
+
         return \Maatwebsite\Excel\Facades\Excel::download(
             new \App\Exports\NKIExport($periode),
             $filename
@@ -154,10 +154,10 @@ class NKIController extends Controller
 
     public function downloadTemplate()
     {
-        $filename = 'template_nki_' . date('YmdHis') . '.xlsx';
-        
+        $filename = 'template_nki_'.date('YmdHis').'.xlsx';
+
         return \Maatwebsite\Excel\Facades\Excel::download(
-            new \App\Exports\NKITemplateExport(),
+            new \App\Exports\NKITemplateExport,
             $filename
         );
     }
@@ -173,13 +173,13 @@ class NKIController extends Controller
                 new \App\Imports\NKIImport,
                 $request->file('file')
             );
-            
+
             $this->logImport('NKI');
 
             return redirect()->route('payroll.nki.index')
-                            ->with('success', 'Data NKI berhasil diimport.');
+                ->with('success', 'Data NKI berhasil diimport.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Import gagal: ' . $e->getMessage());
+            return back()->with('error', 'Import gagal: '.$e->getMessage());
         }
     }
 }

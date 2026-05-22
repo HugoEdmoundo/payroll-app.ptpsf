@@ -2,91 +2,40 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\HitungGaji;
-use App\Models\AcuanGaji;
-use App\Models\NKI;
-use App\Models\Absensi;
+use App\Services\SalaryCalculationService;
+use Illuminate\Console\Command;
 
 class SyncHitungGaji extends Command
 {
     protected $signature = 'hitung-gaji:sync';
+
     protected $description = 'Sync Hitung Gaji data with Acuan Gaji and recalculate NKI & Absensi';
 
     public function handle()
     {
         $this->info('Starting Hitung Gaji synchronization...');
-        
-        $hitungGajiList = HitungGaji::with(['acuanGaji', 'karyawan'])->get();
+
+        $hitungGajiList = HitungGaji::with('acuanGaji')->get();
+        $service = app(SalaryCalculationService::class);
         $updated = 0;
-        
+
         foreach ($hitungGajiList as $hitungGaji) {
             $acuanGaji = $hitungGaji->acuanGaji;
-            
-            if (!$acuanGaji) {
+
+            if (! $acuanGaji) {
                 $this->warn("Acuan Gaji not found for Hitung Gaji ID: {$hitungGaji->id}");
+
                 continue;
             }
-            
-            $karyawan = $hitungGaji->karyawan;
-            if (!$karyawan) {
-                $this->warn("Karyawan not found for Hitung Gaji ID: {$hitungGaji->id}");
-                continue;
-            }
-            
-            // Check if this is status pegawai (Harian/OJT only)
-            $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT']);
-            
-            // Calculate NKI (Tunjangan Prestasi)
-            $nki = NKI::where('id_karyawan', $karyawan->id_karyawan)
-                     ->where('periode', $hitungGaji->periode)
-                     ->first();
-            
-            $tunjanganPrestasi = $acuanGaji->tunjangan_prestasi;
-            if (!$isStatusPegawai && $nki && $acuanGaji->tunjangan_prestasi > 0) {
-                $tunjanganPrestasi = $acuanGaji->tunjangan_prestasi * ($nki->persentase_tunjangan / 100);
-            }
-            
-            // Calculate Absensi (Potongan Absensi)
-            $absensi = Absensi::where('id_karyawan', $karyawan->id_karyawan)
-                             ->where('periode', $hitungGaji->periode)
-                             ->first();
-            
-            $potonganAbsensi = $acuanGaji->potongan_absensi;
-            if ($absensi && $absensi->jumlah_hari_bulan > 0) {
-                $totalAbsence = $absensi->absence + $absensi->tanpa_keterangan;
-                $baseAmount = $acuanGaji->gaji_pokok + $tunjanganPrestasi + $acuanGaji->benefit_operasional;
-                $potonganAbsensi = ($totalAbsence / $absensi->jumlah_hari_bulan) * $baseAmount;
-            }
-            
-            // Update Hitung Gaji
-            $hitungGaji->update([
-                'gaji_pokok' => $acuanGaji->gaji_pokok,
-                'bpjs_kesehatan' => $acuanGaji->bpjs_kesehatan,
-                'bpjs_kecelakaan_kerja' => $acuanGaji->bpjs_kecelakaan_kerja,
-                'bpjs_kematian' => $acuanGaji->bpjs_kematian,
-                'bpjs_jht' => $acuanGaji->bpjs_jht,
-                'bpjs_jp' => $acuanGaji->bpjs_jp,
-                'tunjangan_prestasi' => $tunjanganPrestasi,
-                'tunjangan_konjungtur' => $acuanGaji->tunjangan_konjungtur,
-                'benefit_ibadah' => $acuanGaji->benefit_ibadah,
-                'benefit_komunikasi' => $acuanGaji->benefit_komunikasi,
-                'benefit_operasional' => $acuanGaji->benefit_operasional,
-                'reward' => $acuanGaji->reward,
-                'koperasi' => $acuanGaji->koperasi,
-                'kasbon' => $acuanGaji->kasbon,
-                'umroh' => $acuanGaji->umroh,
-                'kurban' => $acuanGaji->kurban,
-                'mutabaah' => $acuanGaji->mutabaah,
-                'potongan_absensi' => $potonganAbsensi,
-                'potongan_kehadiran' => $acuanGaji->potongan_kehadiran,
-            ]);
-            
+
+            $data = $service->buildHitungGajiData($acuanGaji);
+            $hitungGaji->update($data);
             $updated++;
         }
-        
+
         $this->info("Successfully synchronized {$updated} Hitung Gaji records.");
-        
+
         return 0;
     }
 }

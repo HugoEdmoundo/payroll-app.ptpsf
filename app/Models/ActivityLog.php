@@ -25,7 +25,7 @@ class ActivityLog extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
+
     // Helper method to log activity
     public static function log($action, $module = null, $description = null, $metadata = null)
     {

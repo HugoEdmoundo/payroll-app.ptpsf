@@ -21,15 +21,15 @@ class PengaturanGajiExport implements FromCollection, WithHeadings, WithMapping,
     public function collection()
     {
         $query = PengaturanGaji::query();
-        
+
         if ($this->jenisKaryawan) {
             $query->where('jenis_karyawan', $this->jenisKaryawan);
         }
-        
+
         return $query->orderBy('jenis_karyawan')
-                    ->orderBy('jabatan')
-                    ->orderBy('lokasi_kerja')
-                    ->get();
+            ->orderBy('jabatan')
+            ->orderBy('lokasi_kerja')
+            ->get();
     }
 
     public function headings(): array
@@ -53,7 +53,7 @@ class PengaturanGajiExport implements FromCollection, WithHeadings, WithMapping,
     public function map($pengaturan): array
     {
         return [
-            $pengaturan->id_pengaturan,
+            $pengaturan->id,
             $pengaturan->jenis_karyawan,
             $pengaturan->jabatan,
             $pengaturan->lokasi_kerja,

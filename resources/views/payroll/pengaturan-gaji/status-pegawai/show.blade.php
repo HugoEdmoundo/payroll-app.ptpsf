@@ -12,7 +12,7 @@
         </div>
         <div class="flex space-x-2">
             @if(auth()->user()->hasPermission('pengaturan_gaji.edit'))
-            <a href="{{ route('payroll.pengaturan-gaji.status-pegawai.edit', $pengaturanGaji->id_pengaturan) }}" 
+            <a href="{{ route('payroll.pengaturan-gaji.status-pegawai.edit', $pengaturanGaji->id) }}" 
                class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition">
                 <i class="fas fa-edit mr-2"></i>Edit
             </a>

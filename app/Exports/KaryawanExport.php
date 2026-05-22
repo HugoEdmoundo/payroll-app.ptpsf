@@ -39,7 +39,7 @@ class KaryawanExport implements FromCollection, WithHeadings, WithMapping
             'No Telp Istri',
             'Status Karyawan',
             'Created At',
-            'Updated At'
+            'Updated At',
         ];
     }
 

@@ -10,7 +10,7 @@
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Detail Pengaturan Gaji</h1>
             <p class="mt-1 text-sm text-gray-600">
-                ID: PG{{ str_pad($pengaturanGaji->id_pengaturan, 4, '0', STR_PAD_LEFT) }}
+                ID: PG{{ str_pad($pengaturanGaji->id, 4, '0', STR_PAD_LEFT) }}
             </p>
         </div>
 
@@ -20,11 +20,11 @@
                class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150">
                 <i class="fas fa-arrow-left mr-2"></i>Back
             </a>
-            <a href="{{ route('payroll.pengaturan-gaji.edit', $pengaturanGaji->id_pengaturan) }}" 
+            <a href="{{ route('payroll.pengaturan-gaji.edit', $pengaturanGaji->id) }}" 
                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-150">
                 <i class="fas fa-edit mr-2"></i>Edit
             </a>
-            <form action="{{ route('payroll.pengaturan-gaji.destroy', $pengaturanGaji->id_pengaturan) }}" 
+            <form action="{{ route('payroll.pengaturan-gaji.destroy', $pengaturanGaji->id) }}" 
                   method="POST" 
                   onsubmit="return confirm('Are you sure you want to delete this configuration?')"
                   class="inline">

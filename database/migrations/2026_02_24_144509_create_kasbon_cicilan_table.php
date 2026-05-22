@@ -21,9 +21,9 @@ return new class extends Migration
             $table->enum('status', ['Pending', 'Terbayar'])->default('Pending');
             $table->text('keterangan')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('id_kasbon')->references('id_kasbon')->on('kasbon')->onDelete('cascade');
-            
+
             // Unique constraint: satu kasbon tidak bisa punya 2 cicilan dengan nomor yang sama
             $table->unique(['id_kasbon', 'cicilan_ke']);
         });

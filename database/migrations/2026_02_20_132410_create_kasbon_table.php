@@ -25,7 +25,7 @@ return new class extends Migration
             $table->decimal('sisa_cicilan', 15, 2)->default(0); // Auto-calculated
             $table->text('keterangan')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('id_karyawan')->references('id_karyawan')->on('karyawan')->onDelete('cascade');
         });
     }

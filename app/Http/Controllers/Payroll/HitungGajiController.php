@@ -3,35 +3,35 @@
 namespace App\Http\Controllers\Payroll;
 
 use App\Http\Controllers\Controller;
-use App\Models\HitungGaji;
-use App\Models\AcuanGaji;
-use App\Models\Karyawan;
-use App\Models\PengaturanGaji;
-use App\Models\NKI;
 use App\Models\Absensi;
+use App\Models\AcuanGaji;
+use App\Models\HitungGaji;
+use App\Models\Karyawan;
+use App\Models\NKI;
 use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
 
 class HitungGajiController extends Controller
 {
-    use GlobalSearchable, \App\Traits\LogsActivity;
+    use \App\Traits\LogsActivity, GlobalSearchable;
+
     public function index(Request $request)
     {
         // Get all unique periodes from Acuan Gaji (not Hitung Gaji)
         // This ensures Hitung Gaji only shows periodes that exist in Acuan Gaji
         $periodes = AcuanGaji::select('periode')
-                            ->distinct()
-                            ->orderBy('periode', 'desc')
-                            ->get()
-                            ->map(function($item) {
-                                // Count from Hitung Gaji for this periode
-                                $totalKaryawan = HitungGaji::where('periode', $item->periode)->count();
-                                
-                                return [
-                                    'periode' => $item->periode,
-                                    'total_karyawan' => $totalKaryawan,
-                                ];
-                            });
+            ->distinct()
+            ->orderBy('periode', 'desc')
+            ->get()
+            ->map(function ($item) {
+                // Count from Hitung Gaji for this periode
+                $totalKaryawan = HitungGaji::where('periode', $item->periode)->count();
+
+                return [
+                    'periode' => $item->periode,
+                    'total_karyawan' => $totalKaryawan,
+                ];
+            });
 
         return view('payroll.hitung-gaji.index', compact('periodes'));
     }
@@ -39,27 +39,27 @@ class HitungGajiController extends Controller
     public function showPeriode(Request $request, $periode)
     {
         $query = HitungGaji::with(['karyawan'])
-                          ->where('periode', $periode);
+            ->where('periode', $periode);
 
         // Global search using trait
         if ($request->has('search') && $request->search != '') {
             $query = $this->applyGlobalSearch($query, $request->search, [
-                'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'lokasi_kerja', 'jabatan']
+                'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'lokasi_kerja', 'jabatan'],
             ]);
         }
 
         $hitungGajiList = $query->orderBy('created_at', 'desc')
-                                ->paginate(50);
+            ->paginate(50);
 
         // Calculate statistics for this periode
         $stats = HitungGaji::where('periode', $periode)
-                          ->selectRaw('
+            ->selectRaw('
                               COUNT(*) as total_karyawan,
-                              SUM(bpjs_kesehatan + bpjs_kecelakaan_kerja + bpjs_kematian + bpjs_jht + bpjs_jp) as total_bpjs,
-                              SUM(gaji_bersih) as total_gaji_bersih,
-                              SUM(total_pengeluaran) as total_pengeluaran_perusahaan
+                              SUM(COALESCE(bpjs_kesehatan,0) + COALESCE(bpjs_kecelakaan_kerja,0) + COALESCE(bpjs_kematian,0) + COALESCE(bpjs_jht,0) + COALESCE(bpjs_jp,0)) as total_bpjs,
+                              SUM(COALESCE(gaji_pokok,0) + COALESCE(bpjs_kesehatan,0) + COALESCE(bpjs_kecelakaan_kerja,0) + COALESCE(bpjs_kematian,0) + COALESCE(bpjs_jht,0) + COALESCE(bpjs_jp,0) + COALESCE(tunjangan_prestasi,0) + COALESCE(tunjangan_konjungtur,0) + COALESCE(benefit_ibadah,0) + COALESCE(benefit_komunikasi,0) + COALESCE(benefit_operasional,0) + COALESCE(reward,0) - COALESCE(koperasi,0) - COALESCE(kasbon,0) - COALESCE(umroh,0) - COALESCE(kurban,0) - COALESCE(mutabaah,0) - COALESCE(potongan_absensi,0) - COALESCE(potongan_kehadiran,0)) as total_gaji_bersih,
+                              SUM(COALESCE(koperasi,0) + COALESCE(kasbon,0) + COALESCE(umroh,0) + COALESCE(kurban,0) + COALESCE(mutabaah,0) + COALESCE(potongan_absensi,0) + COALESCE(potongan_kehadiran,0)) as total_pengeluaran_perusahaan
                           ')
-                          ->first();
+            ->first();
 
         return view('payroll.hitung-gaji.periode', compact('hitungGajiList', 'periode', 'stats'));
     }
@@ -75,36 +75,36 @@ class HitungGajiController extends Controller
     public function getModalData($karyawanId, $periode)
     {
         $karyawan = Karyawan::findOrFail($karyawanId);
-        
+
         // Get acuan gaji for this karyawan and periode (ALWAYS needed for sync)
         $acuanGaji = AcuanGaji::where('id_karyawan', $karyawanId)
-                             ->where('periode', $periode)
-                             ->first();
-        
-        if (!$acuanGaji) {
+            ->where('periode', $periode)
+            ->first();
+
+        if (! $acuanGaji) {
             return response()->json(['error' => 'Acuan gaji tidak ditemukan untuk karyawan ini pada periode tersebut.'], 404);
         }
 
         // Get Pengaturan Gaji for calculations (automatically handles status_pegawai)
         $pengaturan = $karyawan->getPengaturanGaji();
 
-        if (!$pengaturan) {
+        if (! $pengaturan) {
             return response()->json(['error' => 'Pengaturan gaji tidak ditemukan untuk karyawan ini.'], 404);
         }
-        
+
         // Check if this is status pegawai (Harian/OJT only)
         $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT']);
 
         // Calculate NKI (Tunjangan Prestasi) - ONLY for Kontrak (normal employees)
         // Formula: Tunjangan Prestasi (from Acuan Gaji) × Persentase Tunjangan (from NKI)
         $nki = NKI::where('id_karyawan', $karyawanId)
-                 ->where('periode', $periode)
-                 ->first();
-        
+            ->where('periode', $periode)
+            ->first();
+
         $tunjanganPrestasi = 0;
         $nkiInfo = null;
-        
-        if (!$isStatusPegawai && $nki) {
+
+        if (! $isStatusPegawai && $nki) {
             // Get tunjangan_prestasi from acuan gaji (base amount)
             $baseTunjanganPrestasi = $acuanGaji->tunjangan_prestasi ?? 0;
             if ($baseTunjanganPrestasi > 0) {
@@ -112,7 +112,7 @@ class HitungGajiController extends Controller
                 $nkiInfo = [
                     'persentase' => $nki->persentase_tunjangan,
                     'nilai_nki' => $nki->nilai_nki,
-                    'acuan' => $baseTunjanganPrestasi
+                    'acuan' => $baseTunjanganPrestasi,
                 ];
             }
         }
@@ -120,36 +120,36 @@ class HitungGajiController extends Controller
         // Calculate Absensi (Potongan Absensi)
         // Formula: (Absence + Tanpa Keterangan) ÷ Jumlah Hari × (Gaji Pokok + Tunjangan Prestasi + Operasional)
         $absensi = Absensi::where('id_karyawan', $karyawanId)
-                         ->where('periode', $periode)
-                         ->first();
-        
+            ->where('periode', $periode)
+            ->first();
+
         $potonganAbsensi = 0;
         $absensiInfo = null;
         if ($absensi) {
             $totalAbsence = $absensi->absence + $absensi->tanpa_keterangan;
             $gajiPokok = $pengaturan->gaji_pokok ?? 0;
             $operasional = $isStatusPegawai ? 0 : ($pengaturan->tunjangan_operasional ?? 0);
-            
+
             // Base amount = Gaji Pokok + Tunjangan Prestasi + Operasional
             $baseAmount = $gajiPokok + $tunjanganPrestasi + $operasional;
-            
+
             if ($absensi->jumlah_hari_bulan > 0) {
                 $potonganAbsensi = ($totalAbsence / $absensi->jumlah_hari_bulan) * $baseAmount;
             }
-            
+
             $absensiInfo = [
                 'absence' => $absensi->absence,
                 'tanpa_keterangan' => $absensi->tanpa_keterangan,
                 'jumlah_hari' => $absensi->jumlah_hari_bulan,
-                'base_amount' => $baseAmount
+                'base_amount' => $baseAmount,
             ];
         }
-        
+
         // Check if hitung gaji already exists
         $hitungGaji = HitungGaji::where('karyawan_id', $karyawanId)
-                               ->where('periode', $periode)
-                               ->first();
-        
+            ->where('periode', $periode)
+            ->first();
+
         if ($hitungGaji) {
             // Return existing data for edit BUT with SYNCED values from acuan gaji
             \Log::info('Loading existing hitung gaji for edit with synced acuan gaji data', [
@@ -157,7 +157,7 @@ class HitungGajiController extends Controller
                 'adjustments_raw' => $hitungGaji->getAttributes()['adjustments'] ?? 'NULL',
                 'adjustments_cast' => $hitungGaji->adjustments,
             ]);
-            
+
             $data = [
                 'mode' => 'edit',
                 'hitung_gaji_id' => $hitungGaji->id,
@@ -165,7 +165,7 @@ class HitungGajiController extends Controller
                     'id' => $karyawan->id_karyawan,
                     'nama' => $karyawan->nama_karyawan,
                     'jabatan' => $karyawan->jabatan,
-                    'jenis' => $karyawan->jenis_karyawan
+                    'jenis' => $karyawan->jenis_karyawan,
                 ],
                 'periode' => $periode,
                 'fields' => [
@@ -193,9 +193,9 @@ class HitungGajiController extends Controller
                 'adjustments' => $hitungGaji->adjustments ?? [],
                 'keterangan' => $hitungGaji->keterangan,
                 'nki_info' => $nkiInfo,
-                'absensi_info' => $absensiInfo
+                'absensi_info' => $absensiInfo,
             ];
-            
+
             return view('components.hitung-gaji.modal-form', compact('data'))->render();
         }
 
@@ -207,7 +207,7 @@ class HitungGajiController extends Controller
                 'id' => $karyawan->id_karyawan,
                 'nama' => $karyawan->nama_karyawan,
                 'jabatan' => $karyawan->jabatan,
-                'jenis' => $karyawan->jenis_karyawan
+                'jenis' => $karyawan->jenis_karyawan,
             ],
             'periode' => $periode,
             'fields' => [
@@ -234,7 +234,7 @@ class HitungGajiController extends Controller
             'adjustments' => [],
             'keterangan' => null,
             'nki_info' => $nkiInfo,
-            'absensi_info' => $absensiInfo
+            'absensi_info' => $absensiInfo,
         ];
 
         return view('components.hitung-gaji.modal-form', compact('data'))->render();
@@ -244,15 +244,15 @@ class HitungGajiController extends Controller
     {
         $request->validate([
             'karyawan_id' => 'required|exists:karyawan,id_karyawan',
-            'periode' => 'required',
+            'periode' => 'required|regex:/^\d{4}-\d{2}$/',
             'keterangan' => 'nullable|string',
         ]);
 
         // Check if already exists
         $exists = HitungGaji::where('karyawan_id', $request->karyawan_id)
-                           ->where('periode', $request->periode)
-                           ->first();
-        
+            ->where('periode', $request->periode)
+            ->first();
+
         if ($exists) {
             // Update existing
             return $this->updateExisting($exists, $request);
@@ -260,10 +260,10 @@ class HitungGajiController extends Controller
 
         // Get acuan gaji
         $acuanGaji = AcuanGaji::where('id_karyawan', $request->karyawan_id)
-                             ->where('periode', $request->periode)
-                             ->first();
+            ->where('periode', $request->periode)
+            ->first();
 
-        if (!$acuanGaji) {
+        if (! $acuanGaji) {
             return back()->withErrors(['karyawan_id' => 'Acuan gaji tidak ditemukan.'])->withInput();
         }
 
@@ -271,21 +271,21 @@ class HitungGajiController extends Controller
         $karyawan = Karyawan::findOrFail($request->karyawan_id);
         $pengaturan = $karyawan->getPengaturanGaji();
 
-        if (!$pengaturan) {
+        if (! $pengaturan) {
             return back()->withErrors(['karyawan_id' => 'Pengaturan gaji tidak ditemukan.'])->withInput();
         }
-        
+
         // Check if this is status pegawai (Harian/OJT only)
         $isStatusPegawai = in_array($karyawan->status_pegawai, ['Harian', 'OJT']);
 
         // Calculate NKI - ONLY for Kontrak (normal employees)
         // Formula: Tunjangan Prestasi (from Acuan Gaji) × Persentase Tunjangan (from NKI)
         $nki = NKI::where('id_karyawan', $request->karyawan_id)
-                 ->where('periode', $request->periode)
-                 ->first();
-        
+            ->where('periode', $request->periode)
+            ->first();
+
         $tunjanganPrestasi = $acuanGaji->tunjangan_prestasi; // Default from acuan gaji
-        if (!$isStatusPegawai && $nki && $acuanGaji->tunjangan_prestasi > 0) {
+        if (! $isStatusPegawai && $nki && $acuanGaji->tunjangan_prestasi > 0) {
             // Apply NKI percentage to tunjangan prestasi
             $tunjanganPrestasi = $acuanGaji->tunjangan_prestasi * ($nki->persentase_tunjangan / 100);
         }
@@ -293,9 +293,9 @@ class HitungGajiController extends Controller
         // Calculate Absensi
         // Formula: (Absence + Tanpa Keterangan) ÷ Jumlah Hari × (Gaji Pokok + Tunjangan Prestasi + Operasional)
         $absensi = Absensi::where('id_karyawan', $request->karyawan_id)
-                         ->where('periode', $request->periode)
-                         ->first();
-        
+            ->where('periode', $request->periode)
+            ->first();
+
         $potonganAbsensi = $acuanGaji->potongan_absensi; // Default from acuan gaji
         if ($absensi && $absensi->jumlah_hari_bulan > 0) {
             $totalAbsence = $absensi->absence + $absensi->tanpa_keterangan;
@@ -306,20 +306,20 @@ class HitungGajiController extends Controller
         // Process adjustments - ALWAYS save even if empty
         $adjustments = $request->input('adjustments', []);
         $processedAdjustments = [];
-        
+
         \Log::info('Raw adjustments received in store:', ['adjustments' => $adjustments]);
-        
+
         foreach ($adjustments as $field => $adj) {
             // Check if adjustment has data
             if (isset($adj['nominal']) && $adj['nominal'] != '' && $adj['nominal'] != 0) {
                 $processedAdjustments[$field] = [
                     'nominal' => (float) $adj['nominal'],
                     'type' => $adj['type'] ?? '+',
-                    'description' => $adj['description'] ?? 'Adjustment'
+                    'description' => $adj['description'] ?? 'Adjustment',
                 ];
             }
         }
-        
+
         \Log::info('Processed adjustments in store:', ['count' => count($processedAdjustments), 'data' => $processedAdjustments]);
 
         // Create Hitung Gaji
@@ -347,9 +347,9 @@ class HitungGajiController extends Controller
             'potongan_absensi' => $potonganAbsensi,
             'potongan_kehadiran' => $acuanGaji->potongan_kehadiran,
             'adjustments' => $processedAdjustments,
-            'status' => 'approved', // Langsung approved, tidak perlu workflow
-            'approved_at' => now(),
-            'approved_by' => auth()->id(),
+            'status' => 'draft', // Draft dulu, approve manual via halaman show
+            'approved_at' => null,
+            'approved_by' => null,
             'keterangan' => $request->keterangan,
         ]);
 
@@ -361,27 +361,27 @@ class HitungGajiController extends Controller
         // Process adjustments - ALWAYS save even if empty
         $adjustments = $request->input('adjustments', []);
         $processedAdjustments = [];
-        
+
         \Log::info('Raw adjustments received:', ['adjustments' => $adjustments]);
-        
+
         foreach ($adjustments as $field => $adj) {
             // Check if adjustment has data
             if (isset($adj['nominal']) && $adj['nominal'] != '' && $adj['nominal'] != 0) {
                 $processedAdjustments[$field] = [
                     'nominal' => (float) $adj['nominal'],
                     'type' => $adj['type'] ?? '+',
-                    'description' => $adj['description'] ?? 'Adjustment'
+                    'description' => $adj['description'] ?? 'Adjustment',
                 ];
             }
         }
-        
+
         \Log::info('Processed adjustments:', ['count' => count($processedAdjustments), 'data' => $processedAdjustments]);
 
         $hitungGaji->update([
             'adjustments' => $processedAdjustments,
             'keterangan' => $request->keterangan,
         ]);
-        
+
         \Log::info('After save - adjustments in DB:', ['adjustments' => $hitungGaji->fresh()->adjustments]);
 
         return response()->json(['success' => true, 'message' => 'Hitung gaji berhasil diupdate.']);
@@ -390,16 +390,58 @@ class HitungGajiController extends Controller
     public function show(HitungGaji $hitungGaji)
     {
         $hitungGaji->load(['karyawan', 'acuanGaji']);
+
         return view('payroll.hitung-gaji.show', compact('hitungGaji'));
+    }
+
+    public function preview(HitungGaji $hitungGaji)
+    {
+        if ($hitungGaji->status !== 'draft') {
+            return back()->with('error', 'Hanya data dengan status draft yang bisa di-preview.');
+        }
+
+        $hitungGaji->updateQuietly(['status' => 'preview']);
+
+        return redirect()->route('payroll.hitung-gaji.show', $hitungGaji)
+            ->with('success', 'Status berubah menjadi preview.');
+    }
+
+    public function backToDraft(HitungGaji $hitungGaji)
+    {
+        if ($hitungGaji->status !== 'preview') {
+            return back()->with('error', 'Hanya data dengan status preview yang bisa dikembalikan ke draft.');
+        }
+
+        $hitungGaji->updateQuietly(['status' => 'draft', 'approved_at' => null, 'approved_by' => null]);
+
+        return redirect()->route('payroll.hitung-gaji.show', $hitungGaji)
+            ->with('success', 'Status berubah menjadi draft.');
+    }
+
+    public function approve(HitungGaji $hitungGaji)
+    {
+        if ($hitungGaji->status !== 'preview') {
+            return back()->with('error', 'Hanya data dengan status preview yang bisa di-approve.');
+        }
+
+        $hitungGaji->updateQuietly([
+            'status' => 'approved',
+            'approved_at' => now(),
+            'approved_by' => auth()->id(),
+        ]);
+
+        return redirect()->route('payroll.hitung-gaji.show', $hitungGaji)
+            ->with('success', 'Hitung gaji berhasil di-approve.');
     }
 
     public function destroy(HitungGaji $hitungGaji)
     {
         $hitungGaji->delete();
+
         return redirect()->route('payroll.hitung-gaji.index')
-                        ->with('success', 'Hitung gaji berhasil dihapus.');
+            ->with('success', 'Hitung gaji berhasil dihapus.');
     }
-    
+
     // AJAX endpoint for loading form data
     public function getFormData($acuanGajiId)
     {
@@ -409,11 +451,14 @@ class HitungGajiController extends Controller
 
     public function deletePeriode($periode)
     {
-        // Delete all hitung gaji for this periode
+        if (! preg_match('/^\d{4}-\d{2}$/', $periode)) {
+            return redirect()->route('payroll.hitung-gaji.index')
+                ->with('error', 'Format periode tidak valid.');
+        }
+
         $deleted = HitungGaji::where('periode', $periode)->delete();
 
         return redirect()->route('payroll.hitung-gaji.index')
-                        ->with('success', "Berhasil menghapus periode {$periode} dengan {$deleted} data hitung gaji.");
+            ->with('success', "Berhasil menghapus periode {$periode} dengan {$deleted} data hitung gaji.");
     }
-
 }

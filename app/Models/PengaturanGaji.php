@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class PengaturanGaji extends Model
 {
-    use HasFactory;
+    protected $table = 'salary_templates';
 
-    protected $table = 'pengaturan_gaji';
-    protected $primaryKey = 'id_pengaturan';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'jenis_karyawan',
@@ -19,8 +18,6 @@ class PengaturanGaji extends Model
         'gaji_pokok',
         'tunjangan_operasional',
         'tunjangan_prestasi',
-        'gaji_nett',
-        'total_gaji',
         'keterangan',
     ];
 
@@ -28,21 +25,34 @@ class PengaturanGaji extends Model
         'gaji_pokok' => 'decimal:2',
         'tunjangan_operasional' => 'decimal:2',
         'tunjangan_prestasi' => 'decimal:2',
-        'gaji_nett' => 'decimal:2',
-        'total_gaji' => 'decimal:2',
     ];
 
-    // Auto-calculate fields before saving
+    protected static function booted()
+    {
+        static::addGlobalScope('standard_type', function (Builder $builder) {
+            $builder->where('type', 'standard');
+        });
+    }
+
+    // gaji_nett and total_gaji are computed accessors (not stored)
+    public function getGajiNettAttribute()
+    {
+        return $this->gaji_pokok + ($this->tunjangan_prestasi ?? 0);
+    }
+
+    public function getTotalGajiAttribute()
+    {
+        return $this->gaji_nett;
+    }
+
+    // Fill employee_status automatically when creating
     protected static function boot()
     {
         parent::boot();
 
-        static::saving(function ($model) {
-            // Calculate Gaji Nett (Gaji Pokok + Tunjangan Prestasi)
-            $model->gaji_nett = $model->gaji_pokok + ($model->tunjangan_prestasi ?? 0);
-            
-            // Total Gaji = Gaji Nett (BPJS & Koperasi handled separately in Acuan Gaji)
-            $model->total_gaji = $model->gaji_nett;
+        static::creating(function ($model) {
+            $model->type = 'standard';
+            $model->employee_status = 'Kontrak';
         });
     }
 }

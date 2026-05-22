@@ -2,22 +2,22 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Kasbon;
 use App\Models\Karyawan;
+use App\Models\Kasbon;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class KasbonSeeder extends Seeder
 {
     public function run(): void
     {
         $periode = Carbon::now()->format('Y-m');
-        
+
         // Get random 10 employees for kasbon
         $karyawanList = Karyawan::where('status_karyawan', 'Active')
-                               ->inRandomOrder()
-                               ->limit(10)
-                               ->get();
+            ->inRandomOrder()
+            ->limit(10)
+            ->get();
 
         $kasbonTypes = [
             ['nominal' => 1000000, 'deskripsi' => 'Keperluan keluarga', 'metode' => 'Cicilan', 'jumlah' => 2],
@@ -29,7 +29,7 @@ class KasbonSeeder extends Seeder
 
         foreach ($karyawanList as $index => $karyawan) {
             $kasbonData = $kasbonTypes[$index % count($kasbonTypes)];
-            
+
             Kasbon::updateOrCreate(
                 [
                     'id_karyawan' => $karyawan->id_karyawan,

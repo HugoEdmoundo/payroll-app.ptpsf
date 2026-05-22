@@ -10,6 +10,7 @@ class NKI extends Model
     use HasFactory;
 
     protected $table = 'nki';
+
     protected $primaryKey = 'id_nki';
 
     protected $fillable = [
@@ -40,11 +41,11 @@ class NKI extends Model
 
         static::saving(function ($model) {
             // Calculate NKI: Kemampuan(20%) + Kontribusi_1(20%) + Kontribusi_2(40%) + Kedisiplinan(20%)
-            $model->nilai_nki = ($model->kemampuan * 0.20) + 
-                               ($model->kontribusi_1 * 0.20) + 
-                               ($model->kontribusi_2 * 0.40) + 
+            $model->nilai_nki = ($model->kemampuan * 0.20) +
+                               ($model->kontribusi_1 * 0.20) +
+                               ($model->kontribusi_2 * 0.40) +
                                ($model->kedisiplinan * 0.20);
-            
+
             // Determine percentage based on NKI value (used in Tunjangan Prestasi calculation)
             if ($model->nilai_nki >= 8.5) {
                 $model->persentase_tunjangan = 100;

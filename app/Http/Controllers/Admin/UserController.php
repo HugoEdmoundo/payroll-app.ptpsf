@@ -3,53 +3,55 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\Role;
+use App\Models\User;
 use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
 
 class UserController extends Controller
 {
-    use GlobalSearchable, \App\Traits\LogsActivity;
+    use \App\Traits\LogsActivity, GlobalSearchable;
+
     public function index(Request $request)
     {
-        if (!auth()->user()->isSuperadmin()) {
+        if (! auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
-        
+
         $query = User::with('role');
-        
+
         // Global search using trait
         if ($request->has('search') && $request->search != '') {
             $query = $this->applyGlobalSearch($query, $request->search, [
                 'name', 'email', 'email_valid', 'phone', 'position',
-                'role' => ['name']
+                'role' => ['name'],
             ]);
         }
-        
+
         $users = $query->paginate(10);
+
         return view('admin.users.index', compact('users'));
     }
 
     public function create()
     {
-        if (!auth()->user()->isSuperadmin()) {
+        if (! auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
-        
+
         $roles = Role::where('is_superadmin', false)->get();
+
         return view('admin.users.create', compact('roles'));
     }
 
     public function store(Request $request)
     {
-        if (!auth()->user()->isSuperadmin()) {
+        if (! auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -80,23 +82,24 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        if (!auth()->user()->isSuperadmin()) {
+        if (! auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
-        
+
         $roles = Role::where('is_superadmin', false)->get();
+
         return view('admin.users.edit', compact('user', 'roles'));
     }
 
     public function update(Request $request, User $user)
     {
-        if (!auth()->user()->isSuperadmin()) {
+        if (! auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             'email_valid' => 'nullable|string|email|max:255',
             'role_id' => 'required|exists:roles,id',
             'phone' => 'nullable|string|max:20',
@@ -112,7 +115,7 @@ class UserController extends Controller
         $user->phone = $request->phone;
         $user->position = $request->position;
         $user->is_active = $request->is_active;
-        
+
         // Join date TIDAK DIUPDATE
 
         if ($request->hasFile('profile_photo')) {
@@ -120,18 +123,18 @@ class UserController extends Controller
             if ($user->profile_photo && str_starts_with($user->profile_photo, 'http')) {
                 try {
                     $publicId = pathinfo(parse_url($user->profile_photo, PHP_URL_PATH), PATHINFO_FILENAME);
-                    \Cloudinary\Cloudinary::uploadApi()->destroy('profile-photos/' . $publicId);
+                    \Cloudinary\Cloudinary::uploadApi()->destroy('profile-photos/'.$publicId);
                 } catch (\Exception $e) {
                     // Ignore delete errors
                 }
             } elseif ($user->profile_photo) {
-                Storage::disk('public')->delete('profile-photos/' . $user->profile_photo);
+                Storage::disk('public')->delete('profile-photos/'.$user->profile_photo);
             }
-            
+
             // Upload to Cloudinary
             $uploadedFile = cloudinary()->upload($request->file('profile_photo')->getRealPath(), [
                 'folder' => 'profile-photos',
-                'transformation' => ['width' => 400, 'height' => 400, 'crop' => 'fill']
+                'transformation' => ['width' => 400, 'height' => 400, 'crop' => 'fill'],
             ]);
             $user->profile_photo = $uploadedFile->getSecurePath();
         }
@@ -143,19 +146,20 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if (!auth()->user()->isSuperadmin()) {
+        if (! auth()->user()->isSuperadmin()) {
             abort(403, 'Unauthorized access.');
         }
-        
+
         if ($user->id === auth()->id()) {
             return redirect()->route('admin.users.index')->with('error', 'You cannot delete your own account.');
         }
-        
+
         if ($user->role->is_superadmin) {
             return redirect()->route('admin.users.index')->with('error', 'Cannot delete superadmin account.');
         }
-        
+
         $user->delete();
+
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
     }
 }

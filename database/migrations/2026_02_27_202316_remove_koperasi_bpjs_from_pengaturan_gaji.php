@@ -15,7 +15,7 @@ return new class extends Migration
             Schema::table('pengaturan_gaji', function (Blueprint $table) {
                 // Drop old BPJS and Koperasi fields (now in separate module)
                 $columns = ['koperasi', 'bpjs_kesehatan', 'bpjs_ketenagakerjaan', 'bpjs_kecelakaan_kerja', 'bpjs_total'];
-                
+
                 foreach ($columns as $column) {
                     if (Schema::hasColumn('pengaturan_gaji', $column)) {
                         $table->dropColumn($column);

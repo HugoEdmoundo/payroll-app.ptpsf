@@ -21,7 +21,7 @@
             <tr class="hover:bg-gray-50">
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span class="text-sm font-medium text-gray-900 bg-gray-100 px-2 py-1 rounded">
-                        PG{{ str_pad($pg->id_pengaturan, 4, '0', STR_PAD_LEFT) }}
+                        PG{{ str_pad($pg->id, 4, '0', STR_PAD_LEFT) }}
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -54,20 +54,11 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div class="flex space-x-2">
-                        <a href="{{ route('payroll.pengaturan-gaji.show', $pg->id_pengaturan) }}" 
-                           class="text-blue-600 hover:text-blue-900 p-1 hover:bg-blue-50 rounded" title="View">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        
-                        @if(auth()->user()->hasPermission('pengaturan_gaji.edit'))
-                        <a href="{{ route('payroll.pengaturan-gaji.edit', $pg->id_pengaturan) }}" 
-                           class="text-indigo-600 hover:text-indigo-900 p-1 hover:bg-indigo-50 rounded" title="Edit">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        @endif
-                        
-                        @if(auth()->user()->hasPermission('pengaturan_gaji.delete'))
-                        <form action="{{ route('payroll.pengaturan-gaji.destroy', $pg->id_pengaturan) }}" method="POST" 
+                        <a href="{{ route('payroll.pengaturan-gaji.show', $pg->id) }}" 
+
+                        <a href="{{ route('payroll.pengaturan-gaji.edit', $pg->id) }}" 
+
+                        <form action="{{ route('payroll.pengaturan-gaji.destroy', $pg->id) }}" method="POST" 
                               onsubmit="return confirm('Yakin ingin menghapus pengaturan gaji ini?')"
                               class="inline">
                             @csrf

@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Karyawan;
-use App\Models\NKI;
 use App\Models\Absensi;
+use App\Models\Karyawan;
 use App\Models\Kasbon;
 use App\Models\KasbonCicilan;
+use App\Models\NKI;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class KomponenGajiSeeder extends Seeder
 {
@@ -19,58 +19,59 @@ class KomponenGajiSeeder extends Seeder
     public function run(): void
     {
         $this->command->info('Seeding Komponen Gaji (NKI, Absensi, Kasbon)...');
-        
+
         // Ambil HANYA karyawan ACTIVE
         $karyawans = Karyawan::where('status_karyawan', 'Active')->get();
-        
+
         if ($karyawans->count() === 0) {
             $this->command->warn('No active karyawan found. Please run KaryawanSeeder first.');
+
             return;
         }
-        
+
         $this->command->info("Found {$karyawans->count()} active karyawan");
-        
+
         $periode = Carbon::now()->format('Y-m'); // Periode bulan ini
         $jumlahHariBulan = Carbon::now()->daysInMonth;
-        
+
         $this->command->info("Creating data for periode: {$periode}");
-        
+
         // Seed NKI untuk setiap karyawan ACTIVE
         $this->seedNKI($karyawans, $periode);
-        
+
         // Seed Absensi untuk setiap karyawan ACTIVE
         $this->seedAbsensi($karyawans, $periode, $jumlahHariBulan);
-        
+
         // Seed Kasbon untuk beberapa karyawan ACTIVE (random)
         $this->seedKasbon($karyawans, $periode);
-        
+
         $this->command->info('Komponen Gaji seeded successfully!');
     }
-    
+
     private function seedNKI($karyawans, $periode)
     {
         $this->command->info('Seeding NKI data...');
-        
+
         foreach ($karyawans as $karyawan) {
             // Check if already exists
             $exists = NKI::where('id_karyawan', $karyawan->id_karyawan)
-                        ->where('periode', $periode)
-                        ->exists();
-            
+                ->where('periode', $periode)
+                ->exists();
+
             if ($exists) {
                 continue; // Skip if already exists
             }
-            
+
             // Generate nilai NKI random tapi realistis
             $kemampuan = rand(70, 100) / 10; // 7.0 - 10.0
             $kontribusi_1 = rand(70, 100) / 10;
             $kontribusi_2 = rand(70, 100) / 10;
             $kedisiplinan = rand(70, 100) / 10;
-            
+
             // Hitung nilai NKI (weighted average)
             // Kemampuan(20%) + Kontribusi_1(20%) + Kontribusi_2(40%) + Kedisiplinan(20%)
             $nilaiNKI = ($kemampuan * 0.2) + ($kontribusi_1 * 0.2) + ($kontribusi_2 * 0.4) + ($kedisiplinan * 0.2);
-            
+
             // Tentukan persentase tunjangan berdasarkan NKI
             if ($nilaiNKI >= 8.5) {
                 $persentase = 100;
@@ -79,7 +80,7 @@ class KomponenGajiSeeder extends Seeder
             } else {
                 $persentase = 70;
             }
-            
+
             NKI::create([
                 'id_karyawan' => $karyawan->id_karyawan,
                 'periode' => $periode,
@@ -91,30 +92,30 @@ class KomponenGajiSeeder extends Seeder
                 'persentase_tunjangan' => $persentase,
             ]);
         }
-        
+
         $count = NKI::where('periode', $periode)->count();
         $this->command->info("  ✓ NKI data ready for {$count} karyawan (periode: {$periode})");
     }
-    
+
     private function seedAbsensi($karyawans, $periode, $jumlahHariBulan)
     {
         $this->command->info('Seeding Absensi data...');
-        
+
         foreach ($karyawans as $karyawan) {
             // Check if already exists
             $exists = Absensi::where('id_karyawan', $karyawan->id_karyawan)
-                            ->where('periode', $periode)
-                            ->exists();
-            
+                ->where('periode', $periode)
+                ->exists();
+
             if ($exists) {
                 continue; // Skip if already exists
             }
-            
+
             // Generate absensi realistis
             $absence = rand(0, 3); // 0-3 hari absence
             $tanpaKeterangan = rand(0, 1); // 0-1 hari tanpa keterangan
             $hadir = $jumlahHariBulan - $absence - $tanpaKeterangan;
-            
+
             Absensi::create([
                 'id_karyawan' => $karyawan->id_karyawan,
                 'periode' => $periode,
@@ -124,18 +125,18 @@ class KomponenGajiSeeder extends Seeder
                 'tanpa_keterangan' => $tanpaKeterangan,
             ]);
         }
-        
+
         $count = Absensi::where('periode', $periode)->count();
         $this->command->info("  ✓ Absensi data ready for {$count} karyawan (periode: {$periode})");
     }
-    
+
     private function seedKasbon($karyawans, $periode)
     {
         $this->command->info('Seeding Kasbon data...');
-        
+
         // Hanya 30% karyawan yang punya kasbon
         $karyawansWithKasbon = $karyawans->random(min(ceil($karyawans->count() * 0.3), $karyawans->count()));
-        
+
         $deskripsiOptions = [
             'Keperluan Mendadak',
             'Biaya Pendidikan Anak',
@@ -144,23 +145,23 @@ class KomponenGajiSeeder extends Seeder
             'Modal Usaha',
             'Keperluan Keluarga',
         ];
-        
+
         $created = 0;
-        
+
         foreach ($karyawansWithKasbon as $karyawan) {
             // Check if already has kasbon for this periode
             $exists = Kasbon::where('id_karyawan', $karyawan->id_karyawan)
-                           ->where('periode', $periode)
-                           ->exists();
-            
+                ->where('periode', $periode)
+                ->exists();
+
             if ($exists) {
                 continue; // Skip if already exists
             }
-            
+
             $metodePembayaran = rand(0, 1) ? 'Langsung' : 'Cicilan';
             $nominal = rand(500000, 5000000); // 500rb - 5jt
             $jumlahCicilan = $metodePembayaran === 'Cicilan' ? rand(3, 12) : null;
-            
+
             $kasbon = Kasbon::create([
                 'id_karyawan' => $karyawan->id_karyawan,
                 'periode' => $periode,
@@ -172,17 +173,17 @@ class KomponenGajiSeeder extends Seeder
                 'cicilan_terbayar' => 0,
                 'status_pembayaran' => 'Pending',
             ]);
-            
+
             $created++;
-            
+
             // Create cicilan records if method is Cicilan
             if ($metodePembayaran === 'Cicilan' && $jumlahCicilan > 0) {
                 $nominalPerCicilan = $nominal / $jumlahCicilan;
                 $startPeriode = Carbon::createFromFormat('Y-m', $periode);
-                
+
                 for ($i = 1; $i <= $jumlahCicilan; $i++) {
                     $cicilanPeriode = $startPeriode->copy()->addMonths($i - 1)->format('Y-m');
-                    
+
                     KasbonCicilan::create([
                         'id_kasbon' => $kasbon->id_kasbon,
                         'cicilan_ke' => $i,
@@ -191,11 +192,11 @@ class KomponenGajiSeeder extends Seeder
                         'status' => 'Pending',
                     ]);
                 }
-                
+
                 $this->command->info("    → Created {$jumlahCicilan} cicilan for kasbon #{$kasbon->id_kasbon}");
             }
         }
-        
+
         $total = Kasbon::where('periode', $periode)->count();
         $this->command->info("  ✓ Kasbon data ready for {$total} karyawan (periode: {$periode})");
     }

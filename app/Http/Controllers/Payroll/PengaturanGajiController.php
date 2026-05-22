@@ -8,31 +8,31 @@ use App\Models\PengaturanGajiStatusPegawai;
 use App\Models\SystemSetting;
 use App\Traits\GlobalSearchable;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 
 class PengaturanGajiController extends Controller
 {
-    use GlobalSearchable, \App\Traits\LogsActivity;
+    use \App\Traits\LogsActivity, GlobalSearchable;
+
     public function index(Request $request)
     {
         $query = PengaturanGaji::query();
-        
+
         // Filter by jenis karyawan
         if ($request->has('jenis_karyawan') && $request->jenis_karyawan) {
             $query->where('jenis_karyawan', $request->jenis_karyawan);
         }
-        
+
         // Global search using trait
         if ($request->has('search') && $request->search) {
             $query = $this->applyGlobalSearch($query, $request->search, [
-                'jenis_karyawan', 'jabatan', 'lokasi_kerja'
+                'jenis_karyawan', 'jabatan', 'lokasi_kerja',
             ]);
         }
-        
+
         $pengaturanGaji = $query->orderBy('jenis_karyawan')
-                                ->orderBy('jabatan')
-                                ->paginate(15);
-        
+            ->orderBy('jabatan')
+            ->paginate(15);
+
         return view('payroll.pengaturan-gaji.index', compact('pengaturanGaji'));
     }
 
@@ -43,7 +43,7 @@ class PengaturanGajiController extends Controller
             'jabatan_options' => SystemSetting::getOptions('jabatan_options'),
             'lokasi_kerja' => SystemSetting::getOptions('lokasi_kerja'),
         ];
-        
+
         return view('payroll.pengaturan-gaji.create', compact('settings'));
     }
 
@@ -57,19 +57,19 @@ class PengaturanGajiController extends Controller
             'tunjangan_operasional' => 'nullable|numeric|min:0',
             'tunjangan_prestasi' => 'nullable|numeric|min:0',
         ]);
-        
+
         // Check unique
         $exists = PengaturanGaji::where('jenis_karyawan', $request->jenis_karyawan)
             ->where('jabatan', $request->jabatan)
             ->where('lokasi_kerja', $request->lokasi_kerja)
             ->exists();
-            
+
         if ($exists) {
             return back()->withInput()->with('error', 'Pengaturan gaji untuk kombinasi ini sudah ada.');
         }
-        
+
         PengaturanGaji::create($request->all());
-        
+
         return redirect()->route('payroll.pengaturan-gaji.index', ['jenis_karyawan' => $request->jenis_karyawan])
             ->with('success', 'Pengaturan gaji berhasil ditambahkan.');
     }
@@ -86,7 +86,7 @@ class PengaturanGajiController extends Controller
             'jabatan_options' => SystemSetting::getOptions('jabatan_options'),
             'lokasi_kerja' => SystemSetting::getOptions('lokasi_kerja'),
         ];
-        
+
         return view('payroll.pengaturan-gaji.edit', compact('pengaturanGaji', 'settings'));
     }
 
@@ -100,20 +100,20 @@ class PengaturanGajiController extends Controller
             'tunjangan_operasional' => 'nullable|numeric|min:0',
             'tunjangan_prestasi' => 'nullable|numeric|min:0',
         ]);
-        
+
         // Check unique (except current)
         $exists = PengaturanGaji::where('jenis_karyawan', $request->jenis_karyawan)
             ->where('jabatan', $request->jabatan)
             ->where('lokasi_kerja', $request->lokasi_kerja)
-            ->where('id_pengaturan', '!=', $pengaturanGaji->id_pengaturan)
+            ->where('id', '!=', $pengaturanGaji->id)
             ->exists();
-            
+
         if ($exists) {
             return back()->withInput()->with('error', 'Pengaturan gaji untuk kombinasi ini sudah ada.');
         }
-        
+
         $pengaturanGaji->update($request->all());
-        
+
         return redirect()->route('payroll.pengaturan-gaji.index', ['jenis_karyawan' => $request->jenis_karyawan])
             ->with('success', 'Pengaturan gaji berhasil diupdate.');
     }
@@ -122,7 +122,7 @@ class PengaturanGajiController extends Controller
     {
         $jenisKaryawan = $pengaturanGaji->jenis_karyawan;
         $pengaturanGaji->delete();
-        
+
         return redirect()->route('payroll.pengaturan-gaji.index', ['jenis_karyawan' => $jenisKaryawan])
             ->with('success', 'Pengaturan gaji berhasil dihapus.');
     }
@@ -130,16 +130,16 @@ class PengaturanGajiController extends Controller
     public function export(Request $request)
     {
         $jenisKaryawan = $request->get('jenis_karyawan');
-        $filename = 'pengaturan_gaji_' . ($jenisKaryawan ?? 'all') . '_' . date('YmdHis') . '.xlsx';
-        
+        $filename = 'pengaturan_gaji_'.($jenisKaryawan ?? 'all').'_'.date('YmdHis').'.xlsx';
+
         return \Maatwebsite\Excel\Facades\Excel::download(
             new \App\Exports\PengaturanGajiExport($jenisKaryawan),
             $filename
         );
     }
-    
+
     // ========== STATUS PEGAWAI METHODS (SINGLE FORM LIKE BPJS & KOPERASI) ==========
-    
+
     /**
      * Show edit form for Harian & OJT (single form, no index)
      */
@@ -148,16 +148,16 @@ class PengaturanGajiController extends Controller
         $settings = [
             'lokasi_kerja' => SystemSetting::getOptions('lokasi_kerja'),
         ];
-        
+
         // Get all existing records grouped by status_pegawai and lokasi_kerja
-        $pengaturanGaji = PengaturanGajiStatusPegawai::orderBy('status_pegawai')
+        $pengaturanGaji = PengaturanGajiStatusPegawai::orderBy('employee_status')
             ->orderBy('lokasi_kerja')
             ->get()
             ->groupBy('lokasi_kerja');
-        
+
         return view('payroll.pengaturan-gaji.status-pegawai.edit', compact('pengaturanGaji', 'settings'));
     }
-    
+
     /**
      * Update Harian & OJT configurations
      */
@@ -171,12 +171,12 @@ class PengaturanGajiController extends Controller
             'ojt.*.lokasi_kerja' => 'required|string',
             'ojt.*.gaji_pokok' => 'required|numeric|min:0',
         ]);
-        
+
         // Update or create Harian records
         foreach ($request->harian as $data) {
             PengaturanGajiStatusPegawai::updateOrCreate(
                 [
-                    'status_pegawai' => 'Harian',
+                    'employee_status' => 'Harian',
                     'lokasi_kerja' => $data['lokasi_kerja'],
                 ],
                 [
@@ -184,12 +184,12 @@ class PengaturanGajiController extends Controller
                 ]
             );
         }
-        
+
         // Update or create OJT records
         foreach ($request->ojt as $data) {
             PengaturanGajiStatusPegawai::updateOrCreate(
                 [
-                    'status_pegawai' => 'OJT',
+                    'employee_status' => 'OJT',
                     'lokasi_kerja' => $data['lokasi_kerja'],
                 ],
                 [
@@ -197,7 +197,7 @@ class PengaturanGajiController extends Controller
                 ]
             );
         }
-        
+
         return redirect()->route('payroll.pengaturan-gaji.index')
             ->with('success', 'Pengaturan gaji Harian & OJT berhasil diupdate.');
     }

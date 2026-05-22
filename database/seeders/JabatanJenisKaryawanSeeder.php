@@ -11,12 +11,13 @@ class JabatanJenisKaryawanSeeder extends Seeder
     public function run(): void
     {
         // Check if table exists first
-        if (!Schema::hasTable('jabatan_jenis_karyawan')) {
+        if (! Schema::hasTable('jabatan_jenis_karyawan')) {
             $this->command->warn('Table jabatan_jenis_karyawan does not exist. Skipping...');
             $this->command->info('Please run migrations first: php artisan migrate');
+
             return;
         }
-        
+
         $mappings = [
             // Teknisi - All 9 positions available
             ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Junior Installer'],
@@ -28,7 +29,7 @@ class JabatanJenisKaryawanSeeder extends Seeder
             ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Project Manager'],
             ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Team Leader (senior)'],
             ['jenis_karyawan' => 'Teknisi', 'jabatan' => 'Team Leader (junior)'],
-            
+
             // Borongan - All 9 positions available
             ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Junior Installer'],
             ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Junior Leader'],
@@ -40,7 +41,7 @@ class JabatanJenisKaryawanSeeder extends Seeder
             ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Team Leader (senior)'],
             ['jenis_karyawan' => 'Borongan', 'jabatan' => 'Team Leader (junior)'],
         ];
-        
+
         foreach ($mappings as $mapping) {
             DB::table('jabatan_jenis_karyawan')->updateOrInsert(
                 [
@@ -53,7 +54,7 @@ class JabatanJenisKaryawanSeeder extends Seeder
                 ])
             );
         }
-        
+
         $this->command->info('Jabatan Jenis Karyawan seeded successfully!');
     }
 }

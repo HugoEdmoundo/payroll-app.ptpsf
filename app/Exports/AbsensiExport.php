@@ -21,11 +21,11 @@ class AbsensiExport implements FromCollection, WithHeadings, WithMapping, WithSt
     public function collection()
     {
         $query = Absensi::with('karyawan');
-        
+
         if ($this->periode) {
             $query->where('periode', $this->periode);
         }
-        
+
         return $query->orderBy('periode', 'desc')->get();
     }
 
@@ -50,7 +50,7 @@ class AbsensiExport implements FromCollection, WithHeadings, WithMapping, WithSt
     public function map($absensi): array
     {
         return [
-            'ABS' . str_pad($absensi->id_absensi, 4, '0', STR_PAD_LEFT),
+            'ABS'.str_pad($absensi->id_absensi, 4, '0', STR_PAD_LEFT),
             $absensi->karyawan->nama_karyawan ?? '-',
             $absensi->periode,
             $absensi->jumlah_hari_bulan,

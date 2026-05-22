@@ -83,21 +83,21 @@
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <div class="flex items-center justify-end space-x-2">
                                 @if(auth()->user()->hasPermission('pengaturan_gaji.view'))
-                                <a href="{{ route('payroll.pengaturan-gaji.status-pegawai.show', $item->id_pengaturan) }}" 
+                                <a href="{{ route('payroll.pengaturan-gaji.status-pegawai.show', $item->id) }}" 
                                    class="text-indigo-600 hover:text-indigo-900">
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 @endif
                                 
                                 @if(auth()->user()->hasPermission('pengaturan_gaji.edit'))
-                                <a href="{{ route('payroll.pengaturan-gaji.status-pegawai.edit', $item->id_pengaturan) }}" 
+                                <a href="{{ route('payroll.pengaturan-gaji.status-pegawai.edit', $item->id) }}" 
                                    class="text-yellow-600 hover:text-yellow-900">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 @endif
                                 
                                 @if(auth()->user()->hasPermission('pengaturan_gaji.delete'))
-                                <form action="{{ route('payroll.pengaturan-gaji.status-pegawai.destroy', $item->id_pengaturan) }}" 
+                                <form action="{{ route('payroll.pengaturan-gaji.status-pegawai.destroy', $item->id) }}" 
                                       method="POST" 
                                       class="inline"
                                       onsubmit="return confirm('Are you sure you want to delete this configuration?');">

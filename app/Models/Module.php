@@ -17,7 +17,7 @@ class Module extends Model
         'is_active',
         'is_system',
         'order',
-        'settings'
+        'settings',
     ];
 
     protected $casts = [
@@ -30,7 +30,7 @@ class Module extends Model
     {
         return $this->hasMany(DynamicField::class)->orderBy('order');
     }
-    
+
     public function activeFields()
     {
         return $this->hasMany(DynamicField::class)->where('is_active', true)->orderBy('order');

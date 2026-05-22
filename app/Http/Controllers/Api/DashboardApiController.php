@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\HitungGaji;
 use App\Models\Karyawan;
 use App\Models\User;
-use App\Models\HitungGaji;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class DashboardApiController extends Controller
 {
@@ -15,7 +14,7 @@ class DashboardApiController extends Controller
     {
         $user = auth()->user();
         $isSuperadmin = $user->role && $user->role->name === 'Superadmin';
-        
+
         if ($isSuperadmin) {
             $stats = [
                 'total_karyawan' => Karyawan::count(),
@@ -28,68 +27,68 @@ class DashboardApiController extends Controller
                 'total_karyawan' => Karyawan::where('status_karyawan', 'Active')->count(),
             ];
         }
-        
+
         return response()->json(['stats' => $stats]);
     }
-    
+
     public function managedUsers()
     {
         $users = User::with('role')
-                    ->where('id', '!=', auth()->id())
-                    ->latest()
-                    ->take(5)
-                    ->get()
-                    ->map(function($user) {
-                        return [
-                            'id' => $user->id,
-                            'name' => $user->name,
-                            'email' => $user->email,
-                            'role' => $user->role->name ?? 'No Role',
-                            'avatar' => strtoupper(substr($user->name, 0, 1)),
-                        ];
-                    });
-        
+            ->where('id', '!=', auth()->id())
+            ->latest()
+            ->take(5)
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role->name ?? 'No Role',
+                    'avatar' => strtoupper(substr($user->name, 0, 1)),
+                ];
+            });
+
         return response()->json(['users' => $users]);
     }
-    
+
     public function pengeluaran()
     {
         $periode = Carbon::now()->format('Y-m');
-        
+
         $hitungGajiData = HitungGaji::with('karyawan')
-                                   ->where('periode', $periode)
-                                   ->get();
-        
-        $teknisiBorongan = $hitungGajiData->filter(function($item) {
+            ->where('periode', $periode)
+            ->get();
+
+        $teknisiBorongan = $hitungGajiData->filter(function ($item) {
             return in_array($item->karyawan->jenis_karyawan ?? '', ['Teknisi', 'Borongan']);
         })->sum('gaji_bersih');
-        
-        $konsultanOrganik = $hitungGajiData->filter(function($item) {
+
+        $konsultanOrganik = $hitungGajiData->filter(function ($item) {
             return in_array($item->karyawan->jenis_karyawan ?? '', ['Konsultan', 'Organik']);
         })->sum('gaji_bersih');
-        
-        $totalBPJS = $hitungGajiData->sum(function($item) {
-            return ($item->bpjs_kesehatan ?? 0) + 
-                   ($item->bpjs_kecelakaan_kerja ?? 0) + 
-                   ($item->bpjs_kematian ?? 0) + 
-                   ($item->bpjs_jht ?? 0) + 
+
+        $totalBPJS = $hitungGajiData->sum(function ($item) {
+            return ($item->bpjs_kesehatan ?? 0) +
+                   ($item->bpjs_kecelakaan_kerja ?? 0) +
+                   ($item->bpjs_kematian ?? 0) +
+                   ($item->bpjs_jht ?? 0) +
                    ($item->bpjs_jp ?? 0);
         });
-        
+
         $totalKoperasi = $hitungGajiData->sum('koperasi');
-        
+
         $pengeluaran = [
             'teknisi_borongan' => $teknisiBorongan,
             'konsultan_organik' => $konsultanOrganik,
             'bpjs' => $totalBPJS,
             'koperasi' => $totalKoperasi,
         ];
-        
+
         $total = $teknisiBorongan + $konsultanOrganik + $totalBPJS + $totalKoperasi;
-        
+
         return response()->json([
             'pengeluaran' => $pengeluaran,
-            'total' => $total
+            'total' => $total,
         ]);
     }
 }

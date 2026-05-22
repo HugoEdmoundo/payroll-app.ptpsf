@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class KomponenGaji extends Model
 {
     protected $table = 'komponen_gaji';
-    
+
     protected $fillable = [
         'nama',
         'kode',
@@ -16,12 +16,12 @@ class KomponenGaji extends Model
         'deskripsi',
         'is_system',
         'is_active',
-        'order'
+        'order',
     ];
 
     protected $casts = [
         'is_system' => 'boolean',
         'is_active' => 'boolean',
-        'order' => 'integer'
+        'order' => 'integer',
     ];
 }

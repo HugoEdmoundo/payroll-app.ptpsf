@@ -13,7 +13,7 @@ class Role extends Model
         'name',
         'description',
         'is_default',
-        'is_superadmin'
+        'is_superadmin',
     ];
 
     public function users()

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('entity_id'); // ID of the entity
             $table->text('value')->nullable();
             $table->timestamps();
-            
+
             $table->index(['entity_type', 'entity_id']);
             $table->unique(['dynamic_field_id', 'entity_type', 'entity_id']);
         });

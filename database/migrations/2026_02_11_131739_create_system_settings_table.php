@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('system_settings')) {
+        if (! Schema::hasTable('system_settings')) {
             Schema::create('system_settings', function (Blueprint $table) {
                 $table->id();
                 $table->string('group');
@@ -16,7 +16,7 @@ return new class extends Migration
                 $table->string('value');
                 $table->integer('order')->default(0);
                 $table->timestamps();
-                
+
                 $table->unique(['group', 'key']);
             });
         }

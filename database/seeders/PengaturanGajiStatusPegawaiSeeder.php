@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\PengaturanGajiStatusPegawai;
 use App\Models\SystemSetting;
+use Illuminate\Database\Seeder;
 
 class PengaturanGajiStatusPegawaiSeeder extends Seeder
 {
@@ -15,17 +15,17 @@ class PengaturanGajiStatusPegawaiSeeder extends Seeder
     {
         // Get all lokasi kerja
         $lokasiKerjaList = SystemSetting::getOptions('lokasi_kerja');
-        
+
         if (empty($lokasiKerjaList)) {
             $this->command->warn('⚠️  No lokasi_kerja found in system settings. Using defaults.');
             $lokasiKerjaList = ['Jakarta', 'Bandung', 'Surabaya'];
         }
-        
+
         // Create Harian configuration for each lokasi
         foreach ($lokasiKerjaList as $lokasi) {
             PengaturanGajiStatusPegawai::updateOrCreate(
                 [
-                    'status_pegawai' => 'Harian',
+                    'employee_status' => 'Harian',
                     'lokasi_kerja' => $lokasi,
                 ],
                 [
@@ -33,12 +33,12 @@ class PengaturanGajiStatusPegawaiSeeder extends Seeder
                 ]
             );
         }
-        
+
         // Create OJT configuration for each lokasi
         foreach ($lokasiKerjaList as $lokasi) {
             PengaturanGajiStatusPegawai::updateOrCreate(
                 [
-                    'status_pegawai' => 'OJT',
+                    'employee_status' => 'OJT',
                     'lokasi_kerja' => $lokasi,
                 ],
                 [
@@ -46,10 +46,10 @@ class PengaturanGajiStatusPegawaiSeeder extends Seeder
                 ]
             );
         }
-        
+
         $this->command->info('✅ Pengaturan Gaji Status Pegawai (Harian & OJT) created successfully!');
         $this->command->info('   - Harian: 90,000 per day');
         $this->command->info('   - OJT: 3,100,000 per month');
-        $this->command->info('   - Locations: ' . implode(', ', $lokasiKerjaList));
+        $this->command->info('   - Locations: '.implode(', ', $lokasiKerjaList));
     }
 }

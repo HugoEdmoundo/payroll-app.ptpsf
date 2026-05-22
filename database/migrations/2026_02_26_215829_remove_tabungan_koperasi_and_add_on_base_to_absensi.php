@@ -14,16 +14,16 @@ return new class extends Migration
                 $table->dropColumn('tabungan_koperasi');
             });
         }
-        
+
         // Remove tabungan_koperasi from hitung_gaji
         if (Schema::hasColumn('hitung_gaji', 'tabungan_koperasi')) {
             Schema::table('hitung_gaji', function (Blueprint $table) {
                 $table->dropColumn('tabungan_koperasi');
             });
         }
-        
+
         // Add on_base to absensi
-        if (!Schema::hasColumn('absensi', 'on_base')) {
+        if (! Schema::hasColumn('absensi', 'on_base')) {
             Schema::table('absensi', function (Blueprint $table) {
                 $table->integer('on_base')->default(0)->after('on_site');
             });
@@ -33,19 +33,19 @@ return new class extends Migration
     public function down(): void
     {
         // Add back tabungan_koperasi to acuan_gaji
-        if (!Schema::hasColumn('acuan_gaji', 'tabungan_koperasi')) {
+        if (! Schema::hasColumn('acuan_gaji', 'tabungan_koperasi')) {
             Schema::table('acuan_gaji', function (Blueprint $table) {
-                $table->decimal('tabungan_koperasi', 15, 2)->default(0)->after('bpjs_jp_pengeluaran');
+                $table->decimal('tabungan_koperasi', 15, 2)->default(0)->after('bpjs_jp');
             });
         }
-        
+
         // Add back tabungan_koperasi to hitung_gaji
-        if (!Schema::hasColumn('hitung_gaji', 'tabungan_koperasi')) {
+        if (! Schema::hasColumn('hitung_gaji', 'tabungan_koperasi')) {
             Schema::table('hitung_gaji', function (Blueprint $table) {
-                $table->decimal('tabungan_koperasi', 15, 2)->default(0)->after('bpjs_jp_pengeluaran');
+                $table->decimal('tabungan_koperasi', 15, 2)->default(0)->after('bpjs_jp');
             });
         }
-        
+
         // Remove on_base from absensi
         if (Schema::hasColumn('absensi', 'on_base')) {
             Schema::table('absensi', function (Blueprint $table) {

@@ -26,7 +26,7 @@ class PengaturanBpjsKoperasiController extends Controller
                 'koperasi' => 0,
             ]
         );
-        
+
         return view('payroll.pengaturan-bpjs-koperasi.edit', compact('pengaturanBpjsKoperasi'));
     }
 
@@ -43,15 +43,15 @@ class PengaturanBpjsKoperasiController extends Controller
             'bpjs_jp_pendapatan' => 'nullable|numeric|min:0',
             'koperasi' => 'nullable|numeric|min:0',
         ]);
-        
+
         $pengaturanBpjsKoperasi = PengaturanBpjsKoperasi::first();
-        
-        if (!$pengaturanBpjsKoperasi) {
+
+        if (! $pengaturanBpjsKoperasi) {
             $pengaturanBpjsKoperasi = PengaturanBpjsKoperasi::create($request->all());
         } else {
             $pengaturanBpjsKoperasi->update($request->all());
         }
-        
+
         return redirect()->route('payroll.pengaturan-gaji.index')
             ->with('success', 'Pengaturan BPJS & Koperasi berhasil diupdate.');
     }

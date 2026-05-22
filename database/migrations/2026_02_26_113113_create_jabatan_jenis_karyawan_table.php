@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('jenis_karyawan');
             $table->string('jabatan');
             $table->timestamps();
-            
+
             // Unique constraint to prevent duplicate combinations
             $table->unique(['jenis_karyawan', 'jabatan']);
         });

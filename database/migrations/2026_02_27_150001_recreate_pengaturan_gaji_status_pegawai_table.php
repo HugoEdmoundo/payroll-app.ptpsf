@@ -10,7 +10,7 @@ return new class extends Migration
     {
         // Drop old table
         Schema::dropIfExists('pengaturan_gaji_status_pegawai');
-        
+
         // Create new structure - Only status_pegawai + lokasi + gaji_pokok
         // Berlaku untuk semua jabatan dan jenis karyawan
         Schema::create('pengaturan_gaji_status_pegawai', function (Blueprint $table) {
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('gaji_pokok', 15, 2)->default(0);
             $table->text('keterangan')->nullable();
             $table->timestamps();
-            
+
             // Unique constraint untuk kombinasi status_pegawai + lokasi_kerja
             $table->unique(['status_pegawai', 'lokasi_kerja'], 'unique_status_lokasi');
         });

@@ -12,21 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         // Add lokasi_kerja to acuan_gaji
-        if (Schema::hasTable('acuan_gaji') && !Schema::hasColumn('acuan_gaji', 'lokasi_kerja')) {
+        if (Schema::hasTable('acuan_gaji') && ! Schema::hasColumn('acuan_gaji', 'lokasi_kerja')) {
             Schema::table('acuan_gaji', function (Blueprint $table) {
                 $table->string('lokasi_kerja')->nullable()->after('id_karyawan');
             });
         }
 
         // Add lokasi_kerja to hitung_gaji
-        if (Schema::hasTable('hitung_gaji') && !Schema::hasColumn('hitung_gaji', 'lokasi_kerja')) {
+        if (Schema::hasTable('hitung_gaji') && ! Schema::hasColumn('hitung_gaji', 'lokasi_kerja')) {
             Schema::table('hitung_gaji', function (Blueprint $table) {
                 $table->string('lokasi_kerja')->nullable()->after('karyawan_id');
             });
         }
 
         // Add lokasi_kerja to slip_gaji (only if table exists)
-        if (Schema::hasTable('slip_gaji') && !Schema::hasColumn('slip_gaji', 'lokasi_kerja')) {
+        if (Schema::hasTable('slip_gaji') && ! Schema::hasColumn('slip_gaji', 'lokasi_kerja')) {
             Schema::table('slip_gaji', function (Blueprint $table) {
                 $table->string('lokasi_kerja')->nullable()->after('id_karyawan');
             });

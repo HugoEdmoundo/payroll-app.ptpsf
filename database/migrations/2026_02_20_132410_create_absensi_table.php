@@ -25,7 +25,7 @@ return new class extends Migration
             $table->decimal('potongan_absensi', 15, 2)->default(0); // Calculated in acuan gaji
             $table->text('keterangan')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('id_karyawan')->references('id_karyawan')->on('karyawan')->onDelete('cascade');
             $table->unique(['id_karyawan', 'periode'], 'unique_absensi_periode');
         });

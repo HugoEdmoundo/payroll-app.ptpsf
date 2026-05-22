@@ -16,7 +16,7 @@ return new class extends Migration
             $table->decimal('gaji_pokok', 15, 2)->default(0);
             $table->text('keterangan')->nullable();
             $table->timestamps();
-            
+
             // Unique constraint untuk kombinasi status_pegawai, jabatan, lokasi_kerja
             $table->unique(['status_pegawai', 'jabatan', 'lokasi_kerja'], 'unique_status_pegawai_pengaturan');
         });

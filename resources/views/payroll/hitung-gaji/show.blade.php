@@ -18,7 +18,7 @@
             </a>
             
             @if($hitungGaji->status === 'draft' && auth()->user()->hasPermission('hitung_gaji.edit'))
-            <a href="{{ route('payroll.hitung-gaji.edit', $hitungGaji) }}" 
+            <a href="{{ route('payroll.hitung-gaji.periode', $hitungGaji->periode) }}" 
                class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">
                 <i class="fas fa-edit mr-2"></i>Edit
             </a>

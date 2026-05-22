@@ -1,30 +1,19 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\KaryawanController;
-use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\Payroll\PengaturanGajiController;
-
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Artisan;
-
-Route::get('/gas-migrate', function () {
-    try {
-        Artisan::call('migrate', ['--force' => true]);
-        return "Database Berhasil Dimigrasi, Bree!";
-    } catch (\Exception $e) {
-        return "Waduh Error: " . $e->getMessage();
-    }
-});
+use Illuminate\Support\Facades\Route;
 
 // Authentication routes
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+Route::view('/', 'landing')->name('landing');
+Route::view('/docs', 'docs')->name('docs');
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
@@ -34,30 +23,30 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
+
     // API Routes for Real-time Updates
     Route::prefix('api')->name('api.')->group(function () {
         Route::get('/dashboard/stats', [\App\Http\Controllers\Api\DashboardApiController::class, 'stats'])->name('dashboard.stats');
         Route::get('/dashboard/managed-users', [\App\Http\Controllers\Api\DashboardApiController::class, 'managedUsers'])->name('dashboard.managed-users');
         Route::get('/dashboard/pengeluaran', [\App\Http\Controllers\Api\DashboardApiController::class, 'pengeluaran'])->name('dashboard.pengeluaran');
-        
+
         // Get jabatan by jenis karyawan
-        Route::get('/jabatan/{jenisKaryawan}', function($jenisKaryawan) {
+        Route::get('/jabatan/{jenisKaryawan}', function ($jenisKaryawan) {
             return response()->json([
-                'jabatan' => \App\Models\SystemSetting::getJabatanByJenisKaryawan($jenisKaryawan)
+                'jabatan' => \App\Models\SystemSetting::getJabatanByJenisKaryawan($jenisKaryawan),
             ]);
         })->name('jabatan.by-jenis');
     });
-    
+
     // Global Search
     Route::get('/search', [App\Http\Controllers\GlobalSearchController::class, 'search'])->name('global.search');
-    
+
     // Profile
     Route::middleware(['auth'])->group(function () {
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
         Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     });
-    
+
     // Karyawan Management (SEMUA USER BISA AKSES DULU)
     Route::prefix('karyawan')->name('karyawan.')->group(function () {
         Route::get('/', [KaryawanController::class, 'index'])->name('index');
@@ -72,7 +61,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/{karyawan}', [KaryawanController::class, 'update'])->name('update');
         Route::delete('/{karyawan}', [KaryawanController::class, 'destroy'])->name('destroy');
     });
-    
+
     // Payroll Management
     Route::prefix('payroll')->name('payroll.')->group(function () {
         // Pengaturan Gaji
@@ -81,13 +70,13 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/create', [PengaturanGajiController::class, 'create'])->name('create');
             Route::post('/', [PengaturanGajiController::class, 'store'])->name('store');
             Route::get('/export', [PengaturanGajiController::class, 'export'])->name('export');
-            
+
             // Status Pegawai Routes (Single Form like BPJS & Koperasi)
             Route::prefix('status-pegawai')->name('status-pegawai.')->group(function () {
                 Route::get('/edit', [PengaturanGajiController::class, 'editStatusPegawai'])->name('edit');
                 Route::put('/update', [PengaturanGajiController::class, 'updateStatusPegawai'])->name('update');
             });
-            
+
             // Wildcard routes - MUST BE AFTER SPECIFIC ROUTES
             Route::get('/{pengaturanGaji}', [PengaturanGajiController::class, 'show'])->name('show');
             Route::get('/{pengaturanGaji}/edit', [PengaturanGajiController::class, 'edit'])->name('edit');
@@ -173,6 +162,9 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/periode/{periode}/delete', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'deletePeriode'])->name('periode.delete');
             Route::get('/modal/{karyawanId}/{periode}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'getModalData'])->name('modal');
             Route::post('/', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'store'])->name('store');
+            Route::post('/{hitungGaji}/preview', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'preview'])->name('preview');
+            Route::post('/{hitungGaji}/back-to-draft', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'backToDraft'])->name('back-to-draft');
+            Route::post('/{hitungGaji}/approve', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'approve'])->name('approve');
             Route::get('/{hitungGaji}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'show'])->name('show');
             Route::delete('/{hitungGaji}', [\App\Http\Controllers\Payroll\HitungGajiController::class, 'destroy'])->name('destroy');
         });
@@ -182,15 +174,15 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [\App\Http\Controllers\Payroll\SlipGajiController::class, 'index'])->name('index');
             Route::get('/periode/{periode}', [\App\Http\Controllers\Payroll\SlipGajiController::class, 'showPeriode'])->name('periode');
             Route::get('/slip/{hitungGajiId}', [\App\Http\Controllers\Payroll\SlipGajiController::class, 'getSlipData'])->name('slip');
-            
+
             // Download individual slip
             Route::get('/download-pdf/{hitungGajiId}', [\App\Http\Controllers\Payroll\SlipGajiController::class, 'downloadPDF'])->name('download-pdf');
-            
+
             // Export all periode
             Route::get('/export-excel/{periode}', [\App\Http\Controllers\Payroll\SlipGajiController::class, 'exportExcel'])->name('export-excel');
         });
     });
-    
+
     // Admin routes (SUPERADMIN ONLY)
     Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
         // Users Management
@@ -201,12 +193,12 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
             Route::put('/{user}', [UserController::class, 'update'])->name('update');
             Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
-            
+
             // User Permissions Management
             Route::get('/{user}/permissions', [\App\Http\Controllers\Admin\UserPermissionController::class, 'edit'])->name('permissions.edit');
             Route::put('/{user}/permissions', [\App\Http\Controllers\Admin\UserPermissionController::class, 'update'])->name('permissions.update');
         });
-        
+
         // Roles Management
         Route::prefix('roles')->name('roles.')->group(function () {
             Route::get('/', [RoleController::class, 'index'])->name('index');
@@ -216,21 +208,21 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/{role}', [RoleController::class, 'update'])->name('update');
             Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy');
         });
-        
+
         // System Settings
         Route::prefix('settings')->name('settings.')->group(function () {
             Route::get('/', [SettingController::class, 'index'])->name('index');
             Route::post('/{group}', [SettingController::class, 'update'])->name('update');
             Route::delete('/{group}/{id}', [SettingController::class, 'destroy'])->name('destroy');
-            
+
             // Jabatan by Jenis Karyawan
             Route::post('/jabatan-jenis/store', [SettingController::class, 'storeJabatanJenis'])->name('jabatan-jenis.store');
             Route::delete('/jabatan-jenis/{id}', [SettingController::class, 'destroyJabatanJenis'])->name('jabatan-jenis.destroy');
         });
-        
+
         // API for getting jabatan by jenis
         Route::get('/api/jabatan-by-jenis/{jenisKaryawan}', [SettingController::class, 'getJabatanByJenis'])->name('api.jabatan-by-jenis');
-        
+
         // Activity Logs
         Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('index');

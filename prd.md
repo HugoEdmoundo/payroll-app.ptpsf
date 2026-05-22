@@ -107,7 +107,7 @@ Testing:            PHPUnit
 
 **Sub-fitur**:
 - Login/Logout dengan email dan password
-- Role-based access control (Admin, HR Manager, Finance, Accounting, Employee)
+- Role-based access control (Admin, HR Manager, Finance)
 - Permission management yang granular
 - Activity logging untuk semua action pengguna
 - Session management & timeout

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PengaturanBpjsKoperasi extends Model
 {
     protected $table = 'pengaturan_bpjs_koperasi';
-    
+
     protected $fillable = [
         'bpjs_kesehatan_pendapatan',
         'bpjs_kecelakaan_kerja_pendapatan',
@@ -16,7 +16,7 @@ class PengaturanBpjsKoperasi extends Model
         'bpjs_jp_pendapatan',
         'koperasi',
     ];
-    
+
     protected $casts = [
         'bpjs_kesehatan_pendapatan' => 'decimal:2',
         'bpjs_kecelakaan_kerja_pendapatan' => 'decimal:2',
@@ -25,19 +25,19 @@ class PengaturanBpjsKoperasi extends Model
         'bpjs_jp_pendapatan' => 'decimal:2',
         'koperasi' => 'decimal:2',
     ];
-    
+
     /**
      * Get total BPJS (Pendapatan only)
      */
     public function getTotalBpjsAttribute()
     {
-        return $this->bpjs_kesehatan_pendapatan + 
-               $this->bpjs_kecelakaan_kerja_pendapatan + 
-               $this->bpjs_kematian_pendapatan + 
-               $this->bpjs_jht_pendapatan + 
+        return $this->bpjs_kesehatan_pendapatan +
+               $this->bpjs_kecelakaan_kerja_pendapatan +
+               $this->bpjs_kematian_pendapatan +
+               $this->bpjs_jht_pendapatan +
                $this->bpjs_jp_pendapatan;
     }
-    
+
     /**
      * Get the global BPJS & Koperasi configuration (singleton)
      */

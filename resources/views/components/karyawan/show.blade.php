@@ -243,7 +243,7 @@
                     
                     @if(auth()->user()->hasPermission('karyawan.delete'))
                     <form action="{{ route('karyawan.destroy', $karyawan) }}" method="POST" 
-                          onsubmit="return confirm('Are you sure you want to delete this karyawan?')">
+                                                     onsubmit="return confirm('Yakin ingin menghapus karyawan ini?\n\nPERINGATAN: Semua data terkait (Acuan Gaji, Hitung Gaji, Absensi, NKI, Kasbon, Slip Gaji) untuk karyawan ini juga akan dihapus permanen!')">
                         @csrf
                         @method('DELETE')
                         <button type="submit" 

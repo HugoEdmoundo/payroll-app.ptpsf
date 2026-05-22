@@ -18,7 +18,7 @@ return new class extends Migration
             $table->boolean('is_granted')->default(true); // true = granted, false = denied
             $table->text('notes')->nullable(); // catatan kenapa permission ini diberikan/ditolak
             $table->timestamps();
-            
+
             $table->unique(['user_id', 'permission_id']);
         });
     }

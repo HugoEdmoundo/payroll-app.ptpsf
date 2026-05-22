@@ -2,34 +2,34 @@
 
 namespace App\Http\Controllers\Payroll;
 
+use App\Exports\SlipGajiExport;
 use App\Http\Controllers\Controller;
 use App\Models\HitungGaji;
-use App\Models\AcuanGaji;
 use App\Models\Karyawan;
 use App\Traits\GlobalSearchable;
-use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\SlipGajiExport;
 
 class SlipGajiController extends Controller
 {
-    use GlobalSearchable, \App\Traits\LogsActivity;
+    use \App\Traits\LogsActivity, GlobalSearchable;
+
     public function index(Request $request)
     {
         // Get all unique periodes from Hitung Gaji
         $periodes = HitungGaji::select('periode')
-                            ->distinct()
-                            ->orderBy('periode', 'desc')
-                            ->get()
-                            ->map(function($item) {
-                                $totalKaryawan = HitungGaji::where('periode', $item->periode)->count();
-                                
-                                return [
-                                    'periode' => $item->periode,
-                                    'total_karyawan' => $totalKaryawan,
-                                ];
-                            });
+            ->distinct()
+            ->orderBy('periode', 'desc')
+            ->get()
+            ->map(function ($item) {
+                $totalKaryawan = HitungGaji::where('periode', $item->periode)->count();
+
+                return [
+                    'periode' => $item->periode,
+                    'total_karyawan' => $totalKaryawan,
+                ];
+            });
 
         return view('payroll.slip-gaji.index', compact('periodes'));
     }
@@ -37,42 +37,42 @@ class SlipGajiController extends Controller
     public function showPeriode(Request $request, $periode)
     {
         $query = HitungGaji::with(['karyawan'])
-                          ->where('periode', $periode);
+            ->where('periode', $periode);
 
         // Global search using trait
         if ($request->has('search') && $request->search != '') {
             $query = $this->applyGlobalSearch($query, $request->search, [
-                'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'lokasi_kerja', 'jabatan']
+                'karyawan' => ['nama_karyawan', 'jenis_karyawan', 'lokasi_kerja', 'jabatan'],
             ]);
         }
 
         // Filter by lokasi kerja
         if ($request->has('lokasi_kerja') && $request->lokasi_kerja != '') {
-            $query->whereHas('karyawan', function($q) use ($request) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
                 $q->where('lokasi_kerja', $request->lokasi_kerja);
             });
         }
 
         // Filter by jabatan
         if ($request->has('jabatan') && $request->jabatan != '') {
-            $query->whereHas('karyawan', function($q) use ($request) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
                 $q->where('jabatan', $request->jabatan);
             });
         }
 
         $slipGajiList = $query->orderBy('created_at', 'desc')
-                             ->paginate(50);
+            ->paginate(50);
 
         // Get unique lokasi kerja and jabatan for filters
         $lokasiKerjaList = Karyawan::select('lokasi_kerja')
-                                  ->distinct()
-                                  ->orderBy('lokasi_kerja')
-                                  ->pluck('lokasi_kerja');
-        
+            ->distinct()
+            ->orderBy('lokasi_kerja')
+            ->pluck('lokasi_kerja');
+
         $jabatanList = Karyawan::select('jabatan')
-                              ->distinct()
-                              ->orderBy('jabatan')
-                              ->pluck('jabatan');
+            ->distinct()
+            ->orderBy('jabatan')
+            ->pluck('jabatan');
 
         return view('payroll.slip-gaji.periode', compact('slipGajiList', 'periode', 'lokasiKerjaList', 'jabatanList'));
     }
@@ -82,28 +82,28 @@ class SlipGajiController extends Controller
     {
         try {
             $hitungGaji = HitungGaji::with(['karyawan'])->findOrFail($hitungGajiId);
-            
+
             // Get related data with keterangan
             $pengaturanGaji = \App\Models\PengaturanGaji::where('jenis_karyawan', $hitungGaji->karyawan->jenis_karyawan)
-                                                         ->where('jabatan', $hitungGaji->karyawan->jabatan)
-                                                         ->where('lokasi_kerja', $hitungGaji->karyawan->lokasi_kerja)
-                                                         ->first();
+                ->where('jabatan', $hitungGaji->karyawan->jabatan)
+                ->where('lokasi_kerja', $hitungGaji->karyawan->lokasi_kerja)
+                ->first();
             $nki = \App\Models\NKI::where('id_karyawan', $hitungGaji->karyawan_id)
-                                  ->where('periode', $hitungGaji->periode)
-                                  ->first();
+                ->where('periode', $hitungGaji->periode)
+                ->first();
             $absensi = \App\Models\Absensi::where('id_karyawan', $hitungGaji->karyawan_id)
-                                          ->where('periode', $hitungGaji->periode)
-                                          ->first();
+                ->where('periode', $hitungGaji->periode)
+                ->first();
             // Get active kasbon for this karyawan (not filtered by periode)
             // We want to show the kasbon that's being paid in this periode
             $kasbon = \App\Models\Kasbon::where('id_karyawan', $hitungGaji->karyawan_id)
-                                        ->whereIn('status_pembayaran', ['Pending', 'Cicilan', 'Lunas'])
-                                        ->orderBy('tanggal_pengajuan', 'asc')
-                                        ->first();
+                ->whereIn('status_pembayaran', ['Pending', 'Lunas'])
+                ->orderBy('tanggal_pengajuan', 'asc')
+                ->first();
             $acuanGaji = \App\Models\AcuanGaji::where('id_karyawan', $hitungGaji->karyawan_id)
-                                              ->where('periode', $hitungGaji->periode)
-                                              ->first();
-            
+                ->where('periode', $hitungGaji->periode)
+                ->first();
+
             $data = [
                 'hitung_gaji' => $hitungGaji,
                 'karyawan' => $hitungGaji->karyawan,
@@ -118,12 +118,13 @@ class SlipGajiController extends Controller
 
             return view('components.slip-gaji.modal-slip', compact('data'))->render();
         } catch (\Exception $e) {
-            \Log::error('Error in getSlipData: ' . $e->getMessage());
+            \Log::error('Error in getSlipData: '.$e->getMessage());
+
             return response()->json([
                 'error' => 'Gagal load slip gaji',
                 'message' => $e->getMessage(),
                 'line' => $e->getLine(),
-                'file' => $e->getFile()
+                'file' => $e->getFile(),
             ], 500);
         }
     }
@@ -133,28 +134,28 @@ class SlipGajiController extends Controller
     {
         try {
             $hitungGaji = HitungGaji::with(['karyawan'])->findOrFail($hitungGajiId);
-            
+
             // Get related data with keterangan
             $pengaturanGaji = \App\Models\PengaturanGaji::where('jenis_karyawan', $hitungGaji->karyawan->jenis_karyawan)
-                                                         ->where('jabatan', $hitungGaji->karyawan->jabatan)
-                                                         ->where('lokasi_kerja', $hitungGaji->karyawan->lokasi_kerja)
-                                                         ->first();
+                ->where('jabatan', $hitungGaji->karyawan->jabatan)
+                ->where('lokasi_kerja', $hitungGaji->karyawan->lokasi_kerja)
+                ->first();
             $nki = \App\Models\NKI::where('id_karyawan', $hitungGaji->karyawan_id)
-                                  ->where('periode', $hitungGaji->periode)
-                                  ->first();
+                ->where('periode', $hitungGaji->periode)
+                ->first();
             $absensi = \App\Models\Absensi::where('id_karyawan', $hitungGaji->karyawan_id)
-                                          ->where('periode', $hitungGaji->periode)
-                                          ->first();
+                ->where('periode', $hitungGaji->periode)
+                ->first();
             // Get active kasbon for this karyawan (not filtered by periode)
             // We want to show the kasbon that's being paid in this periode
             $kasbon = \App\Models\Kasbon::where('id_karyawan', $hitungGaji->karyawan_id)
-                                        ->whereIn('status_pembayaran', ['Pending', 'Cicilan', 'Lunas'])
-                                        ->orderBy('tanggal_pengajuan', 'asc')
-                                        ->first();
+                ->whereIn('status_pembayaran', ['Pending', 'Lunas'])
+                ->orderBy('tanggal_pengajuan', 'asc')
+                ->first();
             $acuanGaji = \App\Models\AcuanGaji::where('id_karyawan', $hitungGaji->karyawan_id)
-                                              ->where('periode', $hitungGaji->periode)
-                                              ->first();
-            
+                ->where('periode', $hitungGaji->periode)
+                ->first();
+
             $data = [
                 'hitung_gaji' => $hitungGaji,
                 'karyawan' => $hitungGaji->karyawan,
@@ -168,15 +169,15 @@ class SlipGajiController extends Controller
             ];
 
             $pdf = Pdf::loadView('payroll.slip-gaji.pdf', compact('data'))
-                      ->setPaper('a4', 'landscape');
+                ->setPaper('a4', 'landscape');
 
-            $filename = 'slip-gaji-' . str_replace(' ', '-', $hitungGaji->karyawan->nama_karyawan) . '-' . $hitungGaji->periode . '.pdf';
-            
+            $filename = 'slip-gaji-'.str_replace(' ', '-', $hitungGaji->karyawan->nama_karyawan).'-'.$hitungGaji->periode.'.pdf';
+
             return $pdf->download($filename);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Gagal generate PDF',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -184,8 +185,8 @@ class SlipGajiController extends Controller
     // Export Excel (All periode)
     public function exportExcel($periode)
     {
-        $filename = 'slip-gaji-periode-' . $periode . '.xlsx';
-        
+        $filename = 'slip-gaji-periode-'.$periode.'.xlsx';
+
         return Excel::download(new SlipGajiExport(null, $periode), $filename);
     }
 }

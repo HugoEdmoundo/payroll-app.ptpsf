@@ -14,9 +14,10 @@ class AbsensiImport implements ToModel, WithHeadingRow, WithValidation
     {
         // Find karyawan by name
         $karyawan = Karyawan::where('nama_karyawan', $row['nama_karyawan'])->first();
-        
-        if (!$karyawan) {
+
+        if (! $karyawan) {
             \Log::warning("Karyawan tidak ditemukan: {$row['nama_karyawan']}");
+
             return null; // Skip if karyawan not found
         }
 
@@ -27,11 +28,12 @@ class AbsensiImport implements ToModel, WithHeadingRow, WithValidation
 
         // Check if already exists
         $exists = Absensi::where('id_karyawan', $karyawan->id_karyawan)
-                        ->where('periode', $row['periode'])
-                        ->first();
-        
+            ->where('periode', $row['periode'])
+            ->first();
+
         if ($exists) {
             \Log::warning("Data absensi sudah ada untuk: {$row['nama_karyawan']} periode {$row['periode']}");
+
             return null; // Skip if already exists
         }
 

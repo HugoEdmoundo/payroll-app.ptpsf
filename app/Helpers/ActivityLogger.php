@@ -10,7 +10,7 @@ class ActivityLogger
     public static function log($action, $module = null, $description = null, $metadata = null)
     {
         try {
-            if (!Auth::check()) {
+            if (! Auth::check()) {
                 return;
             }
 
@@ -25,7 +25,7 @@ class ActivityLogger
             ]);
         } catch (\Exception $e) {
             // Silently fail if activity_logs table doesn't exist
-            \Log::debug('Activity log failed: ' . $e->getMessage());
+            \Log::debug('Activity log failed: '.$e->getMessage());
         }
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -22,7 +22,7 @@ class User extends Authenticatable
         'position',
         'profile_photo',
         'role_id',
-        'is_active'
+        'is_active',
     ];
 
     protected $hidden = [
@@ -36,12 +36,12 @@ class User extends Authenticatable
         'join_date' => 'datetime',
         'is_active' => 'boolean',
     ];
-    
+
     // Boot method untuk set join_date otomatis
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($user) {
             if (empty($user->join_date)) {
                 $user->join_date = Carbon::now();
@@ -53,7 +53,7 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
-    
+
     /**
      * Check if user is superadmin
      */
@@ -61,7 +61,7 @@ class User extends Authenticatable
     {
         return $this->role && $this->role->is_superadmin;
     }
-    
+
     public function userPermissions()
     {
         return $this->belongsToMany(Permission::class, 'user_permissions')
@@ -81,7 +81,7 @@ class User extends Authenticatable
         }
 
         // Check if user is active
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return false;
         }
 
@@ -89,7 +89,7 @@ class User extends Authenticatable
         $userPermission = $this->userPermissions()
             ->where('key', $permissionKey)
             ->first();
-        
+
         if ($userPermission) {
             // If user has specific permission, use that (granted or denied)
             return $userPermission->pivot->is_granted;
@@ -104,7 +104,7 @@ class User extends Authenticatable
 
         return false;
     }
-    
+
     /**
      * Check if user can perform specific action on module
      * Example: canDo('karyawan', 'view'), canDo('users', 'edit')
@@ -116,16 +116,16 @@ class User extends Authenticatable
             return true;
         }
 
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return false;
         }
 
         // Build permission key
         $permissionKey = "{$module}.{$action}";
-        
+
         return $this->hasPermission($permissionKey);
     }
-    
+
     /**
      * Get all user permissions (combined from role and user-specific)
      */
@@ -137,10 +137,10 @@ class User extends Authenticatable
 
         $rolePermissions = $this->role ? $this->role->permissions : collect();
         $userPermissions = $this->userPermissions;
-        
+
         // Merge and prioritize user-specific permissions
         $merged = $rolePermissions->keyBy('id');
-        
+
         foreach ($userPermissions as $userPerm) {
             if ($userPerm->pivot->is_granted) {
                 $merged->put($userPerm->id, $userPerm);
@@ -149,7 +149,7 @@ class User extends Authenticatable
                 $merged->forget($userPerm->id);
             }
         }
-        
+
         return $merged->values();
     }
 }

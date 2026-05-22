@@ -30,7 +30,7 @@ return new class extends Migration
             $table->integer('order')->default(0);
             $table->string('group')->nullable(); // untuk grouping fields
             $table->timestamps();
-            
+
             $table->unique(['module_id', 'field_name']);
         });
     }

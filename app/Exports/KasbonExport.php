@@ -21,11 +21,11 @@ class KasbonExport implements FromCollection, WithHeadings, WithMapping, WithSty
     public function collection()
     {
         $query = Kasbon::with('karyawan');
-        
+
         if ($this->periode) {
             $query->where('periode', $this->periode);
         }
-        
+
         return $query->orderBy('tanggal_pengajuan', 'desc')->get();
     }
 
@@ -51,7 +51,7 @@ class KasbonExport implements FromCollection, WithHeadings, WithMapping, WithSty
     public function map($kasbon): array
     {
         return [
-            'KSB' . str_pad($kasbon->id_kasbon, 4, '0', STR_PAD_LEFT),
+            'KSB'.str_pad($kasbon->id_kasbon, 4, '0', STR_PAD_LEFT),
             $kasbon->karyawan->nama_karyawan ?? '-',
             $kasbon->periode,
             $kasbon->tanggal_pengajuan->format('d/m/Y'),

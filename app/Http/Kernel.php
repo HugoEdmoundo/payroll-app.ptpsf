@@ -41,7 +41,7 @@ class Kernel extends HttpKernel
     /**
      * Route middleware aliases.
      *
-     
+
      * Laravel 11 merekomendasikan alias middleware
      * didefinisikan di bootstrap/app.php
      */

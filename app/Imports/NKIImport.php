@@ -2,8 +2,8 @@
 
 namespace App\Imports;
 
-use App\Models\NKI;
 use App\Models\Karyawan;
+use App\Models\NKI;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
@@ -14,9 +14,10 @@ class NKIImport implements ToModel, WithHeadingRow, WithValidation
     {
         // Find karyawan by name
         $karyawan = Karyawan::where('nama_karyawan', $row['nama_karyawan'])->first();
-        
-        if (!$karyawan) {
+
+        if (! $karyawan) {
             \Log::warning("Karyawan tidak ditemukan: {$row['nama_karyawan']}");
+
             return null; // Skip if karyawan not found
         }
 
@@ -27,11 +28,12 @@ class NKIImport implements ToModel, WithHeadingRow, WithValidation
 
         // Check if already exists
         $exists = NKI::where('id_karyawan', $karyawan->id_karyawan)
-                    ->where('periode', $row['periode'])
-                    ->first();
-        
+            ->where('periode', $row['periode'])
+            ->first();
+
         if ($exists) {
             \Log::warning("Data NKI sudah ada untuk: {$row['nama_karyawan']} periode {$row['periode']}");
+
             return null; // Skip if already exists
         }
 

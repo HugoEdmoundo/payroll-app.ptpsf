@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\NKI;
 use App\Models\Karyawan;
+use App\Models\NKI;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class NKISeeder extends Seeder
 {
@@ -22,7 +22,7 @@ class NKISeeder extends Seeder
 
             // Random NKI value between 7.5 and 9.5
             $nilaiNKI = rand(75, 95) / 10;
-            
+
             // Calculate persentase tunjangan based on NKI
             if ($nilaiNKI >= 8.5) {
                 $persentaseTunjangan = 100;

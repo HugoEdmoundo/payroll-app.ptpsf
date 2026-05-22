@@ -13,11 +13,11 @@ class UserSeeder extends Seeder
         $superadminRole = \App\Models\Role::where('is_superadmin', true)->first();
         $userRole = \App\Models\Role::where('name', 'User')->first();
 
-        if (!$superadminRole) {
+        if (! $superadminRole) {
             throw new \Exception('Superadmin role not found. Please run RoleSeeder first.');
         }
-        
-        if (!$userRole) {
+
+        if (! $userRole) {
             throw new \Exception('User role not found. Please run RoleSeeder first.');
         }
 
@@ -48,7 +48,7 @@ class UserSeeder extends Seeder
                 'updated_at' => now(),
             ]
         );
-        
+
         $this->command->info('✓ Created 2 users:');
         $this->command->info('  - superadmin@ptpsf.com (Superadmin)');
         $this->command->info('  - user@ptpsf.com (User)');

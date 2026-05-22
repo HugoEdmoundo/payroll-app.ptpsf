@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('persentase_tunjangan')->default(0); // 70, 80, or 100
             $table->text('keterangan')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('id_karyawan')->references('id_karyawan')->on('karyawan')->onDelete('cascade');
             $table->unique(['id_karyawan', 'periode'], 'unique_nki_periode');
         });
