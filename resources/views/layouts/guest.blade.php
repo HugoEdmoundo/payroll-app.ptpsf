@@ -16,9 +16,6 @@
     <!-- Alpine.js CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.8/dist/cdn.min.js"></script>
 
-    <!-- Lottie Web CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.13.0/lottie.min.js"></script>
-
     <script>
         tailwind.config = {
             theme: {
@@ -45,36 +42,6 @@
         @yield('content')
     </div>
     
-    @include('components.loading-overlay')
-
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.store('app', {
-                loading: false,
-                init() {
-                    const container = document.getElementById('global-loader');
-                    if (container && window.lottie) {
-                        lottie.loadAnimation({
-                            container: container,
-                            renderer: 'svg',
-                            loop: true,
-                            autoplay: true,
-                            path: 'https://assets8.lottiefiles.com/packages/lf20_hp09atmh.json'
-                        });
-                    }
-                    document.addEventListener('click', e => {
-                        const link = e.target.closest('a[href]:not([data-no-loader])');
-                        if (link && link.hostname === window.location.hostname && link.target !== '_blank' && !link.hasAttribute('download')) {
-                            this.loading = true;
-                        }
-                    });
-                    document.addEventListener('submit', () => { this.loading = true; });
-                    window.addEventListener('pageshow', () => { this.loading = false; });
-                }
-            });
-        });
-    </script>
-
     @stack('scripts')
 </body>
 </html>
