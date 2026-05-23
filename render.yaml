@@ -1,0 +1,71 @@
+services:
+  - type: web
+    name: payroll-psf
+    runtime: image
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    envVars:
+      - key: APP_NAME
+        value: "Payroll PSF"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_TIMEZONE
+        value: Asia/Jakarta
+      - key: APP_URL
+        value: https://your-domain.com
+      - key: APP_LOCALE
+        value: id
+      - key: APP_FALLBACK_LOCALE
+        value: en
+      - key: APP_FAKER_LOCALE
+        value: id_ID
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: LOG_LEVEL
+        value: error
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: payroll-psf-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: payroll-psf-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: payroll-psf-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: payroll-psf-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: payroll-psf-db
+          property: password
+      - key: SESSION_DRIVER
+        value: database
+      - key: SESSION_LIFETIME
+        value: 120
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: FILESYSTEM_DISK
+        value: local
+      - key: BCRYPT_ROUNDS
+        value: "12"
+      - key: APP_KEY
+        sync: false
+
+databases:
+  - name: payroll-psf-db
+    plan: starter
+    region: singapore
+    databaseName: payroll_psf
+    user: payroll_psf
+    ipAllowList: []

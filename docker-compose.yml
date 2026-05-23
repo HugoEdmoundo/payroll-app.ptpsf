@@ -1,0 +1,44 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: app
+    volumes:
+      - ./storage:/var/www/html/storage
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_KEY=${APP_KEY}
+      - APP_URL=${APP_URL:-http://localhost}
+      - DB_CONNECTION=pgsql
+      - DB_HOST=${DB_HOST:-db}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_DATABASE=${DB_DATABASE:-payroll_psf}
+      - DB_USERNAME=${DB_USERNAME:-payroll_psf}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - SESSION_DRIVER=database
+      - CACHE_STORE=database
+      - QUEUE_CONNECTION=database
+      - LOG_CHANNEL=stderr
+      - FILESYSTEM_DISK=local
+    networks:
+      - payroll
+    restart: unless-stopped
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: nginx
+    ports:
+      - "${NGINX_PORT:-80}:80"
+    depends_on:
+      - app
+    networks:
+      - payroll
+    restart: unless-stopped
+
+networks:
+  payroll:
+    driver: bridge
