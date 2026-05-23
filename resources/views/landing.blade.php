@@ -60,6 +60,22 @@
     }
     .btt.show { opacity: 1; pointer-events: auto; }
     .btt:hover { background: #4338ca; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79,70,229,0.4); }
+
+    .thumb-card { cursor: pointer; overflow: hidden; }
+    .thumb-card img { transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+    .thumb-card:hover img { transform: scale(1.08); }
+    .thumb-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%);
+      opacity: 0; transition: opacity 0.3s ease;
+      display: flex; align-items: flex-end; padding: 1rem;
+    }
+    .thumb-card:hover .thumb-overlay { opacity: 1; }
+    .lightbox-img {
+      transition: opacity 0.3s ease;
+    }
+    .lightbox-img.loading { opacity: 0; }
+    .lightbox-img:not(.loading) { opacity: 1; }
   </style>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -460,6 +476,278 @@
           <div class="text-xs font-mono text-indigo-600 mb-2">REQ-11</div>
           <h4 class="font-bold text-gray-900 mb-2">Multi Audit Logs & Catatan Slip</h4>
           <p class="text-gray-500 text-xs leading-relaxed">Mendukung penyematan catatan korektif berlapis pada modul penghitungan gaji yang secara transparan akan dicetak langsung pada lembar slip gaji karyawan.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="diagrams" class="py-24 px-6 bg-gray-50 border-t border-gray-100">
+    <div class="max-w-7xl mx-auto">
+      <div class="max-w-3xl mb-16">
+        <span class="text-xs font-semibold text-indigo-600 uppercase tracking-wider block mb-3">System Blueprint</span>
+        <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight text-gray-900">Diagram Arsitektur Sistem</h2>
+        <p class="text-gray-500 text-sm mt-4">Visualisasi lengkap alur proses bisnis, struktur kelas, dan relasi database sistem payroll terpadu.</p>
+      </div>
+
+      <div class="mb-12">
+        <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2"><i class="fa-solid fa-diagram-project text-indigo-600 text-sm"></i> Activity Diagram — Alur Sistem</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+          <!-- Activity Acuan Gaji -->
+          <div x-data="{ open: false, loaded: false }"
+               @keydown.window.escape="open = false"
+               class="bg-white rounded-2xl border border-gray-200/60 shadow-sm overflow-hidden hover:shadow-md transition-all group">
+            <div class="thumb-card relative">
+              <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1779496500/7bc25e5a-2372-4e1d-9ae4-67cf064e50ca_dzqool.png"
+                   alt="Activity Generate Acuan Gaji"
+                   class="w-full h-auto"
+                   @click="open = true">
+              <div class="thumb-overlay" @click="open = true">
+                <span class="text-white text-sm font-medium flex items-center gap-2"><i class="fas fa-expand text-xs"></i> Klik untuk memperbesar</span>
+              </div>
+            </div>
+            <div class="px-4 pb-4 pt-3">
+              <span class="text-xs font-mono text-indigo-600 font-medium">Activity Diagram</span>
+              <h4 class="font-semibold text-gray-900 mt-0.5">Generate Acuan Gaji</h4>
+            </div>
+            <!-- Lightbox -->
+            <template x-teleport="body">
+              <div x-show="open"
+                   x-transition.opacity.duration.250ms
+                   class="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm p-4 overflow-y-auto"
+                   x-cloak
+                   @click="open = false">
+                <button @click="open = false"
+                        class="fixed top-4 right-4 z-[9999] w-10 h-10 rounded-full bg-white/90 shadow-lg flex items-center justify-center hover:bg-white transition text-gray-700 text-lg border border-gray-200">
+                  <i class="fas fa-times"></i>
+                </button>
+                <div class="min-h-screen flex items-center justify-center">
+                  <div class="lightbox-panel relative w-full max-w-6xl bg-white rounded-2xl p-2 shadow-2xl"
+                       @click.stop>
+                    <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1779496500/7bc25e5a-2372-4e1d-9ae4-67cf064e50ca_dzqool.png"
+                         alt="Activity Generate Acuan Gaji"
+                         class="w-full h-auto rounded-xl"
+                         :class="loaded ? '' : 'loading'"
+                         @load="loaded = true">
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- Activity Hitung Gaji -->
+          <div x-data="{ open: false, loaded: false }"
+               @keydown.window.escape="open = false"
+               class="bg-white rounded-2xl border border-gray-200/60 shadow-sm overflow-hidden hover:shadow-md transition-all group">
+            <div class="thumb-card relative">
+              <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1779496499/b9f2279f-f82c-4dab-ae94-00f07afdf36f_klg9xg.png"
+                   alt="Activity Hitung Gaji"
+                   class="w-full h-auto"
+                   @click="open = true">
+              <div class="thumb-overlay" @click="open = true">
+                <span class="text-white text-sm font-medium flex items-center gap-2"><i class="fas fa-expand text-xs"></i> Klik untuk memperbesar</span>
+              </div>
+            </div>
+            <div class="px-4 pb-4 pt-3">
+              <span class="text-xs font-mono text-indigo-600 font-medium">Activity Diagram</span>
+              <h4 class="font-semibold text-gray-900 mt-0.5">Hitung Gaji</h4>
+            </div>
+            <template x-teleport="body">
+              <div x-show="open"
+                   x-transition.opacity.duration.250ms
+                   class="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm p-4 overflow-y-auto"
+                   x-cloak
+                   @click="open = false">
+                <button @click="open = false"
+                        class="fixed top-4 right-4 z-[9999] w-10 h-10 rounded-full bg-white/90 shadow-lg flex items-center justify-center hover:bg-white transition text-gray-700 text-lg border border-gray-200">
+                  <i class="fas fa-times"></i>
+                </button>
+                <div class="min-h-screen flex items-center justify-center">
+                  <div class="lightbox-panel relative w-full max-w-6xl bg-white rounded-2xl p-2 shadow-2xl"
+                       @click.stop>
+                    <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1779496499/b9f2279f-f82c-4dab-ae94-00f07afdf36f_klg9xg.png"
+                         alt="Activity Hitung Gaji"
+                         class="w-full h-auto rounded-xl"
+                         :class="loaded ? '' : 'loading'"
+                         @load="loaded = true">
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- Activity Adjustment -->
+          <div x-data="{ open: false, loaded: false }"
+               @keydown.window.escape="open = false"
+               class="bg-white rounded-2xl border border-gray-200/60 shadow-sm overflow-hidden hover:shadow-md transition-all group">
+            <div class="thumb-card relative">
+              <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1779496499/58295e47-b055-4686-9244-844b9ee4b9d6_bazgpx.png"
+                   alt="Activity Adjustment Payroll"
+                   class="w-full h-auto"
+                   @click="open = true">
+              <div class="thumb-overlay" @click="open = true">
+                <span class="text-white text-sm font-medium flex items-center gap-2"><i class="fas fa-expand text-xs"></i> Klik untuk memperbesar</span>
+              </div>
+            </div>
+            <div class="px-4 pb-4 pt-3">
+              <span class="text-xs font-mono text-indigo-600 font-medium">Activity Diagram</span>
+              <h4 class="font-semibold text-gray-900 mt-0.5">Adjustment Payroll</h4>
+            </div>
+            <template x-teleport="body">
+              <div x-show="open"
+                   x-transition.opacity.duration.250ms
+                   class="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm p-4 overflow-y-auto"
+                   x-cloak
+                   @click="open = false">
+                <button @click="open = false"
+                        class="fixed top-4 right-4 z-[9999] w-10 h-10 rounded-full bg-white/90 shadow-lg flex items-center justify-center hover:bg-white transition text-gray-700 text-lg border border-gray-200">
+                  <i class="fas fa-times"></i>
+                </button>
+                <div class="min-h-screen flex items-center justify-center">
+                  <div class="lightbox-panel relative w-full max-w-6xl bg-white rounded-2xl p-2 shadow-2xl"
+                       @click.stop>
+                    <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1779496499/58295e47-b055-4686-9244-844b9ee4b9d6_bazgpx.png"
+                         alt="Activity Adjustment Payroll"
+                         class="w-full h-auto rounded-xl"
+                         :class="loaded ? '' : 'loading'"
+                         @load="loaded = true">
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- Activity Slip Gaji -->
+          <div x-data="{ open: false, loaded: false }"
+               @keydown.window.escape="open = false"
+               class="bg-white rounded-2xl border border-gray-200/60 shadow-sm overflow-hidden hover:shadow-md transition-all group">
+            <div class="thumb-card relative">
+              <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1779496499/10c0a619-b459-41e2-a60d-ac9f890730c2_wu5iu5.png"
+                   alt="Activity Generate Slip Gaji"
+                   class="w-full h-auto"
+                   @click="open = true">
+              <div class="thumb-overlay" @click="open = true">
+                <span class="text-white text-sm font-medium flex items-center gap-2"><i class="fas fa-expand text-xs"></i> Klik untuk memperbesar</span>
+              </div>
+            </div>
+            <div class="px-4 pb-4 pt-3">
+              <span class="text-xs font-mono text-indigo-600 font-medium">Activity Diagram</span>
+              <h4 class="font-semibold text-gray-900 mt-0.5">Generate Slip Gaji</h4>
+            </div>
+            <template x-teleport="body">
+              <div x-show="open"
+                   x-transition.opacity.duration.250ms
+                   class="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm p-4 overflow-y-auto"
+                   x-cloak
+                   @click="open = false">
+                <button @click="open = false"
+                        class="fixed top-4 right-4 z-[9999] w-10 h-10 rounded-full bg-white/90 shadow-lg flex items-center justify-center hover:bg-white transition text-gray-700 text-lg border border-gray-200">
+                  <i class="fas fa-times"></i>
+                </button>
+                <div class="min-h-screen flex items-center justify-center">
+                  <div class="lightbox-panel relative w-full max-w-6xl bg-white rounded-2xl p-2 shadow-2xl"
+                       @click.stop>
+                    <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1779496499/10c0a619-b459-41e2-a60d-ac9f890730c2_wu5iu5.png"
+                         alt="Activity Generate Slip Gaji"
+                         class="w-full h-auto rounded-xl"
+                         :class="loaded ? '' : 'loading'"
+                         @load="loaded = true">
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2"><i class="fa-solid fa-sitemap text-indigo-600 text-sm"></i> Class Diagram & Entity Relationship</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+          <!-- Class Diagram -->
+          <div x-data="{ open: false, loaded: false }"
+               @keydown.window.escape="open = false"
+               class="bg-white rounded-2xl border border-gray-200/60 shadow-sm overflow-hidden hover:shadow-md transition-all group">
+            <div class="thumb-card relative">
+              <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1779496499/4aac8ed8-3c4c-421b-9724-40aa5ecf5481_-_Class_Diagram_UPDATE_ticsax.png"
+                   alt="Class Diagram"
+                   class="w-full h-auto"
+                   @click="open = true">
+              <div class="thumb-overlay" @click="open = true">
+                <span class="text-white text-sm font-medium flex items-center gap-2"><i class="fas fa-expand text-xs"></i> Klik untuk memperbesar</span>
+              </div>
+            </div>
+            <div class="px-4 pb-4 pt-3">
+              <span class="text-xs font-mono text-indigo-600 font-medium">Structural Diagram</span>
+              <h4 class="font-semibold text-gray-900 mt-0.5">Class Diagram</h4>
+            </div>
+            <template x-teleport="body">
+              <div x-show="open"
+                   x-transition.opacity.duration.250ms
+                   class="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm p-4 overflow-y-auto"
+                   x-cloak
+                   @click="open = false">
+                <button @click="open = false"
+                        class="fixed top-4 right-4 z-[9999] w-10 h-10 rounded-full bg-white/90 shadow-lg flex items-center justify-center hover:bg-white transition text-gray-700 text-lg border border-gray-200">
+                  <i class="fas fa-times"></i>
+                </button>
+                <div class="min-h-screen flex items-center justify-center">
+                  <div class="lightbox-panel relative w-full max-w-7xl bg-white rounded-2xl p-2 shadow-2xl"
+                       @click.stop>
+                    <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1779496499/4aac8ed8-3c4c-421b-9724-40aa5ecf5481_-_Class_Diagram_UPDATE_ticsax.png"
+                         alt="Class Diagram"
+                         class="w-full h-auto rounded-xl"
+                         :class="loaded ? '' : 'loading'"
+                         @load="loaded = true">
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- ERD -->
+          <div x-data="{ open: false, loaded: false }"
+               @keydown.window.escape="open = false"
+               class="bg-white rounded-2xl border border-gray-200/60 shadow-sm overflow-hidden hover:shadow-md transition-all group">
+            <div class="thumb-card relative">
+              <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1779496498/bcf0d0fd-24af-4d94-9004-be29a87d7016_-_ERD_qinnwy.png"
+                   alt="ERD"
+                   class="w-full h-auto"
+                   @click="open = true">
+              <div class="thumb-overlay" @click="open = true">
+                <span class="text-white text-sm font-medium flex items-center gap-2"><i class="fas fa-expand text-xs"></i> Klik untuk memperbesar</span>
+              </div>
+            </div>
+            <div class="px-4 pb-4 pt-3">
+              <span class="text-xs font-mono text-indigo-600 font-medium">Structural Diagram</span>
+              <h4 class="font-semibold text-gray-900 mt-0.5">Entity Relationship Diagram (ERD)</h4>
+            </div>
+            <template x-teleport="body">
+              <div x-show="open"
+                   x-transition.opacity.duration.250ms
+                   class="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm p-4 overflow-y-auto"
+                   x-cloak
+                   @click="open = false">
+                <button @click="open = false"
+                        class="fixed top-4 right-4 z-[9999] w-10 h-10 rounded-full bg-white/90 shadow-lg flex items-center justify-center hover:bg-white transition text-gray-700 text-lg border border-gray-200">
+                  <i class="fas fa-times"></i>
+                </button>
+                <div class="min-h-screen flex items-center justify-center">
+                  <div class="lightbox-panel relative w-full max-w-7xl bg-white rounded-2xl p-2 shadow-2xl"
+                       @click.stop>
+                    <img src="https://res.cloudinary.com/dfwutfkbn/image/upload/v1779496498/bcf0d0fd-24af-4d94-9004-be29a87d7016_-_ERD_qinnwy.png"
+                         alt="ERD Diagram"
+                         class="w-full h-auto rounded-xl"
+                         :class="loaded ? '' : 'loading'"
+                         @load="loaded = true">
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+
         </div>
       </div>
 

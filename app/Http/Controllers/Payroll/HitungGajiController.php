@@ -449,16 +449,4 @@ class HitungGajiController extends Controller
         return response()->json(['error' => 'Method not used'], 404);
     }
 
-    public function deletePeriode($periode)
-    {
-        if (! preg_match('/^\d{4}-\d{2}$/', $periode)) {
-            return redirect()->route('payroll.hitung-gaji.index')
-                ->with('error', 'Format periode tidak valid.');
-        }
-
-        $deleted = HitungGaji::where('periode', $periode)->delete();
-
-        return redirect()->route('payroll.hitung-gaji.index')
-            ->with('success', "Berhasil menghapus periode {$periode} dengan {$deleted} data hitung gaji.");
-    }
 }
