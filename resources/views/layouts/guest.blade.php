@@ -31,7 +31,7 @@
         }
     </script>
 
-    <link rel="icon" href="{{ asset('images/LOGOPSF_v4fq0w.jpg') }}" type="image/x-icon">
+    <link rel="icon" href="https://res.cloudinary.com/dfwutfkbn/image/upload/v1768808187/LOGOPSF_v4fq0w.jpg">
     
     <style>
         html, body {
@@ -59,12 +59,12 @@
                             renderer: 'svg',
                             loop: true,
                             autoplay: true,
-                            path: '{{ asset("lottie/loading.json") }}'
+                            path: 'https://assets8.lottiefiles.com/packages/lf20_hp09atmh.json'
                         });
                     }
                     document.addEventListener('click', e => {
                         const link = e.target.closest('a[href]:not([data-no-loader])');
-                        if (link && link.hostname === window.location.hostname) {
+                        if (link && link.hostname === window.location.hostname && link.target !== '_blank' && !link.hasAttribute('download')) {
                             this.loading = true;
                         }
                     });
