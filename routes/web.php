@@ -15,6 +15,16 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'landing')->name('landing');
 Route::view('/docs', 'docs')->name('docs');
 
+// Serve JS files from public/js (bypasses Vercel static serving)
+Route::get('/js/{path}', function ($path) {
+    $file = public_path('js/' . $path);
+    if (!file_exists($file)) {
+        abort(404);
+    }
+    $mime = str_ends_with($path, '.mjs') ? 'application/javascript' : 'application/javascript';
+    return response()->file($file, ['Content-Type' => 'application/javascript']);
+})->where('path', '.*');
+
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
