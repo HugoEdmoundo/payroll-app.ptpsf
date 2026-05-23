@@ -1,7 +1,6 @@
 {
   "version": 2,
   "framework": null,
-  "buildCommand": "composer install --no-dev --optimize-autoloader",
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.7.2"
@@ -11,6 +10,10 @@
     {
       "src": "^/images/(.*)",
       "dest": "/public/images/$1"
+    },
+    {
+      "src": "^/js/(.*)",
+      "dest": "/public/js/$1"
     },
     {
       "src": "^/favicon\\.ico$",
