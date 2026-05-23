@@ -1,6 +1,7 @@
 {
   "version": 2,
   "framework": null,
+  "buildCommand": "composer install --no-dev --optimize-autoloader",
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.7.2"
@@ -8,20 +9,8 @@
   },
   "routes": [
     {
-      "src": "^/build/(.*)",
-      "dest": "/public/build/$1"
-    },
-    {
       "src": "^/images/(.*)",
       "dest": "/public/images/$1"
-    },
-    {
-      "src": "^/css/(.*)",
-      "dest": "/public/css/$1"
-    },
-    {
-      "src": "^/js/(.*)",
-      "dest": "/public/js/$1"
     },
     {
       "src": "^/favicon\\.ico$",
@@ -39,18 +28,20 @@
   "env": {
     "APP_NAME": "Payroll PSF",
     "APP_ENV": "production",
-    "APP_DEBUG": "true",
+    "APP_DEBUG": "false",
     "APP_TIMEZONE": "Asia/Jakarta",
     "APP_KEY": "base64:mfeNkzoy6nHX9GmWxTgUgwrK0Nd8dLdRbmt+1JXoiIw=",
-    "APP_URL": "https://payroll-app-ptpsf.hugoedm.fun",
-    "APP_LOCALE": "en",
+    "APP_URL": "https://payroll-app-ptpsf.hugoedmoundo.fun",
+    "APP_LOCALE": "id",
+    "APP_FALLBACK_LOCALE": "en",
+    "APP_FAKER_LOCALE": "id_ID",
     "LOG_CHANNEL": "stderr",
     "LOG_LEVEL": "error",
     "DB_CONNECTION": "pgsql",
-    "DB_HOST": "db.anoqfwtwrhrqidmtvllt.supabase.co",
-    "DB_PORT": "5432",
+    "DB_HOST": "aws-1-ap-northeast-2.pooler.supabase.com",
+    "DB_PORT": "6543",
     "DB_DATABASE": "postgres",
-    "DB_USERNAME": "postgres",
+    "DB_USERNAME": "postgres.anoqfwtwrhrqidmtvllt",
     "DB_PASSWORD": "?hl%3Did<26",
     "SESSION_DRIVER": "cookie",
     "SESSION_LIFETIME": "120",
