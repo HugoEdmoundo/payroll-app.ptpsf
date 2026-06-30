@@ -11,18 +11,6 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
-// Debug database connection
-Route::get('/debug-db', function () {
-    try {
-        $pdo = DB::connection()->getPdo();
-        $stmt = $pdo->query("SELECT count(*) as c FROM users");
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return 'DB OK. Users: ' . $row['c'];
-    } catch (\Exception $e) {
-        return 'DB FAIL: ' . $e->getMessage() . "\n" . $e->getTraceAsString();
-    }
-});
-
 // Authentication routes
 Route::view('/', 'landing')->name('landing');
 Route::view('/docs', 'docs')->name('docs');
