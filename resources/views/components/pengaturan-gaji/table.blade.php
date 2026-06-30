@@ -55,9 +55,13 @@
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div class="flex space-x-2">
                         <a href="{{ route('payroll.pengaturan-gaji.show', $pg->id) }}" 
-
+                           class="text-indigo-600 hover:text-indigo-900 p-1 hover:bg-indigo-50 rounded" title="View">
+                            <i class="fas fa-eye"></i>
+                        </a>
                         <a href="{{ route('payroll.pengaturan-gaji.edit', $pg->id) }}" 
-
+                           class="text-amber-600 hover:text-amber-900 p-1 hover:bg-amber-50 rounded" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
                         <form action="{{ route('payroll.pengaturan-gaji.destroy', $pg->id) }}" method="POST" 
                               onsubmit="return confirm('Yakin ingin menghapus pengaturan gaji ini?')"
                               class="inline">
@@ -68,7 +72,6 @@
                                 <i class="fas fa-trash"></i>
                             </button>
                         </form>
-                        @endif
                     </div>
                 </td>
             </tr>
